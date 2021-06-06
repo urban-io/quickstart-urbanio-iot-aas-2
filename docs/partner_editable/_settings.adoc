@@ -1,10 +1,10 @@
 :quickstart-project-name: quickstart-urbanio-iot-aas
-:partner-product-name: Urban.IO
-:partner-product-short-name: Urban.IO
-:partner-company-name: Urban.IO Pty Ltd.
+:partner-product-name: Urban.io
+:partner-product-short-name: Urban.io
+:partner-company-name: Urban.io Pty Ltd.
 :doc-month: June
 :doc-year: 2021
-:partner-contributors: Desislava Hubanova, Urban.IO
+:partner-contributors: Desislava Hubanova, Urban.io
 :other-contributors: Vladislav Trayanov and Eric Mutuku, GotoAdmins
 :deployment_time: 10 minutes
 :default_deployment_region: us-east-1
