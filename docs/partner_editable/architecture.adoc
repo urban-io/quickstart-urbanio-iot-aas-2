@@ -6,7 +6,7 @@ This Quick Start creates a serverless framework that uses Amazon S3, AWS IoT Cor
 
 [#architecture1]
 .Quick Start architecture for {partner-product-short-name} to Sitewise integration on AWS
-image::../images/urbanoi-sitewise-integration.png[Architecture]
+image::../images/urbanoi-sitewise-integration.jpeg[Architecture]
 
 As shown in <<architecture1>>, the Quick Start sets up the following:
 
