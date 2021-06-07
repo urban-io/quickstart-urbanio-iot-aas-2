@@ -3,7 +3,7 @@
 ==== Prepare your AWS account
 
 ===== Enable AWS SSO
-If AWS SSO has not already been enabled in the Region where you are launching the AWS CloudFormation stack, enable it as follows.
+You will need AWS SSO enabled in the region in order to be able to create AWS IoT Sitewise Portal. If AWS SSO has not already been enabled in the Region where you are launching the AWS CloudFormation stack, enable it as follows.
 
 . Sign in to your AWS account at https://aws.amazon.com with an IAM user role that has the necessary permissions.
 . Sign in to the AWS Management Console, and open the AWS SSO service. Make sure that you are in the Region where you are launching the AWS CloudFormation stack.
@@ -24,8 +24,9 @@ If AWS SSO has not already been enabled in the Region where you are launching th
 
 ==== Prepare your {partner-company-name} account
 
-You need to have an account in app.urban.io
+You need to have an account in app.urban.io.
 
 ==== Prepare for the deployment
 
-_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in S3_
+_Vladi_
+_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in Ss_

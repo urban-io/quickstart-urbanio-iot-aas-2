@@ -5,12 +5,8 @@
 // If steps are required to test the deployment, add them here. If not, remove the heading
 
 == Post-deployment steps
-// If post-deployment steps are required, add them here. If not, remove the heading
 
-== Best practices for using {partner-product-short-name} on AWS
-// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
-
-_Add any best practices for using the software._
+After deploying this QuickStart you should setup an integration in app.urban.io following steps (TODO put link) and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets.
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
