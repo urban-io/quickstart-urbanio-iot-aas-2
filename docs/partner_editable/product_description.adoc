@@ -1,4 +1,6 @@
-This Quickstart incorporates the Industrial IoT Network as a Service solution from {partner-product-short-name} pre-integrated with the effortless real time dashboard capabilities of AWS SiteWise.
+:xrefstyle: short
+
+This Quick Start incorporates the Industrial IoT Network as a Service solution from {partner-product-short-name} pre-integrated with the effortless real time dashboard capabilities of AWS IoT SiteWise.
 
 Designed for Reliability Engineers and Operations Managers who need rapid low cost retrofit monitoring of dispersed or difficult to reach assets. A complete Turnkey Edge to Cloud solution where you can subscribe to 1 or 100,000 IoT endpoints and all sensor devices and network connectivity equipment are provided inclusive in the simple single price per endpoint per month or per year. This global solution can connect assets from any location in the world for the exact same price and all data is automatically aggregated into your SiteWise account ready for instant publishing of real time dashboards.
 
