@@ -1,30 +1,3 @@
-==== Prepare your AWS account
-
-===== Enable AWS SSO
-You will need AWS SSO enabled in the region in order to be able to create AWS IoT Sitewise Portal. If AWS SSO has not already been enabled in the Region where you are launching the AWS CloudFormation stack, enable it as follows.
-
-. Sign in to your AWS account at https://aws.amazon.com with an IAM user role that has the necessary permissions.
-. Sign in to the AWS Management Console, and open the AWS SSO service. Make sure that you are in the Region where you are launching the AWS CloudFormation stack.
-. Choose *Enable AWS SSO*.
-. If you don't have an AWS organization set up for your account (as required for AWS SSO usage), you're prompted to create one. Choose *Create AWS organization*. For more information, see the https://docs.aws.amazon.com/singlesignon/latest/userguide/getting-started.html[Getting Started^] page in the AWS SSO documentation.
-. Create an AWS SSO group.
-.. Open the AWS SSO service in the AWS Management Console.
-.. Choose *Groups* in the navigation bar. 
-.. If no groups exist, choose *Create group*.
-.. Give the group a name and choose *Create*.
-. Create an AWS SSO user.
-.. Open the AWS SSO service in the AWS Management Console.
-.. Choose *Users* in the navigation bar.
-.. Choose *Add user*.
-.. Provide a user name, and fill in the remaining boxes.
-.. Choose *Next, Groups*.
-.. Choose a group, and then choose *Add user*. The AWS SSO user is now active. This user will be able to access the AWS IoT SiteWise Monitor dashboards.
-
 ==== Prepare your {partner-company-name} account
 
 For creating an {partner-company-name} account please visit https://www.urban.io/
-
-==== Prepare for the deployment
-
-_Vladi_
-_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in Ss_
