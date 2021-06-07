@@ -3,14 +3,16 @@
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
+_Vladi_
 
 == Post-deployment steps
 
-After deploying this QuickStart you should setup an integration in app.urban.io following steps (TODO put link) and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets.
+After deploying this QuickStart you should setup an integration in app.urban.io following the steps described in https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this tutorial] and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets.
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
+_Vladi_
 _Add any security-related information._
 
 == Other useful information

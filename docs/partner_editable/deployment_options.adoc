@@ -5,3 +5,4 @@ This Quick Start provides a CloudFormation template, which lets you configure:
 * *S3 bucket name*. The name of the bucket in which {partner-product-short-name} will upload the initial integration setup.
 * *IAM role*. The name of the IAM role that will grant {partner-product-short-name} permissions to upload data to S3 and send messages to AWS IoT Core topics.
 
+_Vladi_

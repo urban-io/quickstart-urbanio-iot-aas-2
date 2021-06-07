@@ -24,7 +24,7 @@ You will need AWS SSO enabled in the region in order to be able to create AWS Io
 
 ==== Prepare your {partner-company-name} account
 
-You need to have an account in app.urban.io.
+For creating an {partner-company-name} account please visit https://www.urban.io/
 
 ==== Prepare for the deployment
 
