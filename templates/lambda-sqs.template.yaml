@@ -5,28 +5,27 @@ Mappings:
   RegionMap:
     ap-southeast-1:
       test: "aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-1"
-      staging: "aws-quickstart-urbanio-ricochet-sitewise-stage-ap-southeast-1"
+      staging: "aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-1"
       production: "aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-1"
     ap-southeast-2:
       test: "aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2"
-      staging: "aws-quickstart-urbanio-ricochet-sitewise-stage-ap-southeast-2"
+      staging: "aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-2"
       production: "aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-2"
     us-east-1:
       test: "aws-quickstart-urbanio-ricochet-sitewise-test-ap-northeast-1"
-      dev: "aws-quickstart-urbanio-ricochet-sitewise-test-ap-northeast-1"
-      staging: "aws-quickstart-urbanio-ricochet-sitewise-stage-ap-northeast-1"
+      staging: "aws-quickstart-urbanio-ricochet-sitewise-ap-northeast-1"
       production: "aws-quickstart-urbanio-ricochet-sitewise-ap-northeast-1"
     us-west-2:
       test: "aws-quickstart-urbanio-ricochet-sitewise-test-us-west-2"
-      staging: "aws-quickstart-urbanio-ricochet-sitewise-stage-us-west-2"
+      staging: "aws-quickstart-urbanio-ricochet-sitewise-us-west-2"
       production: "aws-quickstart-urbanio-ricochet-sitewise-us-west-2"
     eu-west-1:
       test: "aws-quickstart-urbanio-ricochet-sitewise-test-eu-west-1"
-      staging: "aws-quickstart-urbanio-ricochet-sitewise-stage-eu-west-1"
+      staging: "aws-quickstart-urbanio-ricochet-sitewise-eu-west-1"
       production: "aws-quickstart-urbanio-ricochet-sitewise-eu-west-1"
     eu-central-1:
       test: "aws-quickstart-urbanio-ricochet-sitewise-test-eu-central-1"
-      staging: "aws-quickstart-urbanio-ricochet-sitewise-stage-eu-central-1"
+      staging: "aws-quickstart-urbanio-ricochet-sitewise-eu-central-1"
       production: "aws-quickstart-urbanio-ricochet-sitewise-eu-central-1"
 
   EnvMap:
