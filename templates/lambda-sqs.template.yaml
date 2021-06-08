@@ -28,7 +28,29 @@ Mappings:
     production:
       OtherAccountNumber: '419327598890'
 
-
+Conditions:
+  # SiteWise (and our lambda bucket) only exists in these regions
+  ValidRegion:
+    Fn::Or:
+    - Fn::Equals:
+      - Ref: AWS::Region
+      - us-east-1
+    - Fn::Equals:
+      - Ref: AWS::Region
+      - us-west-2
+    - Fn::Equals:
+      - Ref: AWS::Region
+      - eu-west-1
+    - Fn::Equals:
+      - Ref: AWS::Region
+      - eu-central-1
+    - Fn::Equals:
+      - Ref: AWS::Region
+      - ap-southeast-1
+    - Fn::Equals:
+      - Ref: AWS::Region
+      - ap-southeast-2
+  
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -36,15 +58,15 @@ Metadata:
           default: Urbanio Sitewise Configuration
         Parameters:
           - S3Bucket
-          # - EnvType
+          - SitewiseCrossAccountRole
+          - EnvType
 
     ParameterLabels:
-
-      QSS3KeyPrefix:
-        default: Quick Start S3 Key Prefix
-
       S3Bucket:
         default: Sitewise S3 bucket
+      
+      SitewiseCrossAccountRole:
+        default: UrbanIO Assumed Sitewise Cross Account Role
 
       EnvType:
         default: Environment Type
@@ -74,6 +96,7 @@ Parameters:
     Description: The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
+    Default: urbanio-sitewise
 
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
@@ -88,6 +111,13 @@ Parameters:
       and https://aws-quickstart.github.io/option1.html.
     Type: String
     Default: aws-quickstart-urbanio/
+  
+  SitewiseCrossAccountRole:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: The Cross Account Role
+    Type: String
+    Default: SitewiseCrossAccount
+
     
 Resources:
 
@@ -95,18 +125,25 @@ Resources:
   SitewiseS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${S3Bucket}-${AWS::Region}
+      BucketName: !Ref S3Bucket
 
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
+    Condition: ValidRegion
     Properties:
       Tags: []
-       
+
+  # CrossAccountBucket:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     Tags: []    
+
   ## DynamoDB Tables
   SitewiseModels:
     Type: AWS::DynamoDB::Table
+    Condition: ValidRegion
     Properties:
-      TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Models
+      TableName: !Sub ${AWS::StackName}-${AWS::AccountId}-SiteWise-Models
       AttributeDefinitions:
       - AttributeName: Name
         AttributeType: S
@@ -117,8 +154,9 @@ Resources:
 
   SitewiseAssets:
     Type: AWS::DynamoDB::Table
+    Condition: ValidRegion
     Properties:
-      TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Assets
+      TableName: !Sub ${AWS::StackName}-${AWS::AccountId}-SiteWise-Assets
       AttributeDefinitions:
       - AttributeName: Id
         AttributeType: S
@@ -129,8 +167,9 @@ Resources:
 
   SitewiseEventsMapping:
     Type: AWS::DynamoDB::Table
+    Condition: ValidRegion
     Properties:
-      TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Events-Mapping
+      TableName:  !Sub ${AWS::StackName}-${AWS::AccountId}-SiteWise-Events-Mapping
       AttributeDefinitions:
       - AttributeName: Type
         AttributeType: S
@@ -141,8 +180,9 @@ Resources:
 
   SitewiseIntegrationPoints:
     Type: AWS::DynamoDB::Table
+    Condition: ValidRegion
     Properties:
-      TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Integration-Points
+      TableName:  !Sub ${AWS::StackName}-${AWS::AccountId}-SiteWise-Integration-Points
       AttributeDefinitions:
       - AttributeName: Id
         AttributeType: S
@@ -154,6 +194,7 @@ Resources:
   ## Lambda functions
   CopyZips:
     Type: Custom::CopyZips
+    Condition: ValidRegion
     DependsOn: 
       - CopyZipsRole
     Properties:
@@ -168,9 +209,10 @@ Resources:
         - functions/packages/iot-core-to-sqs/lambda.zip
         - functions/packages/lifecycle-events-mapping-updater/lambda.zip
         - functions/packages/s3-to-lifecycle-events-converter/lambda.zip
-        
+
   CopyZipsFunction:
     Type: AWS::Serverless::Function
+    Condition: ValidRegion
     Properties:
       Description: Copies objects from a source S3 bucket to a destination.
       Handler: index.handler
@@ -229,6 +271,7 @@ Resources:
   LifecycleEventsConverterLambda:
     DependsOn: CopyZips
     Type: AWS::Serverless::Function
+    Condition: ValidRegion
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
@@ -254,6 +297,7 @@ Resources:
   LifecycleEventsMappingUpdaterLambda:
     DependsOn: CopyZips
     Type: AWS::Serverless::Function
+    Condition: ValidRegion
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
@@ -277,6 +321,7 @@ Resources:
   IoTCoreToSQSLambda:
     DependsOn: CopyZips
     Type: AWS::Serverless::Function
+    Condition: ValidRegion
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
@@ -290,6 +335,7 @@ Resources:
   AssetModelConverterLambda:
     DependsOn: LifecycleEventsConverterLambda
     Type: AWS::Serverless::Function
+    Condition: ValidRegion
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
@@ -311,6 +357,7 @@ Resources:
   AssociationUpdaterLambda:
     DependsOn: AssetModelConverterLambda
     Type: AWS::Serverless::Function
+    Condition: ValidRegion
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
@@ -331,6 +378,7 @@ Resources:
   AttributesUpdaterLambda:
     DependsOn: AssetModelConverterLambda
     Type: AWS::Serverless::Function
+    Condition: ValidRegion
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
@@ -351,6 +399,7 @@ Resources:
   UrbanioAssumedRole:
     Type: AWS::IAM::Role
     Properties:
+      RoleName: !Ref SitewiseCrossAccountRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -375,11 +424,39 @@ Resources:
             Action:
             - 's3:*'
             Resource:
-              - !Sub arn:aws:s3:::${S3Bucket}
-              - !Sub arn:aws:s3:::${S3Bucket}/*
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket, '/*']]
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket]]
+              # - !Join [ '', ["arn:aws:s3:::", !Ref CrossAccountBucket, '/*']]
+              # - !Join [ '', ["arn:aws:s3:::", !Ref CrossAccountBucket]]
+
+  IoTSiteWiseMeasurementRuleRole:
+    Type: AWS::IAM::Role
+    Condition: ValidRegion
+    Properties:
+      Description: Role for IoT SiteWise Measurement Update
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: iot.amazonaws.com 
+        Version: '2012-10-17'
+      Path: /service-role/
+      Policies:
+      - PolicyName: IoTSiteWiseMeasurement-RolePolicy
+        PolicyDocument:
+          Statement:
+          # SiteWise
+          - Action: 
+              - iotsitewise:BatchPutAssetPropertyValue
+            Effect: Allow
+            Resource: "*"
+          Version: '2012-10-17'
+
 
   CopyZipsRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -411,10 +488,10 @@ Resources:
                   - s3:PutObject
                   - s3:DeleteObject
                 Resource:
-                  - !Sub 'arn:aws:s3:::${LambdaZipsBucket}/${QSS3KeyPrefix}*'
-
+                  - !Join [ '', ["arn:aws:s3:::", !Ref LambdaZipsBucket, '/',!Ref QSS3KeyPrefix, '*']]
   LifecycleEventsConverterRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -445,6 +522,7 @@ Resources:
 
   IoTCoreToSQSRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
@@ -480,6 +558,7 @@ Resources:
 
   LifecycleEventsMappingUpdaterRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
@@ -506,6 +585,7 @@ Resources:
 
   AssetModelConverterRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
@@ -538,8 +618,8 @@ Resources:
             Action:
             - 's3:*'
             Resource:
-              - !Sub arn:aws:s3:::${S3Bucket}
-              - !Sub arn:aws:s3:::${S3Bucket}/*
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket, '/*']]
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket]]
       - PolicyName: SqsAssetModelConverterPolicy
         PolicyDocument: 
           Statement: 
@@ -552,6 +632,7 @@ Resources:
 
   AssociationUpdaterRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
@@ -582,8 +663,8 @@ Resources:
             Action:
             - 's3:*'
             Resource:
-              - !Sub arn:aws:s3:::${S3Bucket}
-              - !Sub arn:aws:s3:::${S3Bucket}/*
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket, '/*']]
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket]]
       - PolicyName: sqs-association-updater-role
         PolicyDocument: 
           Statement: 
@@ -596,6 +677,7 @@ Resources:
 
   AttributesUpdaterRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
@@ -626,8 +708,8 @@ Resources:
             Action:
             - 's3:*'
             Resource:
-              - !Sub arn:aws:s3:::${S3Bucket}
-              - !Sub arn:aws:s3:::${S3Bucket}/*
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket, '/*']]
+              - !Join [ '', ["arn:aws:s3:::", !Ref SitewiseS3Bucket]]
       - PolicyName: sqs-attibute-updater-role
         PolicyDocument: 
           Statement: 
@@ -640,124 +722,81 @@ Resources:
   ## SQS
   SQSLifecycleEventsQueue:
     Type: AWS::SQS::Queue
+    Condition: ValidRegion
     Properties:
-      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-lifecycle-events.fifo
+      QueueName: !Sub ${AWS::StackName}-${AWS::AccountId}-lifecycle-events.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
 
   SQSAssociatedAssetsQueue:
     Type: AWS::SQS::Queue
+    Condition: ValidRegion
     Properties:
-      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-associated-assets.fifo
+      QueueName: !Sub ${AWS::StackName}-${AWS::AccountId}-associated-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
 
   SQSCreatedAssetsQueue:
     Type: AWS::SQS::Queue
+    Condition: ValidRegion
     Properties:
-      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-created-assets.fifo
+      QueueName: !Sub ${AWS::StackName}-${AWS::AccountId}-created-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
 
   ## IOT Tropic
   IotToSqsTopicRule:
     Type: AWS::IoT::TopicRule 
+    Condition: ValidRegion
     Properties:
       RuleName:
         Fn::Join:
           - ''
           - Fn::Split:
             - '-'
-            - !Sub '${AWS::StackName}-${AWS::Region}-sendLifecycleEventsToFifo'       
-     
+            - !Sub '${AWS::StackName}_${AWS::AccountId}_send_lifecycle_event_to_lambda_iot_topic_rule'       
       TopicRulePayload:
-        RuleDisabled: true
+        RuleDisabled: false
         Sql: SELECT * FROM 'urbanio/lifecycle/#'
         Actions:
         - Lambda:
             FunctionArn: !GetAtt IoTCoreToSQSLambda.Arn
-           
+
+  UpdateSitewiseMeasurementsRule:
+    Type: AWS::IoT::TopicRule
+    Condition: ValidRegion 
+    Properties:
+      RuleName:
+        Fn::Join:
+          - ''
+          - Fn::Split:
+            - '-'
+            - !Sub '${AWS::StackName}_${AWS::AccountId}_update_sitewise_measurements_iot_topic_rule'       
+      TopicRulePayload:
+        RuleDisabled: false
+        Sql: SELECT * FROM 'urbanio/reading/#'
+        Actions:
+        - IotSiteWise:
+            PutAssetPropertyValueEntries: 
+              - PropertyAlias: '/urbanio/device/${metadata.ref.d}/${metadata.ref.m}'
+                PropertyValues: 
+                  - Timestamp: 
+                      TimeInSeconds: '${reading.ts / 1000}'
+                    Value: 
+                      DoubleValue: '${reading.scaled.v}'
+            RoleArn: !GetAtt IoTSiteWiseMeasurementRuleRole.Arn
+
 
   ## Output Parameters
 Outputs:
-  UrbanioLambdaZipsBucket:
-    Description: The Lambda Zip S3 Bucket
-    Value:
-      Ref: LambdaZipsBucket
-
   UrbanioSitewiseS3Bucket:
     Description: The SiteWise S3 Bucket
+
     Value:
       Ref: SitewiseS3Bucket
-    
-  UrbanioSitewiseModelsTable:
-    Description: The Sitewise DynamoDB Models Table
-    Value:
-      Ref: SitewiseModels
-
-  UrbanioSitewiseAssetsTable:
-    Description: The Sitewise DynamoDB Assets Table
-    Value:
-      Ref: SitewiseAssets
-
-  UrbanioLifecycleEventsConverterRole:
-    Description: The Lifecycle Events Converter IAM Role
-    Value:
-      Ref: LifecycleEventsConverterRole
-
-  UrbanioLifecycleEventsConverter:
-    Description: The Lifecycle Events Converter Lambda
-    Value: !GetAtt LifecycleEventsConverterLambda.Arn
-
-  UrbanioIoTCoreToSQSRole:
-    Description: The Iot Core to SQS Lambda
-    Value:
-      Ref: IoTCoreToSQSRole
-
-  UrbanioCrossAccessPolicyRole:
-    Description: The Sitewise Cross Access
-    Value:
-      Ref: UrbanioAssumedRole
-
-  UrbanioIoTCoreToSQS:
-    Description: The Iot Core to SQS Lambda
-    Value: !GetAtt IoTCoreToSQSLambda.Arn
-
-  UrbanioAssetModelConverterRole:
-    Description: The Asset-Model Converter IAM Role
-    Value:
-      Ref: AssetModelConverterRole
-
-  UrbanioAssetModelConverter:
-    Description: The Asset Model Converter Lambda
-    Value: !GetAtt AssetModelConverterLambda.Arn
-
-  UrbanioAssociationUpdaterRole:
-    Description: The Association Updater IAM Role
-    Value:
-      Ref: AssociationUpdaterRole
-
-  UrbanioAssociationUpdater:
-    Description: The Association Updater Lambda
-    Value: !GetAtt AssociationUpdaterLambda.Arn
-
-  UrbanioAttributesUpdateRole:
-    Description: The Attributes Updater IAM Role
-    Value:
-      Ref: AttributesUpdaterRole
-
-  UrbanioAttributesUpdate:
-    Description: The Attributes Updater Lambda
-    Value: !GetAtt AttributesUpdaterLambda.Arn
-
-  UrbanioLifecycleEventsSQS:
-    Description: The Lifecycle Events SQS
-    Value: !GetAtt  SQSLifecycleEventsQueue.Arn
-
-  UrbanioAssociatedAssetsSQS:
-    Description: The Associated Assets SQS
-    Value: !GetAtt SQSAssociatedAssetsQueue.Arn
-
-  UrbanioCreatedAssetsSQS:
-    Description: The Created Assets SQS
-    Value: !GetAtt SQSCreatedAssetsQueue.Arn
+  CrossAccountRoleId:
+    Description: The logical ID of the IAM role
+    Value: !Ref UrbanioAssumedRole
+  CrossAccountRolArn:
+    Description: The ARN of the IAM role
+    Value: !GetAtt UrbanioAssumedRole.Arn

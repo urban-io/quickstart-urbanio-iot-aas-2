@@ -1,16 +1,7 @@
 general: 
   parameters:
-    S3Bucket: aws-quickstart-urbanio-2
-    ReadCapacityUnits: 5
-    WriteCapacityUnits: 5
+    S3Bucket: urbanio-sitewise
     OtherAccountNumber: 450305284055
-
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-1
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-2
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-eu-central-1
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-us-east-1
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-us-west-2
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-eu-west-1
 
 project:
   name: aws-quickstart-urbanio
@@ -21,18 +12,19 @@ project:
   package_lambda: false
   shorten_stack_name: true
   regions:
-  - ap-southeast-1
+  # - ap-southeast-1
   - ap-southeast-2
-  - us-east-1
-  - us-west-2
-  - eu-west-1
-  - eu-central-1
+  # - us-east-1
+  # - us-west-2
+  # - eu-west-1
+  # - eu-central-1
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-1
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-2
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-eu-central-1
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-us-east-1
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-us-west-2
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-eu-west-1
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-eu-central-1
+  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
   s3_enable_sig_v2: true
   s3_object_acl: public-read
   template: ./templates/lambda-sqs.template.yaml
