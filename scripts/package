@@ -40,5 +40,8 @@ do
     mkdir -p "../../functions/packages/$lambda_dir"
     mv "$LAMBDA_ZIP_FILE" "../../functions/packages/$lambda_dir"
 
+    rm -rf "$LAMBDA_ZIP_FILE"
+    rm -rf "$DEPENDENCIES_INSTALL_DIR"
+
     cd ..
 done

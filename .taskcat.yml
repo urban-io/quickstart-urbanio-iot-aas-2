@@ -1,35 +1,62 @@
-general: 
-  parameters:
-    S3Bucket: urbanio-sitewise
-    OtherAccountNumber: 450305284055
-  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
+general:
+  s3_regional_buckets: true
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-stage
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
+  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
+  # parameters:
+  #   OverridenVar: set_in_override
+
 project:
+  template: ./templates/packaged.yaml
   name: aws-quickstart-urbanio
   owner: quickstart@amazon.com
   build_submodules: false
-# lambda_source_path:  src
-# lambda_zip_path: functions/packages
+  auth:
+    # default: urban-dev-profile
+    # default: urban-stage-profile
+    default: urban-production-profile
+  lambda_source_path:  src
+  lambda_zip_path: functions/packages
   package_lambda: false
   shorten_stack_name: true
   regions:
-  # - ap-southeast-1
+  - ap-southeast-1
   - ap-southeast-2
-  # - us-east-1
-  # - us-west-2
-  # - eu-west-1
-  # - eu-central-1
-  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-1
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-2
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-us-east-1
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-us-west-2
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-eu-west-1
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-eu-central-1
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
+  - us-east-1
+  - us-west-2
+  - eu-west-1
+  - eu-central-1
   s3_enable_sig_v2: true
   s3_object_acl: public-read
-  template: ./templates/lambda-sqs.template.yaml
+  # parameters:
+  #   EnvType: test
+  #   OverridenVar: set_in_project
+
 tests:
   default:
+    parameters:
+      EnvType: test
+      # OverridenVar: set_in_project
+    tags:
+      TEST_PROFILE: DEFAULT
+
+  dev:
     template: ./templates/lambda-sqs.template.yaml
-  # default:
-  #   template: ./templates/packaged.yaml
+    regions:
+    - ap-southeast-2
+    parameters:
+      EnvType: test
+      S3Bucket: urbanio-sitewise
+      # OverridenVar: set_in_project
+    tags:
+      TEST_PROFILE: TEST
+
+  staging:
+    template: ./templates/packaged.yaml
+    regions:
+    - ap-southeast-2
+    parameters:
+      EnvType: staging
+      # OverridenVar: set_in_project
+    tags:
+      TEST_PROFILE: STAGING
