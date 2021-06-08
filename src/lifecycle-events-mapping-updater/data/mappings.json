@@ -1,0 +1,33 @@
+[
+    {   
+        "Model": "operator", 
+        "Mappings": [
+            { "name": "Name", "value": "reading.name", "type": "string"},
+            { "name": "External ID", "value": "reading.id", "type": "string"}
+        ]
+    },
+    { 
+        "Model": "customer", 
+        "Mappings": [
+            { "name": "Name", "value": "reading.name", "type": "string"},
+            { "name": "External ID", "value": "reading.id", "type": "string"}
+        ]
+    },
+    { 
+        "Model": "location", 
+        "Mappings": [
+            { "name": "Name", "value": "reading.name", "type": "string"},
+            { "name": "External ID", "value": "reading.id", "type": "string"},
+            { "name": "Longitude", "value": "reading.longitude", "type": "double"},
+            { "name": "Latitude", "value": "reading.latitude", "type": "double"}
+        ]
+    },
+    {
+        "Model": "device", 
+        "Mappings": [
+            { "name": "Name", "value": "reading.name", "type": "string"},
+            { "name": "External ID", "value": "reading.id", "type": "string"},
+            { "name": "Serial Number", "value": "reading.di", "type": "string"}
+        ]
+    }
+]

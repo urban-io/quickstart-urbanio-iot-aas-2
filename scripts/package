@@ -1,0 +1,44 @@
+#!/bin/bash
+set -euo pipefail
+
+pip3 install pipenv --quiet
+
+
+projects=(
+    asset-model-converter
+    association-updater
+    attributes-updater
+    s3-to-lifecycle-events-converter
+    lifecycle-events-mapping-updater
+    iot-core-to-sqs
+)
+cd src/
+
+for lambda_dir in "${projects[@]}"
+do
+    cd $lambda_dir
+
+    files=$(git ls-files .)
+
+    LAMBDA_ZIP_FILE="lambda.zip"
+    DEPENDENCIES_INSTALL_DIR=".packages"
+
+    rm -rf "$LAMBDA_ZIP_FILE"
+    rm -rf "$DEPENDENCIES_INSTALL_DIR"
+
+    pipenv sync
+    pipenv run pip3 install --requirement <(pipenv lock --requirements) --target "$DEPENDENCIES_INSTALL_DIR" --quiet
+
+    zip --recurse-paths -9 --must-match --quiet "$LAMBDA_ZIP_FILE" ${files[@]}
+
+    if [ -d "$DEPENDENCIES_INSTALL_DIR" ]; then
+      cd "$DEPENDENCIES_INSTALL_DIR"
+      zip --update --recurse-paths -9 --must-match --quiet ../"$LAMBDA_ZIP_FILE" -- *
+      cd ..
+    fi
+
+    mkdir -p "../../functions/packages/$lambda_dir"
+    mv "$LAMBDA_ZIP_FILE" "../../functions/packages/$lambda_dir"
+
+    cd ..
+done

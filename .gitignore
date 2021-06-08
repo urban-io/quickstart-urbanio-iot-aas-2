@@ -1,0 +1,7 @@
+# python ignores
+__pycache__
+.cache
+build
+taskcat_outputs
+.aws-sam
+templates/packaged.yaml

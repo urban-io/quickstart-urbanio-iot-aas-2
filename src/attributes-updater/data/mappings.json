@@ -1,0 +1,69 @@
+[
+    {   
+        "Type": "operator_updated",
+        "Model": "operator", 
+        "Mappings": [
+            { "name": "Name", "path": "reading.name", "type": "string"},
+            { "name": "External ID", "path": "reading.id", "type": "string"},
+            { "name": "Commissioning Status", "value": "Commissioned", "type": "string"}
+        ]
+    },
+    { 
+        "Type": "customer_updated",
+        "Model": "customer", 
+        "Mappings": [
+            { "name": "Name", "path": "reading.name", "type": "string"},
+            { "name": "External ID", "path": "reading.id", "type": "string"},
+            { "name": "Commissioning Status", "value": "Commissioned", "type": "string"}
+        ]
+    },
+    { 
+        "Type": "location_updated",
+        "Model": "location", 
+        "Mappings": [
+            { "name": "Name", "path": "reading.name", "type": "string"},
+            { "name": "External ID", "path": "reading.id", "type": "string"},
+            { "name": "Longitude", "path": "reading.longitude", "type": "double"},
+            { "name": "Latitude", "path": "reading.latitude", "type": "double"},
+            { "name": "Commissioning Status", "value": "Commissioned", "type": "string"}
+        ]
+    },
+    {
+        "Type": "device_updated",
+        "Model": "device", 
+        "Mappings": [
+            { "name": "Name", "path": "reading.name", "type": "string"},
+            { "name": "External ID", "path": "reading.id", "type": "string"},
+            { "name": "Serial Number", "path": "reading.di", "type": "string"},
+            { "name": "Commissioning Status", "value": "Commissioned", "type": "string"}
+        ]
+    },
+    { 
+        "Type": "operator_destroyed",
+        "Model": "operator", 
+        "Mappings": [
+            { "name": "Commissioning Status", "value": "Decommissioned", "type": "string"}
+        ]
+    },
+    { 
+        "Type": "customer_destroyed",
+        "Model": "customer", 
+        "Mappings": [
+            { "name": "Commissioning Status", "value": "Decommissioned", "type": "string"}
+        ]
+    },
+    { 
+        "Type": "location_destroyed",
+        "Model": "location", 
+        "Mappings": [
+            { "name": "Commissioning Status", "value": "Decommissioned", "type": "string"}
+        ]
+    },
+    {
+        "Type": "device_destroyed",
+        "Model": "device", 
+        "Mappings": [
+            { "name": "Commissioning Status", "value": "Decommissioned", "type": "string"}
+        ]
+    }
+]

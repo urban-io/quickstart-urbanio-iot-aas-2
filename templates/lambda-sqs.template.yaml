@@ -1,0 +1,763 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Urbanio Sitewise
+Mappings:
+  RegionMap:
+    ap-southeast-1:
+      QSS3Bucket: "aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-1"
+    ap-southeast-2:
+      QSS3Bucket: "aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-2"
+    ap-northeast-1:
+      QSS3Bucket: "aws-quickstart-urbanio-ricochet-sitewise-ap-northeast-1"
+    us-east-1:
+      QSS3Bucket: "aws-quickstart-urbanio-ricochet-sitewise-us-east-1"
+    us-west-2:
+      QSS3Bucket: "aws-quickstart-urbanio-ricochet-sitewise-us-west-2"
+    eu-west-1:
+      QSS3Bucket: "aws-quickstart-urbanio-ricochet-sitewise-eu-west-1"
+    eu-central-1:
+      QSS3Bucket: "aws-quickstart-urbanio-ricochet-sitewise-eu-central-1"
+
+  EnvMap:
+    test:
+      OtherAccountNumber: '450305284055'
+    dev:
+      OtherAccountNumber: '450305284055' 
+    staging:
+      OtherAccountNumber: '845486970018'
+    production:
+      OtherAccountNumber: '419327598890'
+
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Urbanio Sitewise Configuration
+        Parameters:
+          - S3Bucket
+          # - EnvType
+
+    ParameterLabels:
+
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+
+      S3Bucket:
+        default: Sitewise S3 bucket
+
+      EnvType:
+        default: Environment Type
+
+  LICENSE: "Apache License, Version 2.0"
+  AUTHOR: "GoToAdmins"
+  EMAIL: "admin@gotoadmins.com"
+
+Globals:
+  Function:
+      Handler: handler.handler
+      MemorySize: 256
+      Runtime: python3.8
+      Timeout: 15
+
+Parameters:
+
+  EnvType:
+    Description: Environment type.
+    Default: production
+    Type: String
+    AllowedValues: [production, staging, dev, test]
+    ConstraintDescription: must specify production, staging, dev, or test.
+
+  S3Bucket:
+    Type: String
+    Description: The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
+    AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
+    ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
+
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: The Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/).
+    Description: S3 key prefix that is used to simulate a directory for your copy of the 
+      Quick Start assets. Keep the default prefix unless you are customizing 
+      the template. Changing this prefix updates code references to point to 
+      a new Quick Start location. This prefix can include numbers, lowercase 
+      letters, uppercase letters, hyphens (-), and forward slashes (/). 
+      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+      and https://aws-quickstart.github.io/option1.html.
+    Type: String
+    Default: aws-quickstart-urbanio/
+    
+Resources:
+
+  ## S3 bucket
+  SitewiseS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${S3Bucket}-${AWS::Region}
+
+  LambdaZipsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags: []
+       
+  ## DynamoDB Tables
+  SitewiseModels:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Models
+      AttributeDefinitions:
+      - AttributeName: Name
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Name
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  SitewiseAssets:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Assets
+      AttributeDefinitions:
+      - AttributeName: Id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  SitewiseEventsMapping:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Events-Mapping
+      AttributeDefinitions:
+      - AttributeName: Type
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Type
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  SitewiseIntegrationPoints:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Integration-Points
+      AttributeDefinitions:
+      - AttributeName: Id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  ## Lambda functions
+  CopyZips:
+    Type: Custom::CopyZips
+    DependsOn: 
+      - CopyZipsRole
+    Properties:
+      ServiceToken: !GetAtt CopyZipsFunction.Arn
+      DestBucket: !Ref LambdaZipsBucket
+      SourceBucket: !FindInMap [RegionMap, !Ref "AWS::Region", QSS3Bucket ]
+      Prefix: !Ref QSS3KeyPrefix
+      Objects:
+        - functions/packages/asset-model-converter/lambda.zip
+        - functions/packages/association-updater/lambda.zip
+        - functions/packages/attributes-updater/lambda.zip
+        - functions/packages/iot-core-to-sqs/lambda.zip
+        - functions/packages/lifecycle-events-mapping-updater/lambda.zip
+        - functions/packages/s3-to-lifecycle-events-converter/lambda.zip
+        
+  CopyZipsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Copies objects from a source S3 bucket to a destination.
+      Handler: index.handler
+      Role: !GetAtt CopyZipsRole.Arn
+      Timeout: 240
+      InlineCode: |
+        import json
+        import logging
+        import threading
+        import boto3
+        import cfnresponse
+        def copy_objects(source_bucket, dest_bucket, prefix, objects):
+            s3 = boto3.client('s3')
+            for o in objects:
+                key = prefix + o
+                copy_source = {
+                    'Bucket': source_bucket,
+                    'Key': key
+                }
+                print('copy_source: %s' % copy_source)
+                print('dest_bucket = %s'%dest_bucket)
+                print('key = %s' %key)
+                s3.copy_object(CopySource=copy_source, Bucket=dest_bucket,
+                      Key=key)
+        def delete_objects(bucket, prefix, objects):
+            s3 = boto3.client('s3')
+            objects = {'Objects': [{'Key': prefix + o} for o in objects]}
+            s3.delete_objects(Bucket=bucket, Delete=objects)
+        def timeout(event, context):
+            logging.error('Execution is about to time out, sending failure response to CloudFormation')
+            cfnresponse.send(event, context, cfnresponse.FAILED, {}, None)
+        def handler(event, context):
+            # make sure we send a failure to CloudFormation if the function
+            # is going to timeout
+            timer = threading.Timer((context.get_remaining_time_in_millis()
+                      / 1000.00) - 0.5, timeout, args=[event, context])
+            timer.start()
+            print('Received event: %s' % json.dumps(event))
+            status = cfnresponse.SUCCESS
+            try:
+                source_bucket = event['ResourceProperties']['SourceBucket']
+                dest_bucket = event['ResourceProperties']['DestBucket']
+                prefix = event['ResourceProperties']['Prefix']
+                objects = event['ResourceProperties']['Objects']
+                if event['RequestType'] == 'Delete':
+                    delete_objects(dest_bucket, prefix, objects)
+                else:
+                    copy_objects(source_bucket, dest_bucket, prefix, objects)
+            except Exception as e:
+                logging.error('Exception: %s' % e, exc_info=True)
+                status = cfnresponse.FAILED
+            finally:
+                timer.cancel()
+                cfnresponse.send(event, context, status, {}, None)
+
+  LifecycleEventsConverterLambda:
+    DependsOn: CopyZips
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/s3-to-lifecycle-events-converter/lambda.zip
+      Role: !GetAtt LifecycleEventsConverterRole.Arn
+      Environment:
+        Variables:
+          LIFECICLE_EVENTS_QUEUE_URL: !Ref SQSLifecycleEventsQueue
+          DYNAMO_INTEGRATION_POINTS_TABLE_NAME: !Ref SitewiseIntegrationPoints
+      Events:
+        S3EventAssets:
+          Type: S3
+          Properties:
+            Bucket: !Ref SitewiseS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: sitewise/assets/
+
+# lifecycle-events-mapping-updater
+  LifecycleEventsMappingUpdaterLambda:
+    DependsOn: CopyZips
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/lifecycle-events-mapping-updater/lambda.zip
+      Role: !GetAtt LifecycleEventsMappingUpdaterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_EVENT_MAPPING_TABLE_NAME: !Ref SitewiseEventsMapping
+      Events:
+        S3EventAssets:
+          Type: S3
+          Properties:
+            Bucket: !Ref SitewiseS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: sitewise/events/
+
+  IoTCoreToSQSLambda:
+    DependsOn: CopyZips
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/iot-core-to-sqs/lambda.zip
+      Role: !GetAtt IoTCoreToSQSRole.Arn
+      Environment:
+        Variables:
+          LIFECICLE_EVENTS_QUEUE_URL: !Ref SQSLifecycleEventsQueue
+
+
+  AssetModelConverterLambda:
+    DependsOn: LifecycleEventsConverterLambda
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/asset-model-converter/lambda.zip
+      Role: !GetAtt AssetModelConverterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_ASSETS_TABLE_NAME: !Ref SitewiseAssets
+          DYNAMO_MODELS_TABLE_NAME: !Ref SitewiseModels
+          DYNAMO_INTEGRATION_POINTS_TABLE_NAME: !Ref SitewiseIntegrationPoints
+          ASSETS_TO_ASSOCIATE_QUEUE_URL: !Ref SQSCreatedAssetsQueue
+      Events:
+        SQSLifecycleEventsQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSLifecycleEventsQueue.Arn
+            BatchSize: 10
+
+  AssociationUpdaterLambda:
+    DependsOn: AssetModelConverterLambda
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/association-updater/lambda.zip
+      Role: !GetAtt AssociationUpdaterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_ASSETS_TABLE_NAME: !Ref SitewiseAssets
+          ASSETS_TO_UPDATE_QUEUE_URL: !Ref SQSAssociatedAssetsQueue
+          DYNAMO_INTEGRATION_POINTS_TABLE_NAME: !Ref SitewiseIntegrationPoints
+      Events:
+        SQSCreatedAssetsQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSCreatedAssetsQueue.Arn
+            BatchSize: 10
+
+  AttributesUpdaterLambda:
+    DependsOn: AssetModelConverterLambda
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/attributes-updater/lambda.zip
+      Role: !GetAtt AttributesUpdaterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_ASSETS_TABLE_NAME: !Ref SitewiseAssets
+          DYNAMO_EVENT_MAPPING_TABLE_NAME: !Ref SitewiseEventsMapping
+      Events:
+        SQSAssociatedAssetsQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSAssociatedAssetsQueue.Arn
+            BatchSize: 10
+
+  ## Lambda Roles
+  UrbanioAssumedRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                - ''
+                - - 'arn:aws:iam::'
+                  - !FindInMap [EnvMap, !Ref EnvType, OtherAccountNumber ]
+                  - ":root"
+            Action: sts:AssumeRole
+      Path: /
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
+      Policies:
+      - PolicyName: CrossAccountS3AllowReadAccessPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Sub arn:aws:s3:::${S3Bucket}
+              - !Sub arn:aws:s3:::${S3Bucket}/*
+
+  CopyZipsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Path: /
+      Policies:
+        - PolicyName: lambda-copier
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  Fn::Join:
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !FindInMap [RegionMap, !Ref "AWS::Region", QSS3Bucket ]
+                    - !Sub  "/${QSS3KeyPrefix}*"
+                 
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub 'arn:aws:s3:::${LambdaZipsBucket}/${QSS3KeyPrefix}*'
+
+  LifecycleEventsConverterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: '/'
+      Policies:
+        - PolicyName: allowLambdaLogs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - logs:*
+              Resource: arn:aws:logs:*:*:*
+        - PolicyName: sqs-lifecycle-events-role
+          PolicyDocument: 
+            Statement: 
+            - Effect: Allow
+              Action: 
+              - 'sqs:*'
+              Resource: 
+                - !GetAtt SQSLifecycleEventsQueue.Arn
+
+  IoTCoreToSQSRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action:  sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+      Path: '/'     
+      Policies:
+      - PolicyName: IoTCoreToSQSDynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 'dynamodb:*'
+            Resource:
+              - !GetAtt SitewiseModels.Arn
+              - !GetAtt SitewiseAssets.Arn
+      - PolicyName: IoTCoreToSQSPolicy
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - 'sqs:*'
+            Resource: 
+              - !GetAtt SQSLifecycleEventsQueue.Arn
+
+  LifecycleEventsMappingUpdaterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: DynamodbWritePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - dynamodb:PutItem
+              Resource:
+                - !GetAtt SitewiseEventsMapping.Arn
+
+
+  AssetModelConverterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action:  sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+      Path: '/'     
+      Policies:
+      - PolicyName: DynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 'dynamodb:*'
+            Resource:
+              - !GetAtt SitewiseModels.Arn
+              - !GetAtt SitewiseAssets.Arn
+      - PolicyName: s3-allow-read-sitewise
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Sub arn:aws:s3:::${S3Bucket}
+              - !Sub arn:aws:s3:::${S3Bucket}/*
+      - PolicyName: SqsAssetModelConverterPolicy
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - 'sqs:*'
+            Resource: 
+              - !GetAtt SQSLifecycleEventsQueue.Arn
+              -  !GetAtt SQSCreatedAssetsQueue.Arn 
+
+  AssociationUpdaterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+      Policies:
+      - PolicyName: DynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 'dynamodb:*'
+            Resource:
+              - !GetAtt SitewiseAssets.Arn
+      - PolicyName: s3-allow-read-sitewise
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Sub arn:aws:s3:::${S3Bucket}
+              - !Sub arn:aws:s3:::${S3Bucket}/*
+      - PolicyName: sqs-association-updater-role
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - 'sqs:*'
+            Resource: 
+              -  !GetAtt SQSAssociatedAssetsQueue.Arn
+              - !GetAtt SQSCreatedAssetsQueue.Arn
+
+  AttributesUpdaterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com 
+      Policies:
+      - PolicyName: dynamodb-write-sitewise
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 'dynamodb:*'
+            Resource:
+              - !GetAtt SitewiseAssets.Arn
+      - PolicyName: s3-allow-read-sitewise
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Sub arn:aws:s3:::${S3Bucket}
+              - !Sub arn:aws:s3:::${S3Bucket}/*
+      - PolicyName: sqs-attibute-updater-role
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - 'sqs:*'
+            Resource: 
+              - !GetAtt SQSAssociatedAssetsQueue.Arn
+
+  ## SQS
+  SQSLifecycleEventsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-lifecycle-events.fifo
+      FifoQueue: true
+      ContentBasedDeduplication: true
+
+  SQSAssociatedAssetsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-associated-assets.fifo
+      FifoQueue: true
+      ContentBasedDeduplication: true
+
+  SQSCreatedAssetsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-created-assets.fifo
+      FifoQueue: true
+      ContentBasedDeduplication: true
+
+  ## IOT Tropic
+  IotToSqsTopicRule:
+    Type: AWS::IoT::TopicRule 
+    Properties:
+      RuleName:
+        Fn::Join:
+          - ''
+          - Fn::Split:
+            - '-'
+            - !Sub '${AWS::StackName}-${AWS::Region}-sendLifecycleEventsToFifo'       
+     
+      TopicRulePayload:
+        RuleDisabled: true
+        Sql: SELECT * FROM 'urbanio/lifecycle/#'
+        Actions:
+        - Lambda:
+            FunctionArn: !GetAtt IoTCoreToSQSLambda.Arn
+           
+
+  ## Output Parameters
+Outputs:
+  UrbanioLambdaZipsBucket:
+    Description: The Lambda Zip S3 Bucket
+    Value:
+      Ref: LambdaZipsBucket
+
+  UrbanioSitewiseS3Bucket:
+    Description: The SiteWise S3 Bucket
+    Value:
+      Ref: SitewiseS3Bucket
+    
+  UrbanioSitewiseModelsTable:
+    Description: The Sitewise DynamoDB Models Table
+    Value:
+      Ref: SitewiseModels
+
+  UrbanioSitewiseAssetsTable:
+    Description: The Sitewise DynamoDB Assets Table
+    Value:
+      Ref: SitewiseAssets
+
+  UrbanioLifecycleEventsConverterRole:
+    Description: The Lifecycle Events Converter IAM Role
+    Value:
+      Ref: LifecycleEventsConverterRole
+
+  UrbanioLifecycleEventsConverter:
+    Description: The Lifecycle Events Converter Lambda
+    Value: !GetAtt LifecycleEventsConverterLambda.Arn
+
+  UrbanioIoTCoreToSQSRole:
+    Description: The Iot Core to SQS Lambda
+    Value:
+      Ref: IoTCoreToSQSRole
+
+  UrbanioCrossAccessPolicyRole:
+    Description: The Sitewise Cross Access
+    Value:
+      Ref: UrbanioAssumedRole
+
+  UrbanioIoTCoreToSQS:
+    Description: The Iot Core to SQS Lambda
+    Value: !GetAtt IoTCoreToSQSLambda.Arn
+
+  UrbanioAssetModelConverterRole:
+    Description: The Asset-Model Converter IAM Role
+    Value:
+      Ref: AssetModelConverterRole
+
+  UrbanioAssetModelConverter:
+    Description: The Asset Model Converter Lambda
+    Value: !GetAtt AssetModelConverterLambda.Arn
+
+  UrbanioAssociationUpdaterRole:
+    Description: The Association Updater IAM Role
+    Value:
+      Ref: AssociationUpdaterRole
+
+  UrbanioAssociationUpdater:
+    Description: The Association Updater Lambda
+    Value: !GetAtt AssociationUpdaterLambda.Arn
+
+  UrbanioAttributesUpdateRole:
+    Description: The Attributes Updater IAM Role
+    Value:
+      Ref: AttributesUpdaterRole
+
+  UrbanioAttributesUpdate:
+    Description: The Attributes Updater Lambda
+    Value: !GetAtt AttributesUpdaterLambda.Arn
+
+  UrbanioLifecycleEventsSQS:
+    Description: The Lifecycle Events SQS
+    Value: !GetAtt  SQSLifecycleEventsQueue.Arn
+
+  UrbanioAssociatedAssetsSQS:
+    Description: The Associated Assets SQS
+    Value: !GetAtt SQSAssociatedAssetsQueue.Arn
+
+  UrbanioCreatedAssetsSQS:
+    Description: The Created Assets SQS
+    Value: !GetAtt SQSCreatedAssetsQueue.Arn

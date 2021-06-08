@@ -1,0 +1,11 @@
+{
+  "assetModels": [
+  	{"modelName": "Test Model 1"},
+  	{"modelName": "Test Model 2"}
+  ],
+  "assets": [
+  	{"assetName": "Test asset 1"},
+  	{"assetName": "Test asset 2"},
+  	{"assetName": "Test asset 3"}
+  ]
+}
