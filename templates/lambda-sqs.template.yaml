@@ -116,7 +116,7 @@ Metadata:
 Globals:
   Function:
       Handler: handler.handler
-      MemorySize: 256
+      MemorySize: 128
       Runtime: python3.8
       Timeout: 15
 
