@@ -10,10 +10,10 @@ project:
   name: urbanio
   build_submodules: false
   auth:
-    default: urban-dev-profile
+    # default: urban-dev-profile
     # default: default
     # default: urban-stage-profile
-    # default: urban-production-profile
+    default: urban-production-profile
   lambda_source_path:  src
   lambda_zip_path: functions/packages
   package_lambda: false
@@ -26,9 +26,9 @@ project:
   - eu-west-1
   - eu-central-1
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2
-  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-stage
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
+  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
   s3_enable_sig_v2: true
   s3_object_acl: public-read
   # parameters:

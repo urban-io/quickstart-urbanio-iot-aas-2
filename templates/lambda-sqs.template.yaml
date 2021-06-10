@@ -85,7 +85,6 @@ Conditions:
       - !Ref AWS::Region
       - ap-southeast-2
 
-  LogRetentionInDaysSet: !Not [!Equals [!Ref LogRetentionInDays, '']]
   CreateAssumedTest: !And 
     - !Condition HasEnvType
     - !Condition IsUrban
@@ -99,7 +98,6 @@ Metadata:
           - S3Bucket
           - SitewiseCrossAccountRole
           - EnvType
-          - LogRetentionInDays
 
     ParameterLabels:
       S3Bucket:
@@ -107,9 +105,6 @@ Metadata:
       
       SitewiseCrossAccountRole:
         default: UrbanIO Assumed Sitewise Cross Account Role (optional)
-      
-      LogRetentionInDays:
-        default: Lambda Log retention Period (optional)
 
       EnvType:
         default: Environment Type (optional)
@@ -161,11 +156,6 @@ Parameters:
     ConstraintDescription: The Cross Account Role
     Type: String
     Default: SitewiseCrossAccount
-
-  LogRetentionInDays:
-    Type: String
-    Default: ''
-    AllowedValues: ['', 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
     
 Resources:
 
@@ -936,69 +926,6 @@ Resources:
                       DoubleValue: '${reading.scaled.v}'
             RoleArn: !GetAtt IoTSiteWiseMeasurementRuleRole.Arn
 
-  ## Log Groups
-  LifecycleEventsConverterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref LifecycleEventsConverterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-  LifecycleEventsMappingUpdaterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref LifecycleEventsMappingUpdaterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-  IoTCoreToSQSLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref IoTCoreToSQSLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-
-  AssetModelConverterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref AssetModelConverterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-  AssociationUpdaterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref AssociationUpdaterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-     
-
-  AttributesUpdaterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref AttributesUpdaterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
   ## CloudWatch Alarms
   LifecycleEventsConverterLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -1110,7 +1037,7 @@ Resources:
 
   AlarmTopic:
     Type: 'AWS::SNS::Topic'
-    
+
   ## Output Parameters
 Outputs:
   UrbanioSitewiseS3Bucket:
