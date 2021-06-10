@@ -449,6 +449,7 @@ Resources:
   ## Lambda Roles
   UrbanioAssumedRole:
     Type: AWS::IAM::Role
+    Condition: ValidRegion
     Properties:
       RoleName: !Ref SitewiseCrossAccountRole
       AssumeRolePolicyDocument:
@@ -475,8 +476,6 @@ Resources:
                     - ':root'
             Action: sts:AssumeRole
       Path: /
-      ManagedPolicyArns: 
-        - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
       Policies:
       - PolicyName: CrossAccountS3AllowReadAccessPolicy
         PolicyDocument:
@@ -488,17 +487,21 @@ Resources:
             Resource:
               - !Join 
                 - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+                - - !GetAtt SitewiseS3Bucket.Arn
                   - '/*'
-              - !Join 
-                - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+              - !GetAtt SitewiseS3Bucket.Arn
+          - Effect: "Allow"
+            Action:
+             - iot:Publish
+            Resource:
+              - !GetAtt UpdateSitewiseMeasurementsRule.Arn
+              - !GetAtt IotToSqsTopicRule.Arn
+          - Effect: "Allow"
+            Action:
+             - iot:Connect
+            Resource:
+              - !GetAtt UpdateSitewiseMeasurementsRule.Arn
+              - !GetAtt IotToSqsTopicRule.Arn
 
   UrbanioTestAssumedRole:
     Type: AWS::IAM::Role
@@ -597,10 +600,7 @@ Resources:
                 Resource:
                   - !Join
                     -  ''
-                    - - 'arn:'
-                      - !Ref AWS::Partition
-                      -  ':s3:::'
-                      - !Ref LambdaZipsBucket
+                    - - !GetAtt LambdaZipsBucket.Arn
                       - '/'
                       - !Ref QSS3KeyPrefix
                       -  '*'
@@ -736,17 +736,9 @@ Resources:
             Resource:
               - !Join 
                 - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+                - - !GetAtt SitewiseS3Bucket.Arn
                   - '/*'
-              - !Join 
-                - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+              - !GetAtt SitewiseS3Bucket.Arn
       - PolicyName: SqsAssetModelConverterPolicy
         PolicyDocument: 
           Statement: 
@@ -792,17 +784,9 @@ Resources:
             Resource:
               - !Join 
                 - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+                - - !GetAtt SitewiseS3Bucket.Arn
                   - '/*'
-              - !Join 
-                - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+              - !GetAtt SitewiseS3Bucket.Arn
 
       - PolicyName: sqs-association-updater-role
         PolicyDocument: 
@@ -849,17 +833,9 @@ Resources:
             Resource:
               - !Join 
                 - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+                - - !GetAtt SitewiseS3Bucket.Arn
                   - '/*'
-              - !Join 
-                - ''
-                - - 'arn:'
-                  - !Ref AWS::Partition
-                  -  ':s3:::'
-                  - !Ref SitewiseS3Bucket
+              - !GetAtt SitewiseS3Bucket.Arn
       - PolicyName: sqs-attibute-updater-role
         PolicyDocument: 
           Statement: 
@@ -961,9 +937,11 @@ Outputs:
       Ref: SitewiseS3Bucket
 
   CrossAccountRoleId:
+    Condition: ValidRegion 
     Description: The logical ID of the IAM role
     Value: !Ref UrbanioAssumedRole
 
   CrossAccountRolArn:
+    Condition: ValidRegion 
     Description: The ARN of the IAM role
     Value: !GetAtt UrbanioAssumedRole.Arn

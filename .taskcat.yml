@@ -1,8 +1,5 @@
 general:
   s3_regional_buckets: true
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-stage
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
-  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
   # parameters:
   #   OverridenVar: set_in_override
 
@@ -15,7 +12,7 @@ project:
     default: urban-dev-profile
     # default: default
     # default: urban-stage-profile
-    default: urban-production-profile
+    # default: urban-production-profile
   lambda_source_path:  src
   lambda_zip_path: functions/packages
   package_lambda: false
@@ -27,6 +24,10 @@ project:
   - us-west-2
   - eu-west-1
   - eu-central-1
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2
+  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-stage
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
   s3_enable_sig_v2: true
   s3_object_acl: public-read
   # parameters:
@@ -43,6 +44,7 @@ tests:
 
   dev:
     template: ./templates/lambda-sqs.template.yaml
+    s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2
     regions:
     - ap-southeast-2
     parameters:
