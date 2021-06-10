@@ -12,7 +12,8 @@ project:
   owner: quickstart@amazon.com
   build_submodules: false
   auth:
-    # default: urban-dev-profile
+    default: urban-dev-profile
+    # default: default
     # default: urban-stage-profile
     default: urban-production-profile
   lambda_source_path:  src
