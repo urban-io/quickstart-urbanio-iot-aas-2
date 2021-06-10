@@ -669,6 +669,27 @@ Resources:
             - 'sqs:*'
             Resource: 
               - !GetAtt SQSLifecycleEventsQueue.Arn
+      - PolicyName: s3-allow-read-sitewise
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !Ref S3Bucket
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !Ref S3Bucket
+                  - '/*'
 
   LifecycleEventsMappingUpdaterRole:
     Type: AWS::IAM::Role
@@ -680,11 +701,12 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Path: "/"
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: '/'
       Policies:
         - PolicyName: DynamodbWritePolicy
           PolicyDocument:
@@ -695,7 +717,26 @@ Resources:
               - dynamodb:PutItem
               Resource:
                 - !GetAtt SitewiseEventsMapping.Arn
-
+        - PolicyName: S3Policy
+          PolicyDocument: 
+            Statement: 
+            - Effect: Allow
+              Action: 
+              - 's3:*'
+              Resource: 
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !Ref S3Bucket
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !Ref S3Bucket
+                  - '/*'
 
   AssetModelConverterRole:
     Type: AWS::IAM::Role
@@ -724,6 +765,7 @@ Resources:
             Resource:
               - !GetAtt SitewiseModels.Arn
               - !GetAtt SitewiseAssets.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
       - PolicyName: s3-allow-read-sitewise
         PolicyDocument:
           Version: '2012-10-17'
