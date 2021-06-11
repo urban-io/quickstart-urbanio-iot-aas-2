@@ -37,6 +37,10 @@ Mappings:
       OtherAccountNumber: 419327598890
 
 Conditions:
+  HasEmailAddress: !Not
+    - !Equals
+      - !Ref EmailAddress
+      - ''
   HasS3BucketName: !Not 
      - !Equals 
       - !Ref S3Bucket
@@ -85,7 +89,6 @@ Conditions:
       - !Ref AWS::Region
       - ap-southeast-2
 
-  LogRetentionInDaysSet: !Not [!Equals [!Ref LogRetentionInDays, '']]
   CreateAssumedTest: !And 
     - !Condition HasEnvType
     - !Condition IsUrban
@@ -99,7 +102,7 @@ Metadata:
           - S3Bucket
           - SitewiseCrossAccountRole
           - EnvType
-          - LogRetentionInDays
+          - EmailAddress
 
     ParameterLabels:
       S3Bucket:
@@ -107,12 +110,12 @@ Metadata:
       
       SitewiseCrossAccountRole:
         default: UrbanIO Assumed Sitewise Cross Account Role (optional)
-      
-      LogRetentionInDays:
-        default: Lambda Log retention Period (optional)
 
       EnvType:
         default: Environment Type (optional)
+      
+      EmailAddress:
+        default: The email address to use for alarm notifications. (optional)
 
   LICENSE: "Apache License, Version 2.0"
   AUTHOR: "GoToAdmins"
@@ -123,7 +126,7 @@ Globals:
       Handler: handler.handler
       MemorySize: 128
       Runtime: python3.8
-      Timeout: 15
+      Timeout: 900
 
 Parameters:
 
@@ -161,11 +164,12 @@ Parameters:
     ConstraintDescription: The Cross Account Role
     Type: String
     Default: SitewiseCrossAccount
-
-  LogRetentionInDays:
+  
+  EmailAddress:
     Type: String
-    Default: ''
-    AllowedValues: ['', 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
+    # Description: The email address to use for alarm notifications.
+    # AllowedPattern: '^[\x20-\x45]?[\w-\+]+(\.[\w]+)*@[\w-]+(\.[\w]+)*(\.[a-z]{2,})$'
+    ConstraintDescription: You should enter a valid email
     
 Resources:
 
@@ -627,23 +631,59 @@ Resources:
           - sts:AssumeRole
       Path: '/'
       Policies:
-        - PolicyName: allowLambdaLogs
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-            - Effect: Allow
-              Action:
-              - logs:*
-              Resource: arn:aws:logs:*:*:*
-        - PolicyName: sqs-lifecycle-events-role
-          PolicyDocument: 
-            Statement: 
-            - Effect: Allow
-              Action: 
-              - 'sqs:*'
-              Resource: 
-                - !GetAtt SQSLifecycleEventsQueue.Arn
-
+      - PolicyName: allowLambdaLogs
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource: arn:aws:logs:*:*:*
+      - PolicyName: sqs-lifecycle-events-role
+        PolicyDocument: 
+          Statement: 
+          - Effect: Allow
+            Action: 
+            - 'sqs:*'
+            Resource: 
+              - !GetAtt SQSLifecycleEventsQueue.Arn
+      - PolicyName: IoTCoreToSQSDynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 'dynamodb:*'
+            Resource:
+              - !GetAtt SitewiseEventsMapping.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
   IoTCoreToSQSRole:
     Type: AWS::IAM::Role
     Condition: ValidRegion
@@ -679,6 +719,33 @@ Resources:
             - 'sqs:*'
             Resource: 
               - !GetAtt SQSLifecycleEventsQueue.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
 
   LifecycleEventsMappingUpdaterRole:
     Type: AWS::IAM::Role
@@ -690,22 +757,49 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Path: "/"
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: '/'
       Policies:
-        - PolicyName: DynamodbWritePolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-            - Effect: Allow
-              Action:
-              - dynamodb:PutItem
-              Resource:
-                - !GetAtt SitewiseEventsMapping.Arn
-
+      - PolicyName: DynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:*
+            Resource:
+              - !GetAtt SitewiseEventsMapping.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - 's3:*'
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
 
   AssetModelConverterRole:
     Type: AWS::IAM::Role
@@ -734,6 +828,7 @@ Resources:
             Resource:
               - !GetAtt SitewiseModels.Arn
               - !GetAtt SitewiseAssets.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
       - PolicyName: s3-allow-read-sitewise
         PolicyDocument:
           Version: '2012-10-17'
@@ -782,7 +877,7 @@ Resources:
             - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseAssets.Arn
-      - PolicyName: s3-allow-read-sitewise
+      - PolicyName: s3AllowReadPolicy
         PolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -790,12 +885,25 @@ Resources:
             Action:
             - 's3:*'
             Resource:
-              - !Join 
+              - !Join
                 - ''
-                - - !GetAtt SitewiseS3Bucket.Arn
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
                   - '/*'
-              - !GetAtt SitewiseS3Bucket.Arn
-
       - PolicyName: sqs-association-updater-role
         PolicyDocument: 
           Statement: 
@@ -831,7 +939,7 @@ Resources:
             - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseAssets.Arn
-      - PolicyName: s3-allow-read-sitewise
+      - PolicyName: s3AllowReadPolicy
         PolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -839,11 +947,25 @@ Resources:
             Action:
             - 's3:*'
             Resource:
-              - !Join 
+              - !Join
                 - ''
-                - - !GetAtt SitewiseS3Bucket.Arn
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
                   - '/*'
-              - !GetAtt SitewiseS3Bucket.Arn
       - PolicyName: sqs-attibute-updater-role
         PolicyDocument: 
           Statement: 
@@ -861,6 +983,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-lifecycle-events.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
+      VisibilityTimeout: 1800
 
   SQSAssociatedAssetsQueue:
     Type: AWS::SQS::Queue
@@ -869,6 +992,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-associated-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
+      VisibilityTimeout: 1800
 
   SQSCreatedAssetsQueue:
     Type: AWS::SQS::Queue
@@ -877,6 +1001,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-created-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
+      VisibilityTimeout: 1800
 
   ## IOT Tropic
   IotToSqsTopicRule:
@@ -936,75 +1061,17 @@ Resources:
                       DoubleValue: '${reading.scaled.v}'
             RoleArn: !GetAtt IoTSiteWiseMeasurementRuleRole.Arn
 
-  ## Log Groups
-  LifecycleEventsConverterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref LifecycleEventsConverterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-  LifecycleEventsMappingUpdaterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref LifecycleEventsMappingUpdaterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-  IoTCoreToSQSLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref IoTCoreToSQSLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-
-  AssetModelConverterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref AssetModelConverterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
-  AssociationUpdaterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref AssociationUpdaterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-     
-
-  AttributesUpdaterLambdaLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: ValidRegion 
-    Properties:
-      LogGroupName: !Join 
-        - ''
-        - - '/aws/lambda/'
-          - !Ref AttributesUpdaterLambda
-      RetentionInDays: !If [LogRetentionInDaysSet, !Ref LogRetentionInDays, !Ref AWS::NoValue]
-
   ## CloudWatch Alarms
   LifecycleEventsConverterLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
     Condition: ValidRegion 
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If 
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
       Namespace: AWS/Lambda
       MetricName: Errors
       Dimensions:
@@ -1023,6 +1090,11 @@ Resources:
     Condition: ValidRegion 
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If 
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
       Namespace: AWS/Lambda
       MetricName: Errors
       Dimensions:
@@ -1041,6 +1113,11 @@ Resources:
     Condition: ValidRegion 
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If 
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
       Namespace: AWS/Lambda
       MetricName: Errors
       Dimensions:
@@ -1059,6 +1136,11 @@ Resources:
     Condition: ValidRegion 
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If 
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
       Namespace: AWS/Lambda
       MetricName: Errors
       Dimensions:
@@ -1077,6 +1159,11 @@ Resources:
     Condition: ValidRegion 
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If 
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
       Namespace: AWS/Lambda
       MetricName: Errors
       Dimensions:
@@ -1095,6 +1182,11 @@ Resources:
     Condition: ValidRegion 
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If 
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
       Namespace: AWS/Lambda
       MetricName: Errors
       Dimensions:
@@ -1108,9 +1200,14 @@ Resources:
       TreatMissingData: notBreaching
       Unit: Count
 
-  AlarmTopic:
-    Type: 'AWS::SNS::Topic'
-    
+  AlarmSNSTopic:
+    Type: AWS::SNS::Topic
+    Condition: HasEmailAddress
+    Properties:
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref EmailAddress
+
   ## Output Parameters
 Outputs:
   UrbanioSitewiseS3Bucket:
