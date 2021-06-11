@@ -126,7 +126,7 @@ Globals:
       Handler: handler.handler
       MemorySize: 128
       Runtime: python3.8
-      Timeout: 300
+      Timeout: 900
 
 Parameters:
 
@@ -982,7 +982,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-lifecycle-events.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
-      VisibilityTimeout: 900
+      VisibilityTimeout: 1800
 
   SQSAssociatedAssetsQueue:
     Type: AWS::SQS::Queue
@@ -991,7 +991,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-associated-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
-      VisibilityTimeout: 900
+      VisibilityTimeout: 1800
 
   SQSCreatedAssetsQueue:
     Type: AWS::SQS::Queue
@@ -1000,7 +1000,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-created-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
-      VisibilityTimeout: 900
+      VisibilityTimeout: 1800
 
   ## IOT Tropic
   IotToSqsTopicRule:
