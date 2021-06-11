@@ -7,7 +7,6 @@ project:
   template: ./templates/packaged.yaml
   name: aws-quickstart-urbanio
   owner: quickstart@amazon.com
-  name: urbanio
   build_submodules: false
   auth:
     # default: urban-dev-profile

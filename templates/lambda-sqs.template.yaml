@@ -126,7 +126,7 @@ Globals:
       Handler: handler.handler
       MemorySize: 128
       Runtime: python3.8
-      Timeout: 900
+      Timeout: 600
 
 Parameters:
 
@@ -506,14 +506,13 @@ Resources:
             Action:
              - iot:Publish
             Resource:
-              - !GetAtt UpdateSitewiseMeasurementsRule.Arn
-              - !GetAtt IotToSqsTopicRule.Arn
-          - Effect: "Allow"
-            Action:
-             - iot:Connect
-            Resource:
-              - !GetAtt UpdateSitewiseMeasurementsRule.Arn
-              - !GetAtt IotToSqsTopicRule.Arn
+               - !Join
+                  - ''
+                  - - 'arn:'
+                    - !Ref AWS::Partition
+                    - ':iot:::'
+                    - 'topic/*'
+
 
   UrbanioTestAssumedRole:
     Type: AWS::IAM::Role
@@ -877,6 +876,7 @@ Resources:
             - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseAssets.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
       - PolicyName: s3AllowReadPolicy
         PolicyDocument:
           Version: '2012-10-17'
@@ -939,6 +939,7 @@ Resources:
             - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseAssets.Arn
+              - !GetAtt SitewiseEventsMapping.Arn
       - PolicyName: s3AllowReadPolicy
         PolicyDocument:
           Version: '2012-10-17'
@@ -975,6 +976,15 @@ Resources:
             Resource: 
               - !GetAtt SQSAssociatedAssetsQueue.Arn
 
+  IotToSqsTopicRuleLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Condition: ValidRegion
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt IoTCoreToSQSLambda.Arn 
+      Principal: iot.amazonaws.com 
+  
+
   ## SQS
   SQSLifecycleEventsQueue:
     Type: AWS::SQS::Queue
@@ -983,7 +993,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-lifecycle-events.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
-      VisibilityTimeout: 1800
+      VisibilityTimeout: 1200
 
   SQSAssociatedAssetsQueue:
     Type: AWS::SQS::Queue
@@ -992,7 +1002,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-associated-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
-      VisibilityTimeout: 1800
+      VisibilityTimeout: 1200
 
   SQSCreatedAssetsQueue:
     Type: AWS::SQS::Queue
@@ -1001,7 +1011,7 @@ Resources:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-created-assets.fifo
       FifoQueue: true
       ContentBasedDeduplication: true
-      VisibilityTimeout: 1800
+      VisibilityTimeout: 1200
 
   ## IOT Tropic
   IotToSqsTopicRule:
@@ -1203,10 +1213,15 @@ Resources:
   AlarmSNSTopic:
     Type: AWS::SNS::Topic
     Condition: HasEmailAddress
+    Properties: {}
+
+  AlarmSNSSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasEmailAddress
     Properties:
-      Subscription:
-        - Protocol: email
-          Endpoint: !Ref EmailAddress
+      Endpoint: !Ref EmailAddress
+      Protocol: email
+      TopicArn: !Ref AlarmSNSTopic
 
   ## Output Parameters
 Outputs:
