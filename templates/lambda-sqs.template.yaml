@@ -656,6 +656,7 @@ Resources:
             - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseEventsMapping.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
       - PolicyName: s3AllowReadPolicy
         PolicyDocument:
           Version: '2012-10-17'
