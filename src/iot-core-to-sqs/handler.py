@@ -13,7 +13,7 @@ def handler(event, context):
     queue_url = os.environ['LIFECICLE_EVENTS_QUEUE_URL']
 
     # Send category_updated event before device_updated one, so that the category can be created in case it doesn't exist
-    if event['type'] == 'lifecycle' and event['reading']['et'] == 'device_updated':
+    if event['type'] == 'lifecycle' and event['reading']['et'] == 'device_updated' and event['reading']['device_category'] is not None:
         categoty_event =    {
             'type': "lifecycle",
             'reading': {
