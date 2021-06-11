@@ -1,7 +1,7 @@
 general:
   s3_regional_buckets: true
-  # parameters:
-  #   OverridenVar: set_in_override
+  parameters:
+    S3Bucket: urbanio-sitewise
 
 project:
   template: ./templates/packaged.yaml
