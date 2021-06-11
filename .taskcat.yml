@@ -9,9 +9,11 @@ project:
   owner: quickstart@amazon.com
   build_submodules: false
   auth:
+    ## Set profile urban-dev-profile & Uncomment below / Enable for Tests on Dev env & CF Uploads : Test
     # default: urban-dev-profile
-    # default: default
+    ## Set profile urban-stage-profile & Uncomment below / Enable for Tests on Staging env & CF Uploads : Staging
     # default: urban-stage-profile
+    ## Set profile urban-production-profile & Uncomment below / Enable for CF Uploads : Test
     default: urban-production-profile
   lambda_source_path:  src
   lambda_zip_path: functions/packages
@@ -24,33 +26,32 @@ project:
   - us-west-2
   - eu-west-1
   - eu-central-1
+  ## Uncomment below / Enable for Tests only
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2
+  ## Uncomment below / Enable for CF Uploads : Test
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-stage
+  ## Uncomment below / Enable for CF Uploads : Staging
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-staging
+  ## Uncomment below / Enable for CF Uploads : Production
   s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
   s3_enable_sig_v2: true
   s3_object_acl: public-read
-  # parameters:
-  #   EnvType: test
-  #   OverridenVar: set_in_project
+
 
 tests:
   default:
     parameters:
       EnvType: test
-      # OverridenVar: set_in_project
     tags:
       TEST_PROFILE: DEFAULT
 
   dev:
     template: ./templates/lambda-sqs.template.yaml
-    s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2
     regions:
     - ap-southeast-2
     parameters:
       EnvType: test
       S3Bucket: urbanio-sitewise
-      # OverridenVar: set_in_project
     tags:
       TEST_PROFILE: TEST
 
@@ -60,6 +61,5 @@ tests:
     - ap-southeast-2
     parameters:
       EnvType: staging
-      # OverridenVar: set_in_project
     tags:
       TEST_PROFILE: STAGING
