@@ -2,7 +2,7 @@
 
 ===== Increase AWS IoT Sitewise limits
 
-Before configuring the integration you need to request Sitewise quotas increase for the selected region. Both of the quatas need to be increased:
+Before configuring the integration you need to request Sitewise quotas increase for the selected region:
 
 * Number of child assets per parent asset  - *new limit of 500*
 * Number of asset models per hierarchy tree - *new limit of 50*
