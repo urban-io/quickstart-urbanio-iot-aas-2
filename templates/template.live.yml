@@ -469,7 +469,9 @@ Resources:
                   - ''
                   - - 'arn:'
                     - !Ref AWS::Partition
-                    - ':iot:::'
+                    - ':iot::'
+                    - !Ref AWS::AccountId
+                    - ':'
                     - 'topic/*'
 
 
