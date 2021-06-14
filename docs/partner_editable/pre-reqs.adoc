@@ -2,7 +2,7 @@
 
 ===== Increase AWS IoT Sitewise limits
 
-Before configuring the integration you need to request Sitewise quotas increase for the selected region:
+Before configuring the integration you need to request an increase of the Sitewise quotas for the selected region:
 
 * Number of child assets per parent asset  - *new limit of 500*
 * Number of asset models per hierarchy tree - *new limit of 50*
@@ -10,4 +10,15 @@ Before configuring the integration you need to request Sitewise quotas increase 
 
 ==== Prepare your {partner-company-name} account
 
-For creating an {partner-company-name} account please visit https://www.urban.io/
+As part of an Asset Monitoring IoT Device Subscription you will be provided an Account for the {partner-company-name} Device Administration application. This application provides various features to enable you to commission and install your wireless IoT sensor network. +
+{empty} +
+As part of signing up for an Asset Monitoring IoT Device Subscription you will be contacted by Urban.io representatives who will then guide you through this process. +
+{empty} +
+You can also review this integration guide (link to support article) which illustrates the simple steps to connect the integration with your Urban.io account. +
+{empty} +
+For assistance establishing an {partner-company-name} account please visit any of the following links.
+
+* https://www.urban.io/subscribe-aws/[Urban.io Subscriptions]
+* https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[Urban.io on AWS Marketplace]
+* https://support.urban.io/[Contact Urban.io Support]
+* https://www.urban.io/contact/[Contact Urban.io]
