@@ -4,7 +4,7 @@ general:
     S3Bucket: urbanio-sitewise
 
 project:
-  template: ./templates/packaged.yaml
+  template: ./templates/template.live.yaml
   name: aws-quickstart-urbanio
   owner: quickstart@amazon.com
   build_submodules: false
@@ -41,25 +41,26 @@ project:
 tests:
   default:
     parameters:
-      EnvType: test
+      EnvType: production
     tags:
       TEST_PROFILE: DEFAULT
 
   dev:
-    template: ./templates/lambda-sqs.template.yaml
+    template: ./templates/template.dev.yaml
     regions:
     - ap-southeast-2
     parameters:
-      EnvType: test
+      EnvType: production
       S3Bucket: urbanio-sitewise
+      EmailAddress: eric.m@gotoadmins.com
     tags:
       TEST_PROFILE: TEST
 
   staging:
-    template: ./templates/packaged.yaml
+    template: ./templates/template.yaml
     regions:
     - ap-southeast-2
     parameters:
-      EnvType: staging
+      EnvType: production
     tags:
       TEST_PROFILE: STAGING

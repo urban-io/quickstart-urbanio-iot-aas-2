@@ -101,21 +101,17 @@ Metadata:
         Parameters:
           - S3Bucket
           - SitewiseCrossAccountRole
-          - EnvType
           - EmailAddress
 
     ParameterLabels:
       S3Bucket:
-        default: Sitewise S3 bucket (optional)
+        default: S3 bucket (required)
       
       SitewiseCrossAccountRole:
-        default: UrbanIO Assumed Sitewise Cross Account Role (optional)
-
-      EnvType:
-        default: Environment Type (optional)
+        default: Role Name (required)
       
       EmailAddress:
-        default: The email address to use for alarm notifications. (optional)
+        default: Email Address. (optional)
 
   LICENSE: "Apache License, Version 2.0"
   AUTHOR: "GoToAdmins"
@@ -141,33 +137,21 @@ Parameters:
 
   S3Bucket:
     Type: String
-    Description: The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
+    Description: Please keep the exact name as it will be required in app.urban.io during integration setup
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 
-  QSS3KeyPrefix:
-    AllowedPattern: ^[0-9a-zA-Z-/]*$
-    ConstraintDescription: The Quick Start key prefix can include numbers, lowercase letters,
-      uppercase letters, hyphens (-), and forward slash (/).
-    Description: S3 key prefix that is used to simulate a directory for your copy of the 
-      Quick Start assets. Keep the default prefix unless you are customizing 
-      the template. Changing this prefix updates code references to point to 
-      a new Quick Start location. This prefix can include numbers, lowercase 
-      letters, uppercase letters, hyphens (-), and forward slashes (/). 
-      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
-      and https://aws-quickstart.github.io/option1.html.
-    Type: String
-    Default: aws-quickstart-urbanio/
   
   SitewiseCrossAccountRole:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
     ConstraintDescription: The Cross Account Role
+    Description: Please keep the exact name as it will be required in app.urban.io during integration setup
     Type: String
     Default: SitewiseCrossAccount
   
   EmailAddress:
     Type: String
-    # Description: The email address to use for alarm notifications.
+    Description: Email address to be use for alarm notifications.
     # AllowedPattern: '^[\x20-\x45]?[\w-\+]+(\.[\w]+)*@[\w-]+(\.[\w]+)*(\.[a-z]{2,})$'
     ConstraintDescription: You should enter a valid email
     
@@ -265,7 +249,7 @@ Resources:
           - RegionMap
           - !Ref AWS::Region
           - production
-      Prefix: !Ref QSS3KeyPrefix
+      Prefix: aws-quickstart-urbanio/
       Objects:
         - functions/packages/asset-model-converter/lambda.zip
         - functions/packages/association-updater/lambda.zip
@@ -339,7 +323,7 @@ Resources:
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
-        Key:  !Sub ${QSS3KeyPrefix}functions/packages/s3-to-lifecycle-events-converter/lambda.zip
+        Key:  aws-quickstart-urbanio/functions/packages/s3-to-lifecycle-events-converter/lambda.zip
       Role: !GetAtt LifecycleEventsConverterRole.Arn
       Environment:
         Variables:
@@ -364,7 +348,7 @@ Resources:
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
-        Key:  !Sub ${QSS3KeyPrefix}functions/packages/lifecycle-events-mapping-updater/lambda.zip
+        Key:  aws-quickstart-urbanio/functions/packages/lifecycle-events-mapping-updater/lambda.zip
       Role: !GetAtt LifecycleEventsMappingUpdaterRole.Arn
       Environment:
         Variables:
@@ -388,7 +372,7 @@ Resources:
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
-        Key:  !Sub ${QSS3KeyPrefix}functions/packages/iot-core-to-sqs/lambda.zip
+        Key:  aws-quickstart-urbanio/functions/packages/iot-core-to-sqs/lambda.zip
       Role: !GetAtt IoTCoreToSQSRole.Arn
       Environment:
         Variables:
@@ -402,7 +386,7 @@ Resources:
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
-        Key:  !Sub ${QSS3KeyPrefix}functions/packages/asset-model-converter/lambda.zip
+        Key:  aws-quickstart-urbanio/functions/packages/asset-model-converter/lambda.zip
       Role: !GetAtt AssetModelConverterRole.Arn
       Environment:
         Variables:
@@ -424,7 +408,7 @@ Resources:
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
-        Key:  !Sub ${QSS3KeyPrefix}functions/packages/association-updater/lambda.zip
+        Key:  aws-quickstart-urbanio/functions/packages/association-updater/lambda.zip
       Role: !GetAtt AssociationUpdaterRole.Arn
       Environment:
         Variables:
@@ -445,7 +429,7 @@ Resources:
     Properties:
       CodeUri: 
         Bucket: !Ref LambdaZipsBucket
-        Key:  !Sub ${QSS3KeyPrefix}functions/packages/attributes-updater/lambda.zip
+        Key:  aws-quickstart-urbanio/functions/packages/attributes-updater/lambda.zip
       Role: !GetAtt AttributesUpdaterRole.Arn
       Environment:
         Variables:
@@ -510,7 +494,9 @@ Resources:
                   - ''
                   - - 'arn:'
                     - !Ref AWS::Partition
-                    - ':iot:::'
+                    - ':iot::'
+                    - !Ref AWS::AccountId
+                    - ':'
                     - 'topic/*'
 
 
@@ -602,7 +588,7 @@ Resources:
                           - RegionMap
                           - !Ref AWS::Region
                           - production
-                      - !Sub  "/${QSS3KeyPrefix}*"
+                      - 'aws-quickstart-urbanio/*'
                  
               - Effect: Allow
                 Action:
@@ -613,7 +599,7 @@ Resources:
                     -  ''
                     - - !GetAtt LambdaZipsBucket.Arn
                       - '/'
-                      - !Ref QSS3KeyPrefix
+                      - 'aws-quickstart-urbanio/*'
                       -  '*'
 
   LifecycleEventsConverterRole:
