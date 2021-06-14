@@ -2,6 +2,11 @@
 
 This Quick Start provides a CloudFormation template, which lets you configure:
 
+[#deployment_options]
+.Deploynemt options in the Quick Start for {partner-product-short-name} to Sitewise integration on AWS
+image::../images/deployment_options.png[Deployment Options]
+
 * *StackName*. The name of the stack.
-* *S3 bucket name*. The name of the bucket in which {partner-product-short-name} will upload the initial integration setup.
-* *IAM role name*. The name of the IAM role that will grant {partner-product-short-name} permissions to upload data to S3 and send messages to AWS IoT Core topics.
+* *S3 bucket*. The name of the bucket in which {partner-product-short-name} will upload the initial integration setup.
+* *Role name*. The name of the IAM role that will grant {partner-product-short-name} permissions to upload data to S3 and send messages to AWS IoT Core topics.
+* *Email address*(oOptional). Email address on which you want to recieve error notifications. 

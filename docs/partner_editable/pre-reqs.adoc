@@ -1,3 +1,12 @@
+==== Prepare your AWS account
+
+===== Increase AWS IoT Sitewise limits
+
+Before configuring the integration you need to request Sitewise quotas increase for the selected region. Both of the quatas need to be increased:
+* Number of child assets per parent asset  - new limit of 500
+* Number of asset models per hierarchy tree - new limit of 50
+
+
 ==== Prepare your {partner-company-name} account
 
 For creating an {partner-company-name} account please visit https://www.urban.io/
