@@ -10,11 +10,11 @@ project:
   build_submodules: false
   auth:
     ## Set profile urban-dev-profile & Uncomment below / Enable for Tests on Dev env & CF Uploads : Test
-    # default: urban-dev-profile
+    default: urban-dev-profile
     ## Set profile urban-stage-profile & Uncomment below / Enable for Tests on Staging env & CF Uploads : Staging
     # default: urban-stage-profile
     ## Set profile urban-production-profile & Uncomment below / Enable for CF Uploads : Test
-    default: urban-production-profile
+    # default: urban-production-profile
   lambda_source_path:  src
   lambda_zip_path: functions/packages
   package_lambda: false
@@ -29,11 +29,11 @@ project:
   ## Uncomment below / Enable for Tests only
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2
   ## Uncomment below / Enable for CF Uploads : Test
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
+  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test
   ## Uncomment below / Enable for CF Uploads : Staging
   # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-staging
   ## Uncomment below / Enable for CF Uploads : Production
-  s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
+  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
   s3_enable_sig_v2: true
   s3_object_acl: public-read
 

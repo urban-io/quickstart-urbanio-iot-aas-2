@@ -571,36 +571,17 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - s3:GetObject
-                Resource:
-                  - !Join
-                    - ''
-                    - - 'arn:'
-                      - !Ref AWS::Partition
-                      - ':s3:::'
-                      - !If 
-                        - HasEnvType 
-                        - !FindInMap
-                          - RegionMap
-                          - !Ref AWS::Region
-                          - !Ref EnvType
-                        - !FindInMap 
-                          - RegionMap
-                          - !Ref AWS::Region
-                          - production
-                      - 'aws-quickstart-urbanio/*'
-                 
+                  - s3:*
+                Resource: !GetAtt LambdaZipsBucket.Arn
+                
               - Effect: Allow
                 Action:
-                  - s3:PutObject
-                  - s3:DeleteObject
+                  - s3:*
                 Resource:
                   - !Join
                     -  ''
                     - - !GetAtt LambdaZipsBucket.Arn
-                      - '/'
-                      - 'aws-quickstart-urbanio/*'
-                      -  '*'
+                      - '/*'
 
   LifecycleEventsConverterRole:
     Type: AWS::IAM::Role
