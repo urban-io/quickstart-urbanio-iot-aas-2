@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "--- test upload ---"
+cp ci/taskcat.dev.yml  .taskcat.yml
+taskcat upload
+rm .taskcat.yml
+
+echo "--- stage upload ---"
+cp ci/taskcat.stage.yml  .taskcat.yml
+taskcat upload
+rm .taskcat.yml
+
+echo "--- prod upload ---"
+cp ci/taskcat.prod.yml  .taskcat.yml
+taskcat upload
+rm .taskcat.yml

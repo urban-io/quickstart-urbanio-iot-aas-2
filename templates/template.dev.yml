@@ -571,36 +571,17 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - s3:GetObject
-                Resource:
-                  - !Join
-                    - ''
-                    - - 'arn:'
-                      - !Ref AWS::Partition
-                      - ':s3:::'
-                      - !If 
-                        - HasEnvType 
-                        - !FindInMap
-                          - RegionMap
-                          - !Ref AWS::Region
-                          - !Ref EnvType
-                        - !FindInMap 
-                          - RegionMap
-                          - !Ref AWS::Region
-                          - production
-                      - 'aws-quickstart-urbanio/*'
-                 
+                  - s3:*
+                Resource: !GetAtt LambdaZipsBucket.Arn
+                
               - Effect: Allow
                 Action:
-                  - s3:PutObject
-                  - s3:DeleteObject
+                  - s3:*
                 Resource:
                   - !Join
                     -  ''
                     - - !GetAtt LambdaZipsBucket.Arn
-                      - '/'
-                      - 'aws-quickstart-urbanio/*'
-                      -  '*'
+                      - '/*'
 
   LifecycleEventsConverterRole:
     Type: AWS::IAM::Role
@@ -1017,23 +998,23 @@ Resources:
         - Lambda:
             FunctionArn: !GetAtt IoTCoreToSQSLambda.Arn
 
-  TestUrbanCrossAccountRule:
-    Type: AWS::IoT::TopicRule
-    Condition: CreateAssumedTest
-    Properties:
-      RuleName: !Join
-        - '_'
-        - !Split
-          - '-'
-          - !Sub '${AWS::StackName}_${AWS::Region}_test_urban_crossAccount_iot_topic_rule'       
-      TopicRulePayload:
-        RuleDisabled: false
-        Sql: SELECT * FROM 'urbanio/test'
-        Actions:
-        - S3:
-            BucketName: !Ref SitewiseS3Bucket
-            Key: test
-            RoleArn: !GetAtt UrbanioTestAssumedRole.Arn
+  # TestUrbanCrossAccountRule:
+  #   Type: AWS::IoT::TopicRule
+  #   Condition: CreateAssumedTest
+  #   Properties:
+  #     RuleName: !Join
+  #       - '_'
+  #       - !Split
+  #         - '-'
+  #         - !Sub '${AWS::StackName}_${AWS::Region}_test_urban_crossAccount_iot_topic_rule'       
+  #     TopicRulePayload:
+  #       RuleDisabled: false
+  #       Sql: SELECT * FROM 'urbanio/test'
+  #       Actions:
+  #       - S3:
+  #           BucketName: !Ref SitewiseS3Bucket
+  #           Key: test
+  #           RoleArn: !GetAtt UrbanioTestAssumedRole.Arn
 
   UpdateSitewiseMeasurementsRule:
     Type: AWS::IoT::TopicRule
