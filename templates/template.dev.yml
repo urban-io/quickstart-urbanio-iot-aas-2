@@ -115,7 +115,7 @@ Metadata:
         default: Environment Type (optional)
 
       EmailAddress:
-        default: The email address to use for alarm notifications. (optional)
+        default: The email address to used for alarm notifications. (optional)
 
   LICENSE: "Apache License, Version 2.0"
   AUTHOR: "GoToAdmins"
@@ -509,7 +509,7 @@ Resources:
                   - ''
                   - - 'arn:'
                     - !Ref AWS::Partition
-                    - ':iot:::'
+                    - ':iot:*:*:'
                     - 'topic/*'
 
 
