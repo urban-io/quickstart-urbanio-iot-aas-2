@@ -15,7 +15,7 @@ project:
     # default: urban-stage-profile
     ## Set profile urban-production-profile & Uncomment below / Enable for CF Uploads : Test
     # default: urban-production-profile
-  lambda_source_path:  src
+  lambda_source_path: src
   lambda_zip_path: functions/packages
   package_lambda: false
   shorten_stack_name: true
