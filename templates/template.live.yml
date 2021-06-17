@@ -15,6 +15,10 @@ Mappings:
       test: "aws-quickstart-urbanio-ricochet-sitewise-us-east-1"
       staging: "aws-quickstart-urbanio-us-east-1"
       production: "aws-quickstart-urbanio-us-east-1"
+    us-east-2:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-us-east-2"
+      staging: "aws-quickstart-urbanio-us-east-2"
+      production: "aws-quickstart-urbanio-us-east-2"
     us-west-2:
       test: "aws-quickstart-urbanio-ricochet-sitewise-test-us-west-2"
       staging: "aws-quickstart-urbanio-us-west-2"
@@ -135,17 +139,16 @@ Parameters:
     Type: String
     AllowedValues:
       - production
-    ConstraintDescription: must specify production, staging, or test.
+    ConstraintDescription: must specify production
     Default: production
 
 
   S3Bucket:
     Type: String
-    Description: The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
+    Description: Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 
-  
   SitewiseCrossAccountRole:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
     ConstraintDescription: The Cross Account Role
@@ -155,7 +158,7 @@ Parameters:
 
   EmailAddress:
     Type: String
-    Description: Email address to be use for alarm notifications.
+    Description: Email address to be use for Cloudwatch alarm notifications.
     # AllowedPattern: '^[\x20-\x45]?[\w-\+]+(\.[\w]+)*@[\w-]+(\.[\w]+)*(\.[a-z]{2,})$'
     ConstraintDescription: You should enter a valid email
 
