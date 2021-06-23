@@ -22,10 +22,12 @@ As shown in <<architecture1>>, the Quick Start sets up the following AWS resourc
 
 
 === Workflow
-
+The first step of integrating {partner-product-short-name} portal and AWS IoT Sitewise is to deploy the CloudFormation template in your account. +
+{empty} +
 As a second step after launching the Quick Start you should setup an integration in app.urban.io following https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[these steps] and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets. +
 {empty} +
-The workflow can be traced on <<architecture1>>:
+The syncronization between the content of your {partner-product-short-name} account and AWS IoT Sitewise will be made automatically.
+The workflow can be traced on <<architecture1>>, but keep in mind user input will be needed only for Step 1.:
 
 * **1. Setting up Sitewise Integration.** The user sets up the integration in {partner-product-short-name} portal following https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this guide].
 * **2. Upload Events to Assets Mapping.** Then {partner-product-short-name} portal will first upload a file describing the mapping between {partner-product-short-name} events and AWS IoT Sitewise asset properties to the specified S3 bucket.
