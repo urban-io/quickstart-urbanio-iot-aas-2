@@ -4,4 +4,4 @@
 
 This guide provides instructions for integrating {partner-product-short-name} sensor data to AWS IoT SiteWise.
 
-This Quick Start is for {partner-product-short-name} clients who want to use the real time dashboard capabilities of AWS IoT SiteWise.
+This Quick Start is for users who have {partner-product-short-name} account and want to use the real time dashboard capabilities of AWS IoT SiteWise.
