@@ -1,6 +1,0 @@
-asset-model-converter
-association-updater
-attributes-updater
-s3-to-lifecycle-events-converter
-lifecycle-events-mapping-updater
-iot-core-to-sqs
