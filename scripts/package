@@ -12,7 +12,7 @@ projects=(
     lifecycle-events-mapping-updater
     iot-core-to-sqs
 )
-cd src/
+cd functions/source
 
 for lambda_dir in "${projects[@]}"
 do
@@ -37,8 +37,8 @@ do
       cd ..
     fi
 
-    mkdir -p "../../functions/packages/$lambda_dir"
-    mv "$LAMBDA_ZIP_FILE" "../../functions/packages/$lambda_dir"
+    mkdir -p "../../packages/$lambda_dir"
+    mv "$LAMBDA_ZIP_FILE" "../../packages/$lambda_dir"
 
     rm -rf "$LAMBDA_ZIP_FILE"
     rm -rf "$DEPENDENCIES_INSTALL_DIR"
