@@ -5,10 +5,10 @@ This Quick Start creates a serverless framework that uses Amazon S3, AWS IoT Cor
 // Replace this example diagram with your own. Follow our wiki guidelines: https://w.amazon.com/bin/view/AWS_Quick_Starts/Process_for_PSAs/#HPrepareyourarchitecturediagram. Upload your source PowerPoint file to the GitHub {deployment name}/docs/images/ directory in this repo. 
 
 [#architecture1]
-.Quick Start architecture for {partner-product-short-name} to Sitewise integration on AWS
-image::../images/urbanoi-sitewise-integration.jpeg[Architecture]
+.Quick Start physical architecture for {partner-product-short-name} to Sitewise integration on AWS
+image::../images/urbanoi-sitewise-integration_2.jpeg[Architecture]
 
-As shown in <<architecture1>>, the Quick Start sets up the following:
+As shown in <<architecture1>>, the Quick Start sets up the following AWS resources:
 
 * **Amazon S3.** The S3 bucket receives the initial integration setup files - definition of the objects (a JSON file describing operators, customers, locations and devices in lifecycle events format) and a mapping between lifecycle events and asset attributes.
 * **AWS IoT Core.** This service receives telemetry data that is immediately ingested into AWS IoT SiteWise and {partner-product-short-name} lifecicle events which will be converted into AWS IoT SiteWise assets.
@@ -20,4 +20,22 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 * **Association Updater.** The Association Updater is an AWS lambda that (re)associate the AWS IioT SiteWise assets based on the {partner-product-short-name} lifecycle events. It is triggered by Created Assets FIFO and resends the already processed events on Associated Assets FIFO.
 * **Attributes Updater.** The Attributes updater is an AWS lambda that updates the attributes of AWS Iot Sitewise assets based on {partner-product-short-name} lifecycle events. It is triggered bu the Associated Assets FIFO.
 
-As a second step after launching the Quick Start you should setup an integration in app.urban.io following https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[these steps] and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets.
+
+As a second step after launching the Quick Start you should setup an integration in app.urban.io following https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[these steps] and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets. +
+{empty} +
+The workflow can be traced on <<architecture1>>:
+
+* **1. Setting up Sitewise Integration.** The user sets up the integration in {partner-product-short-name} portal following https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this guide].
+* **2. Upload Events to Assets Mapping.** Then {partner-product-short-name} portal will first upload a file describing the mapping between {partner-product-short-name} events and AWS IoT Sitewise asset properties to the specified S3 bucket.
+* **3. Upload Assets Definition.** After that {partner-product-short-name} portal will upload asset hierarchy definition in the specified S3 bucket.
+* **4. Create MQTT Subscriptions.** As a next step {partner-product-short-name} portal automatically will create MQTT subscriptions for the selected entity.
+* **5. Cache Events to Assets Mapping.** The uploaded Events to Assets Mappings are cached in a dynamo table for easier access.
+* **6. Save Integration Point.** As a first step of processing the initial asset definitions file from the S3, the integaration point is stored.
+* **7. Send S3 Lifecycle Events to FIFO.** The next step of processing the initial assets definitions from S3 is to send them to Lifecycle events FIFO.
+* **8. Asset Model Converter.** Assets models and assets are being created/updated based on the events in the **Lifecycle events FIFO**.
+* **9. Association Updater.** Associates assets based on the events in **Created assets FIFO**.
+* **10. Attributes Updater.** Update assets properties values based on the events in **Associated assets FIFO**.
+* **11. Publish Urban.io Lifecycle Events.** When a user creates/updates an enitity in {partner-product-short-name} portal, a lifecycle event is triggered to notify for the change. The MQTT bridge publishes the event to the client's IoT Core.
+* **12. Send MQTT Lifecycle Events to FIFO.** The recieved MQTT lifecycle event is send to the **Lifecycle events FIFO**.
+* **13. Publish Measurements.** When the devices send measurement data the MQTT bridge is publishing it to the client's IoT Core.
+* **14. Update Measurements.** An IoT core rule is automatically sending the measuremts data to IoT Sitewise.

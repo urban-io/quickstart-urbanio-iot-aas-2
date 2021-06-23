@@ -1,4 +1,4 @@
 // Include details about any licenses and how to sign up. Provide links as appropriate. If no licenses are required, clarify that. The following paragraphs provide examples of details you can provide. Remove italics, and rephrase as appropriate.
 
-All charges with {partner-company-name} Asset Monitoring IoT Device Subscriptions are incurred based on the terms of your AWS Marketplace subscription ({marketplace_listing_url}). +
+All charges with {partner-company-name} Asset Monitoring IoT Device Subscriptions are incurred based on the terms of your {marketplace_listing_url}[AWS Marketplace subscription]. +
 All AWS service resources consumed during the launch of the Quick Start incur AWS service usage costs.
