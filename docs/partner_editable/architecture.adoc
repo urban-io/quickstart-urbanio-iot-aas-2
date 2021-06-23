@@ -21,6 +21,8 @@ As shown in <<architecture1>>, the Quick Start sets up the following AWS resourc
 * **Attributes Updater.** The Attributes updater is an AWS lambda that updates the attributes of AWS Iot Sitewise assets based on {partner-product-short-name} lifecycle events. It is triggered bu the Associated Assets FIFO.
 
 
+=== Workflow
+
 As a second step after launching the Quick Start you should setup an integration in app.urban.io following https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[these steps] and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets. +
 {empty} +
 The workflow can be traced on <<architecture1>>:
