@@ -4,4 +4,3 @@ __pycache__
 build
 taskcat_outputs
 .aws-sam
-templates/template.yml
