@@ -4,7 +4,7 @@ general:
     S3Bucket: urbanio-sitewise
 
 project:
-  template: ./templates/template.live.yaml
+  template: ./templates/template.yaml
   name: aws-quickstart-urbanio
   owner: quickstart@amazon.com
   build_submodules: false
@@ -15,7 +15,7 @@ project:
     # default: urban-stage-profile
     ## Set profile urban-production-profile & Uncomment below / Enable for CF Uploads : Test
     # default: urban-production-profile
-  lambda_source_path: src
+  lambda_source_path: functions/source
   lambda_zip_path: functions/packages
   package_lambda: false
   shorten_stack_name: true
