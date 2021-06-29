@@ -93,7 +93,8 @@ def process_event(event, integration_points):
             external_id=event['reading']['id'], 
             name= f"{event['reading']['name']} ({event['reading']['id']})", 
             model_name=f"UrbanIO {event['reading']['device_type']} Device", 
-            hierarchy_name=f"{event['reading']['device_type']} Devices"
+            hierarchy_name=f"{event['reading']['device_type']} Devices",
+            datastream_descriptions=event['reading']['datastreams']
         )
 
     return asset    

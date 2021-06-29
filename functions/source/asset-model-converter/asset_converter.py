@@ -14,7 +14,7 @@ class AssetConverter:
         self.models_cache = models_cache
         self.sitewise_client = sitewise_client
 
-    def setup_asset(self, obj_type, external_id, name, model_name, hierarchy_name):
+    def setup_asset(self, obj_type, external_id, name, model_name, hierarchy_name, datastream_descriptions={}):
         record_id = self.__dynamo_record_id(obj_type, external_id)
         dynamo_record = self.assets_cache.get(record_id)
 
@@ -25,7 +25,7 @@ class AssetConverter:
                 self.assets_cache.save(dynamo_record)
 
             asset_description = self.sitewise_client.describe_asset(dynamo_record['AssetId'])
-            properties_to_update = self.__asset_properties(obj_type, external_id, asset_description)
+            properties_to_update = self.__asset_properties(obj_type, external_id, asset_description, datastream_descriptions)
             self.sitewise_client.update_asset_properties(asset_description['assetId'], properties_to_update)
 
             return dynamo_record
@@ -40,7 +40,7 @@ class AssetConverter:
         if asset_description is None:
             return None
 
-        properties_to_update = self.__asset_properties(obj_type, external_id, asset_description)
+        properties_to_update = self.__asset_properties(obj_type, external_id, asset_description, datastream_descriptions)
         self.sitewise_client.update_asset_properties(asset_description['assetId'], properties_to_update)
             
         dynamo_item = SitewiseAssetsCache.item(record_id, asset_description['assetId'], name, hierarchy_name)
@@ -54,10 +54,14 @@ class AssetConverter:
     def __sitewise_model_id(self, model_name):
         return self.models_cache.get_model_id(model_name)
 
-    def __asset_properties(self, obj_type, external_id, asset_description):
+    def __asset_properties(self, obj_type, external_id, asset_description, datastream_descriptions={}):
         properties = []
 
         for prop in asset_description['assetProperties']:
-            properties.append({'id': prop['id'], 'alias': f"/urbanio/{obj_type}/{external_id}/{prop['name']}"})
+            if obj_type == 'device' and prop['name'] in datastream_descriptions:
+                datastream_description = datastream_descriptions[prop['name']]
+                properties.append({'id': prop['id'], 'alias': f"/urbanio/{obj_type}/{external_id}/{datastream_description['channel']}/{datastream_description['data_type']}"})
+            else:
+                properties.append({'id': prop['id'], 'alias': f"/urbanio/{obj_type}/{external_id}/{prop['name']}"})
 
         return properties
