@@ -1264,7 +1264,7 @@ Resources:
         Actions:
         - IotSiteWise:
             PutAssetPropertyValueEntries:
-              - PropertyAlias: '/urbanio/device/${metadata.ref.d}/${metadata.ref.m}'
+              - PropertyAlias: '/urbanio/device/${metadata.ref.d}/${reading.ch}/${reading.dt}'
                 PropertyValues:
                   - Timestamp:
                       TimeInSeconds: '${reading.ts / 1000}'
