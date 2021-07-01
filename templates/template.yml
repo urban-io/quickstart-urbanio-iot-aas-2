@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: AWS UrbanIO SiteWise Integration
+Description: >
+ AWS UrbanIO SiteWise Integration
 Mappings:
   RegionMap:
     ap-southeast-1:
