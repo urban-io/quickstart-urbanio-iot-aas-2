@@ -147,6 +147,8 @@ Resources:
     Type: AWS::S3::Bucket
     Condition: ValidRegion
     Properties:
+      VersioningConfiguration:   
+        Status: Enabled 
       Tags: []
 
   # CrossAccountBucket:
@@ -292,6 +294,7 @@ Resources:
             finally:
                 timer.cancel()
                 cfnresponse.send(event, context, status, {}, None)
+
 
   LifecycleEventsConverterLambda:
     DependsOn: CopyZips
