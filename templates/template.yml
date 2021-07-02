@@ -133,7 +133,6 @@ Parameters:
     ConstraintDescription: You should enter a valid email
 
 Resources:
-
   ## S3 bucket
   SitewiseS3Bucket:
     Type: AWS::S3::Bucket
@@ -302,7 +301,16 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !Ref LambdaZipsBucket
+        Bucket: !If
+          - HasEnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - !Ref EnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - production
         Key: aws-quickstart-urbanio/functions/packages/s3-to-lifecycle-events-converter/lambda.zip
       Role: !GetAtt LifecycleEventsConverterRole.Arn
       Environment:
@@ -327,7 +335,16 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !Ref LambdaZipsBucket
+        Bucket: !If
+          - HasEnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - !Ref EnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - production
         Key:  aws-quickstart-urbanio/functions/packages/lifecycle-events-mapping-updater/lambda.zip
       Role: !GetAtt LifecycleEventsMappingUpdaterRole.Arn
       Environment:
@@ -351,7 +368,16 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !Ref LambdaZipsBucket
+        Bucket: !If
+          - HasEnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - !Ref EnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - production
         Key: aws-quickstart-urbanio/functions/packages/iot-core-to-sqs/lambda.zip
       Role: !GetAtt IoTCoreToSQSRole.Arn
       Environment:
@@ -365,7 +391,16 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !Ref LambdaZipsBucket
+        Bucket: !If
+          - HasEnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - !Ref EnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - production
         Key: aws-quickstart-urbanio/functions/packages/asset-model-converter/lambda.zip
       Role: !GetAtt AssetModelConverterRole.Arn
       Environment:
@@ -387,7 +422,16 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !Ref LambdaZipsBucket
+        Bucket: !If
+          - HasEnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - !Ref EnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - production
         Key: aws-quickstart-urbanio/functions/packages/association-updater/lambda.zip
       Role: !GetAtt AssociationUpdaterRole.Arn
       Environment:
@@ -408,7 +452,16 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !Ref LambdaZipsBucket
+        Bucket: !If
+          - HasEnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - !Ref EnvType
+          - !FindInMap
+            - RegionMap
+            - !Ref AWS::Region
+            - production
         Key:  aws-quickstart-urbanio/functions/packages/attributes-updater/lambda.zip
       Role: !GetAtt AttributesUpdaterRole.Arn
       Environment:
