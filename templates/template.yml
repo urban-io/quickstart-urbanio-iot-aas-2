@@ -1,25 +1,42 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
- AWS UrbanIO SiteWise Integration
+Description: AWS UrbanIO SiteWise Integration
 Mappings:
   RegionMap:
     ap-southeast-1:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-1"
+      staging: "aws-quickstart-urbanio-ap-southeast-1"
       production: "aws-quickstart-urbanio-ap-southeast-1"
     ap-southeast-2:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2"
+      staging: "aws-quickstart-urbanio-ap-southeast-2"
       production: "aws-quickstart-urbanio-ap-southeast-2"
     us-east-1:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-us-east-1"
+      staging: "aws-quickstart-urbanio-us-east-1"
       production: "aws-quickstart-urbanio-us-east-1"
     us-east-2:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-us-east-2"
+      staging: "aws-quickstart-urbanio-us-east-2"
       production: "aws-quickstart-urbanio-us-east-2"
     us-west-2:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-test-us-west-2"
+      staging: "aws-quickstart-urbanio-us-west-2"
       production: "aws-quickstart-urbanio-us-west-2"
     eu-west-1:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-test-eu-west-1"
+      staging: "aws-quickstart-urbanio-eu-west-1"
       production: "aws-quickstart-urbanio-eu-west-1"
     eu-central-1:
+      test: "aws-quickstart-urbanio-ricochet-sitewise-test-eu-central-1"
+      staging: "aws-quickstart-urbanio-eu-central-1"
       production: "aws-quickstart-urbanio-eu-central-1"
 
   EnvMap:
+    test:
+      OtherAccountNumber: 450305284055
+    staging:
+      OtherAccountNumber: 845486970018
     production:
       OtherAccountNumber: 419327598890
 
@@ -36,12 +53,25 @@ Conditions:
      - !Equals
       - !Ref EnvType
       - ''
-  IsUrban: !Equals
-    - !Ref AWS::AccountId
-    - !FindInMap
-      - EnvMap
-      - production
-      - OtherAccountNumber
+  IsUrban: !Or
+    - !Equals
+      - !Ref AWS::AccountId
+      - !FindInMap
+        - EnvMap
+        - test
+        - OtherAccountNumber
+    - !Equals
+      - !Ref AWS::AccountId
+      - !FindInMap
+        - EnvMap
+        - staging
+        - OtherAccountNumber
+    - !Equals
+      - !Ref AWS::AccountId
+      - !FindInMap
+        - EnvMap
+        - production
+        - OtherAccountNumber
 
   ValidRegion: !Or
     - !Equals
@@ -133,6 +163,7 @@ Parameters:
     ConstraintDescription: You should enter a valid email
 
 Resources:
+
   ## S3 bucket
   SitewiseS3Bucket:
     Type: AWS::S3::Bucket
@@ -146,8 +177,6 @@ Resources:
     Type: AWS::S3::Bucket
     Condition: ValidRegion
     Properties:
-      VersioningConfiguration:   
-        Status: Enabled 
       Tags: []
 
   # CrossAccountBucket:
@@ -294,23 +323,13 @@ Resources:
                 timer.cancel()
                 cfnresponse.send(event, context, status, {}, None)
 
-
   LifecycleEventsConverterLambda:
     DependsOn: CopyZips
     Type: AWS::Serverless::Function
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !If
-          - HasEnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - !Ref EnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - production
+        Bucket: !Ref LambdaZipsBucket
         Key: aws-quickstart-urbanio/functions/packages/s3-to-lifecycle-events-converter/lambda.zip
       Role: !GetAtt LifecycleEventsConverterRole.Arn
       Environment:
@@ -335,16 +354,7 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !If
-          - HasEnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - !Ref EnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - production
+        Bucket: !Ref LambdaZipsBucket
         Key:  aws-quickstart-urbanio/functions/packages/lifecycle-events-mapping-updater/lambda.zip
       Role: !GetAtt LifecycleEventsMappingUpdaterRole.Arn
       Environment:
@@ -368,16 +378,7 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !If
-          - HasEnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - !Ref EnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - production
+        Bucket: !Ref LambdaZipsBucket
         Key: aws-quickstart-urbanio/functions/packages/iot-core-to-sqs/lambda.zip
       Role: !GetAtt IoTCoreToSQSRole.Arn
       Environment:
@@ -391,16 +392,7 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !If
-          - HasEnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - !Ref EnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - production
+        Bucket: !Ref LambdaZipsBucket
         Key: aws-quickstart-urbanio/functions/packages/asset-model-converter/lambda.zip
       Role: !GetAtt AssetModelConverterRole.Arn
       Environment:
@@ -422,16 +414,7 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !If
-          - HasEnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - !Ref EnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - production
+        Bucket: !Ref LambdaZipsBucket
         Key: aws-quickstart-urbanio/functions/packages/association-updater/lambda.zip
       Role: !GetAtt AssociationUpdaterRole.Arn
       Environment:
@@ -452,16 +435,7 @@ Resources:
     Condition: ValidRegion
     Properties:
       CodeUri:
-        Bucket: !If
-          - HasEnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - !Ref EnvType
-          - !FindInMap
-            - RegionMap
-            - !Ref AWS::Region
-            - production
+        Bucket: !Ref LambdaZipsBucket
         Key:  aws-quickstart-urbanio/functions/packages/attributes-updater/lambda.zip
       Role: !GetAtt AttributesUpdaterRole.Arn
       Environment:
@@ -512,11 +486,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - s3:PutObject
-            - s3:DeleteObject
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:RestoreObject
+            - 's3:*'
             Resource:
               - !Join
                 - ''
@@ -580,7 +550,16 @@ Resources:
           - Action:
               - iotsitewise:BatchPutAssetPropertyValue
             Effect: Allow
-            Resource: "*"
+            Resource: 
+             - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':iotsitewise:'
+                  - !Ref AWS::Region
+                  - :
+                  - !Ref AWS::AccountId
+                  - ':*'
           Version: '2012-10-17'
 
 
@@ -596,11 +575,7 @@ Resources:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - !Join
-          - ''
-          - - 'arn:'
-            - !Ref AWS::Partition
-            - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Path: /
       Policies:
         - PolicyName: lambda-copier
@@ -630,11 +605,8 @@ Resources:
 
               - Effect: Allow
                 Action:
-                - s3:PutObject
-                - s3:DeleteObject
-                - s3:GetObject
-                - s3:ListBucket
-                - s3:RestoreObject
+                  - s3:PutObject
+                  - s3:DeleteObject
                 Resource:
                   - !Join
                     -  ''
@@ -657,28 +629,25 @@ Resources:
           - sts:AssumeRole
       Path: '/'
       Policies:
+      - PolicyName: allowLambdaLogs
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource:
+             - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':logs:*:*:*'
       - PolicyName: sqs-lifecycle-events-role
         PolicyDocument:
           Statement:
           - Effect: Allow
             Action:
-            - sqs:CreateQueue
-            - sqs:DeleteMessage
-            - sqs:DeleteMessageBatch
-            - sqs:DeleteQueue
-            - sqs:GetQueueAttributes
-            - sqs:GetQueueUrl
-            - sqs:ListDeadLetterSourceQueues
-            - sqs:ListQueueTags
-            - sqs:ListQueues
-            - sqs:PurgeQueue
-            - sqs:ReceiveMessage
-            - sqs:RemovePermission
-            - sqs:SendMessage
-            - sqs:SendMessageBatch
-            - sqs:SetQueueAttributes
-            - sqs:TagQueue
-            - sqs:UntagQueue
+            - 'sqs:*'
             Resource:
               - !GetAtt SQSLifecycleEventsQueue.Arn
       - PolicyName: IoTCoreToSQSDynamodbWritePolicy
@@ -687,23 +656,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - dynamodb:BatchGetItem
-            - dynamodb:BatchWriteItem
-            - dynamodb:ConditionCheckItem
-            - dynamodb:CreateGlobalTable
-            - dynamodb:DeleteItem
-            - dynamodb:DescribeLimits
-            - dynamodb:DescribeStream
-            - dynamodb:DescribeTable
-            - dynamodb:GetItem
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-            - dynamodb:ListTables
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:UpdateItem
+            - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseEventsMapping.Arn
               - !GetAtt SitewiseIntegrationPoints.Arn
@@ -713,11 +666,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - s3:PutObject
-            - s3:DeleteObject
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:RestoreObject
+            - 's3:*'
             Resource:
               - !Join
                 - ''
@@ -743,21 +692,9 @@ Resources:
     Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -773,23 +710,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - dynamodb:BatchGetItem
-            - dynamodb:BatchWriteItem
-            - dynamodb:ConditionCheckItem
-            - dynamodb:CreateGlobalTable
-            - dynamodb:DeleteItem
-            - dynamodb:DescribeLimits
-            - dynamodb:DescribeStream
-            - dynamodb:DescribeTable
-            - dynamodb:GetItem
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-            - dynamodb:ListTables
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:UpdateItem
+            - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseModels.Arn
               - !GetAtt SitewiseAssets.Arn
@@ -798,23 +719,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-            - sqs:CreateQueue
-            - sqs:DeleteMessage
-            - sqs:DeleteMessageBatch
-            - sqs:DeleteQueue
-            - sqs:GetQueueAttributes
-            - sqs:GetQueueUrl
-            - sqs:ListDeadLetterSourceQueues
-            - sqs:ListQueueTags
-            - sqs:ListQueues
-            - sqs:PurgeQueue
-            - sqs:ReceiveMessage
-            - sqs:RemovePermission
-            - sqs:SendMessage
-            - sqs:SendMessageBatch
-            - sqs:SetQueueAttributes
-            - sqs:TagQueue
-            - sqs:UntagQueue
+            - 'sqs:*'
             Resource:
               - !GetAtt SQSLifecycleEventsQueue.Arn
       - PolicyName: s3AllowReadPolicy
@@ -823,11 +728,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - s3:PutObject
-            - s3:DeleteObject
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:RestoreObject
+            - 's3:*'
             Resource:
               - !Join
                 - ''
@@ -854,16 +755,8 @@ Resources:
     Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -880,23 +773,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-            - dynamodb:BatchGetItem
-            - dynamodb:BatchWriteItem
-            - dynamodb:ConditionCheckItem
-            - dynamodb:CreateGlobalTable
-            - dynamodb:DeleteItem
-            - dynamodb:DescribeLimits
-            - dynamodb:DescribeStream
-            - dynamodb:DescribeTable
-            - dynamodb:GetItem
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-            - dynamodb:ListTables
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:UpdateItem
+            - dynamodb:*
             Resource:
               - !GetAtt SitewiseEventsMapping.Arn
       - PolicyName: s3AllowReadPolicy
@@ -905,11 +782,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - s3:PutObject
-            - s3:DeleteObject
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:RestoreObject
+            - 's3:*'
             Resource:
               - !Join
                 - ''
@@ -936,21 +809,9 @@ Resources:
     Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -966,23 +827,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - dynamodb:BatchGetItem
-            - dynamodb:BatchWriteItem
-            - dynamodb:ConditionCheckItem
-            - dynamodb:CreateGlobalTable
-            - dynamodb:DeleteItem
-            - dynamodb:DescribeLimits
-            - dynamodb:DescribeStream
-            - dynamodb:DescribeTable
-            - dynamodb:GetItem
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-            - dynamodb:ListTables
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:UpdateItem
+            - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseModels.Arn
               - !GetAtt SitewiseAssets.Arn
@@ -993,11 +838,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - s3:PutObject
-            - s3:DeleteObject
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:RestoreObject
+            - 's3:*'
             Resource:
               - !Join
                 - ''
@@ -1009,23 +850,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-            - sqs:CreateQueue
-            - sqs:DeleteMessage
-            - sqs:DeleteMessageBatch
-            - sqs:DeleteQueue
-            - sqs:GetQueueAttributes
-            - sqs:GetQueueUrl
-            - sqs:ListDeadLetterSourceQueues
-            - sqs:ListQueueTags
-            - sqs:ListQueues
-            - sqs:PurgeQueue
-            - sqs:ReceiveMessage
-            - sqs:RemovePermission
-            - sqs:SendMessage
-            - sqs:SendMessageBatch
-            - sqs:SetQueueAttributes
-            - sqs:TagQueue
-            - sqs:UntagQueue
+            - 'sqs:*'
             Resource:
               - !GetAtt SQSLifecycleEventsQueue.Arn
               -  !GetAtt SQSCreatedAssetsQueue.Arn
@@ -1035,21 +860,9 @@ Resources:
     Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -1064,23 +877,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - dynamodb:BatchGetItem
-            - dynamodb:BatchWriteItem
-            - dynamodb:ConditionCheckItem
-            - dynamodb:CreateGlobalTable
-            - dynamodb:DeleteItem
-            - dynamodb:DescribeLimits
-            - dynamodb:DescribeStream
-            - dynamodb:DescribeTable
-            - dynamodb:GetItem
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-            - dynamodb:ListTables
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:UpdateItem
+            - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseAssets.Arn
               - !GetAtt SitewiseIntegrationPoints.Arn
@@ -1090,11 +887,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - s3:PutObject
-            - s3:DeleteObject
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:RestoreObject
+            - 's3:*'
             Resource:
               - !Join
                 - ''
@@ -1120,23 +913,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-            - sqs:CreateQueue
-            - sqs:DeleteMessage
-            - sqs:DeleteMessageBatch
-            - sqs:DeleteQueue
-            - sqs:GetQueueAttributes
-            - sqs:GetQueueUrl
-            - sqs:ListDeadLetterSourceQueues
-            - sqs:ListQueueTags
-            - sqs:ListQueues
-            - sqs:PurgeQueue
-            - sqs:ReceiveMessage
-            - sqs:RemovePermission
-            - sqs:SendMessage
-            - sqs:SendMessageBatch
-            - sqs:SetQueueAttributes
-            - sqs:TagQueue
-            - sqs:UntagQueue
+            - 'sqs:*'
             Resource:
               -  !GetAtt SQSAssociatedAssetsQueue.Arn
               - !GetAtt SQSCreatedAssetsQueue.Arn
@@ -1146,21 +923,9 @@ Resources:
     Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
-      - !Join
-        - ''
-        - - 'arn:'
-          - !Ref AWS::Partition
-          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+      - arn:aws:iam::aws:policy/AWSIoTSiteWiseFullAccess
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -1175,23 +940,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - dynamodb:BatchGetItem
-            - dynamodb:BatchWriteItem
-            - dynamodb:ConditionCheckItem
-            - dynamodb:CreateGlobalTable
-            - dynamodb:DeleteItem
-            - dynamodb:DescribeLimits
-            - dynamodb:DescribeStream
-            - dynamodb:DescribeTable
-            - dynamodb:GetItem
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-            - dynamodb:ListTables
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:UpdateItem
+            - 'dynamodb:*'
             Resource:
               - !GetAtt SitewiseAssets.Arn
               - !GetAtt SitewiseEventsMapping.Arn
@@ -1201,11 +950,7 @@ Resources:
           Statement:
           - Effect: "Allow"
             Action:
-            - s3:PutObject
-            - s3:DeleteObject
-            - s3:GetObject
-            - s3:ListBucket
-            - s3:RestoreObject
+            - 's3:*'
             Resource:
               - !Join
                 - ''
@@ -1231,23 +976,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-            - sqs:CreateQueue
-            - sqs:DeleteMessage
-            - sqs:DeleteMessageBatch
-            - sqs:DeleteQueue
-            - sqs:GetQueueAttributes
-            - sqs:GetQueueUrl
-            - sqs:ListDeadLetterSourceQueues
-            - sqs:ListQueueTags
-            - sqs:ListQueues
-            - sqs:PurgeQueue
-            - sqs:ReceiveMessage
-            - sqs:RemovePermission
-            - sqs:SendMessage
-            - sqs:SendMessageBatch
-            - sqs:SetQueueAttributes
-            - sqs:TagQueue
-            - sqs:UntagQueue
+            - 'sqs:*'
             Resource:
               - !GetAtt SQSAssociatedAssetsQueue.Arn
 
