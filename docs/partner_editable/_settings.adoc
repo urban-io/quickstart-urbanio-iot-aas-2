@@ -1,5 +1,5 @@
 :quickstart-project-name: quickstart-urbanio-iot-aas
-:partner-product-name: Urban.io
+:partner-product-name: Urban.io Integration to the AWS SiteWise
 :partner-product-short-name: Urban.io
 :partner-company-name: Urban.io Pty Ltd.
 :doc-month: June
