@@ -9,8 +9,6 @@ Mappings:
       production: "aws-quickstart-urbanio-ap-southeast-2"
     us-east-1:
       production: "aws-quickstart-urbanio-us-east-1"
-    us-east-2:
-      production: "aws-quickstart-urbanio-us-east-2"
     us-west-2:
       production: "aws-quickstart-urbanio-us-west-2"
     eu-west-1:
@@ -20,7 +18,7 @@ Mappings:
 
   EnvMap:
     production:
-      OtherAccountNumber: 419327598890
+      UrbanioAccountNumber: 419327598890
 
 Conditions:
   HasEmailAddress: !Not
@@ -40,7 +38,7 @@ Conditions:
     - !FindInMap
       - EnvMap
       - production
-      - OtherAccountNumber
+      - UrbanioAccountNumber
 
   ValidRegion: !Or
     - !Equals
@@ -440,11 +438,11 @@ Resources:
                       - !FindInMap
                         - EnvMap
                         - !Ref EnvType
-                        - OtherAccountNumber
+                        - UrbanioAccountNumber
                       - !FindInMap
                         - EnvMap
                         - production
-                        - OtherAccountNumber
+                        - UrbanioAccountNumber
                     - ':root'
             Action: sts:AssumeRole
       Path: /
