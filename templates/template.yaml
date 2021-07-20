@@ -27,7 +27,7 @@ Conditions:
       - ''
   HasS3BucketName: !Not
      - !Equals
-      - !Ref QSS3BucketName
+      - !Ref S3Bucket
       - ''
   HasEnvType: !Not
      - !Equals
@@ -70,14 +70,25 @@ Metadata:
       - Label:
           default: Urbanio Sitewise Configuration
         Parameters:
-          - QSS3BucketName
+          - S3Bucket
           - SitewiseCrossAccountRole
           - EnvType
           - EmailAddress
+      - Label:
+          default: AWS Quick Start Configuration
+        Parameters:
+          - QssS3BucketName
+          - QSS3KeyPrefix
 
     ParameterLabels:
-      QSS3BucketName:
+      S3Bucket:
         default: S3 bucket (required)
+
+      QSS3BucketName:
+        default: Quick Start S3 bucket name (required)
+
+      QSS3KeyPrefix:
+        default: Quick Start S3 key prefix (required)
 
       SitewiseCrossAccountRole:
         default: Role Name (required)
@@ -110,11 +121,15 @@ Parameters:
     Default: production
 
   QSS3BucketName:
-    Type: String
-    Description: Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: 3-63 characters; must contain only lowercase letters or
-      numbers
+    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
+    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
+      Keep the default name unless you are customizing the template. 
+      Changing the name updates code references to point to a new Quick 
+      Start location. This name can include numbers, lowercase letters, 
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+      See https://aws-quickstart.github.io/option1.html.
+    Type: String
 
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
@@ -127,7 +142,13 @@ Parameters:
       letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
       and https://aws-quickstart.github.io/option1.html.
     Type: String
-    Default: aws-quickstart-urbanio/
+    Default: quickstart-aws-urbanio-sitewise-integrations/
+
+  S3Bucket:
+    Type: String
+    Description: Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
+    AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
+    ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 
   SitewiseCrossAccountRole:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
@@ -150,14 +171,14 @@ Resources:
     Properties:
       BucketName: !If
         - HasS3BucketName
-        - !Ref QSS3BucketName
+        - !Ref S3Bucket
         - !Sub ${AWS::StackName}-${AWS::Region}
 
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
     Condition: ValidRegion
     Properties:
-      Tags: []
+      BucketName: !Ref QSS3BucketName
 
   # CrossAccountBucket:
   #   Type: AWS::S3::Bucket
@@ -236,8 +257,8 @@ Resources:
           - RegionMap
           - !Ref AWS::Region
           - production
+      Prefix: aws-quickstart-urbanio/
       DestPrefix: !Ref QSS3KeyPrefix
-      SourcePrefix: aws-quickstart-urbanio/
       Objects:
         - functions/packages/asset-model-converter/lambda.zip
         - functions/packages/association-updater/lambda.zip
@@ -260,23 +281,24 @@ Resources:
         import threading
         import boto3
         import cfnresponse
-        def copy_objects(source_bucket, dest_bucket,source_prefix, dest_prefix, objects):
+        def copy_objects(source_bucket, dest_bucket, prefix, dest_prefix, objects):
             s3 = boto3.client('s3')
             for o in objects:
-                source_key = source_prefix + o
+                key = prefix + o
                 dest_key = dest_prefix + o
                 copy_source = {
                     'Bucket': source_bucket,
-                    'Key': source_key
+                    'Key': key
                 }
                 print('copy_source: %s' % copy_source)
                 print('dest_bucket = %s'%dest_bucket)
-                print('key = %s' %source_key)
+                print('key = %s' %key)
+                print('key = %s' %dest_key)
                 s3.copy_object(CopySource=copy_source, Bucket=dest_bucket,
                       Key=dest_key)
-        def delete_objects(bucket, dest_prefix, objects):
+        def delete_objects(bucket, prefix, objects):
             s3 = boto3.client('s3')
-            objects = {'Objects': [{'Key': dest_prefix + o} for o in objects]}
+            objects = {'Objects': [{'Key': prefix + o} for o in objects]}
             s3.delete_objects(Bucket=bucket, Delete=objects)
         def timeout(event, context):
             logging.error('Execution is about to time out, sending failure response to CloudFormation')
@@ -292,13 +314,13 @@ Resources:
             try:
                 source_bucket = event['ResourceProperties']['SourceBucket']
                 dest_bucket = event['ResourceProperties']['DestBucket']
-                source_prefix = event['ResourceProperties']['SourcePrefix']
+                prefix = event['ResourceProperties']['Prefix']
                 dest_prefix = event['ResourceProperties']['DestPrefix']
                 objects = event['ResourceProperties']['Objects']
                 if event['RequestType'] == 'Delete':
                     delete_objects(dest_bucket, dest_prefix, objects)
                 else:
-                    copy_objects(source_bucket, dest_bucket, source_prefix, dest_prefix, objects)
+                    copy_objects(source_bucket, dest_bucket, prefix, dest_prefix, objects)
             except Exception as e:
                 logging.error('Exception: %s' % e, exc_info=True)
                 status = cfnresponse.FAILED
@@ -683,7 +705,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
               - !Join
                 - ''
@@ -692,7 +714,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
                   - '/*'
   IoTCoreToSQSRole:
@@ -793,7 +815,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
               - !Join
                 - ''
@@ -802,7 +824,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
                   - '/*'
 
@@ -875,7 +897,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
               - !Join
                 - ''
@@ -884,7 +906,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
                   - '/*'
 
@@ -1060,7 +1082,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
               - !Join
                 - ''
@@ -1069,7 +1091,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
                   - '/*'
       - PolicyName: sqs-association-updater-role
@@ -1171,7 +1193,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
               - !Join
                 - ''
@@ -1180,7 +1202,7 @@ Resources:
                   - ':s3:::'
                   - !If
                     - HasS3BucketName
-                    - !Ref QSS3BucketName
+                    - !Ref S3Bucket
                     - !Sub ${AWS::StackName}-${AWS::Region}
                   - '/*'
       - PolicyName: sqs-attibute-updater-role
