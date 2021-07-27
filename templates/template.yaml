@@ -64,6 +64,11 @@ Conditions:
     - !Condition HasEnvType
     - !Condition IsUrban
     - !Condition ValidRegion
+
+  CreateCrossAccountAccess: !and
+    - !Condition ValidRegion
+    - !Condition AllowCrossAccountAccess
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -79,6 +84,11 @@ Metadata:
         Parameters:
           - QssS3BucketName
           - QSS3KeyPrefix
+
+      - Label:
+          default: AWS Urban.io AWS account Access
+        Parameters:
+          - AllowCrossAccountAccess
 
     ParameterLabels:
       S3Bucket:
@@ -98,6 +108,9 @@ Metadata:
 
       EmailAddress:
         default: The email address to used for alarm notifications. (optional)
+
+      AllowCrossAccountAccess:
+        default: Allow Cross-Account Access [ Yes/No ] (required)
 
   LICENSE: "Apache License, Version 2.0"
   AUTHOR: "GoToAdmins"
@@ -162,6 +175,14 @@ Parameters:
     Description: Email address to be use for Cloudwatch alarm notifications.
     # AllowedPattern: '^[\x20-\x45]?[\w-\+]+(\.[\w]+)*@[\w-]+(\.[\w]+)*(\.[a-z]{2,})$'
     ConstraintDescription: You should enter a valid email
+
+
+  AllowCrossAccountAccess:
+    Type: String
+    Description: Allow Cross Account Access to Urban.io SaaS AWS Account from the customer AWS account.
+    ConstraintDescription: You should enter a valid email
+    AllowedValues: [Yes, No]
+    Default: No
 
 Resources:
 
@@ -457,7 +478,7 @@ Resources:
   ## Lambda Roles
   UrbanioAssumedRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
+    Condition: CreateCrossAccountAccess
     Properties:
       RoleName: !Ref SitewiseCrossAccountRole
       AssumeRolePolicyDocument:
