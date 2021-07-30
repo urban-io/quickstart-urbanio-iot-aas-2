@@ -1,4 +1,5 @@
 // Edit this placeholder text to accurately describe your architecture.
+
 This Quick Start provides one deployment option:
 
 * Deploy {partner-product-short-name}.
@@ -13,3 +14,9 @@ This Quick Start provides a CloudFormation template, which lets you configure:
 [#deployment_options]
 .Deploynemt options in the Quick Start for {partner-product-short-name} to Sitewise integration on AWS
 image::../images/deployment_options.png[Deployment Options]
+
+An example output after finishing the deployment:
+
+[#deployment_output]
+.Deploynemt output in the Quick Start for {partner-product-name}
+image::../images/deployment_output.png[Deployment Output]

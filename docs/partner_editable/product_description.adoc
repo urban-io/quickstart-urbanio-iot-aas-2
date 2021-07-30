@@ -1,4 +1,4 @@
-[#architecture2]
+[#architecture3]
 .Quick Start Logical architecture for {partner-product-short-name} to Sitewise integration on AWS
 image::../images/urbanio-sitewise-logical-architecture.jpg[Logical architecture]
 
