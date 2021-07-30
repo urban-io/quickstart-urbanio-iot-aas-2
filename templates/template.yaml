@@ -16,9 +16,6 @@ Mappings:
     eu-central-1:
       production: "aws-quickstart-urbanio-eu-central-1"
 
-  EnvMap:
-    production:
-      UrbanioAccountNumber: 419327598890
 
 Conditions:
   HasEmailAddress: !Not
@@ -35,10 +32,7 @@ Conditions:
       - ''
   IsUrban: !Equals
     - !Ref AWS::AccountId
-    - !FindInMap
-      - EnvMap
-      - production
-      - UrbanioAccountNumber
+    - - !Ref UrbanioAccountNumber
 
   ValidRegion: !Or
     - !Equals
@@ -79,6 +73,7 @@ Metadata:
           - SitewiseCrossAccountRole
           - EnvType
           - EmailAddress
+          - UrbanioAccountNumber
       - Label:
           default: AWS Quick Start Configuration
         Parameters:
@@ -102,6 +97,9 @@ Metadata:
 
       SitewiseCrossAccountRole:
         default: Role Name (required)
+      
+      UrbanioAccountNumber:
+        default: Urbun Io AWS Account Number (required)
 
       EnvType:
         default: Environment Type (optional)
@@ -183,6 +181,13 @@ Parameters:
     ConstraintDescription: You should enter a valid email
     AllowedValues: [Yes, No]
     Default: No
+  UrbanioAccountNumber:
+    Type: String
+    AllowedPattern: ^[0-9]*$
+    Description: Urban.io AWS Account.
+    ConstraintDescription: You should enter a valid Acount Id
+
+
 
 Resources:
 
@@ -492,16 +497,7 @@ Resources:
                   - - 'arn:'
                     - !Ref AWS::Partition
                     - ':iam::'
-                    - !If
-                      - HasEnvType
-                      - !FindInMap
-                        - EnvMap
-                        - !Ref EnvType
-                        - UrbanioAccountNumber
-                      - !FindInMap
-                        - EnvMap
-                        - production
-                        - UrbanioAccountNumber
+                    - !Ref UrbanioAccountNumber
                     - ':root'
             Action: sts:AssumeRole
       Path: /
