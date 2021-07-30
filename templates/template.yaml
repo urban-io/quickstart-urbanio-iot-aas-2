@@ -16,9 +16,6 @@ Mappings:
     eu-central-1:
       production: "aws-quickstart-urbanio-eu-central-1"
 
-  EnvMap:
-    production:
-      UrbanioAccountNumber: 419327598890
 
 Conditions:
   HasEmailAddress: !Not
@@ -35,10 +32,7 @@ Conditions:
       - ''
   IsUrban: !Equals
     - !Ref AWS::AccountId
-    - !FindInMap
-      - EnvMap
-      - production
-      - UrbanioAccountNumber
+    - - !Ref UrbanioAccountNumber
 
   ValidRegion: !Or
     - !Equals
@@ -64,6 +58,11 @@ Conditions:
     - !Condition HasEnvType
     - !Condition IsUrban
     - !Condition ValidRegion
+
+  CreateCrossAccountAccess: !and
+    - !Condition ValidRegion
+    - !Condition AllowCrossAccountAccess
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -74,19 +73,42 @@ Metadata:
           - SitewiseCrossAccountRole
           - EnvType
           - EmailAddress
+          - UrbanioAccountNumber
+      - Label:
+          default: AWS Quick Start Configuration
+        Parameters:
+          - QssS3BucketName
+          - QSS3KeyPrefix
+
+      - Label:
+          default: AWS Urban.io AWS account Access
+        Parameters:
+          - AllowCrossAccountAccess
 
     ParameterLabels:
       S3Bucket:
         default: S3 bucket (required)
 
+      QSS3BucketName:
+        default: Quick Start S3 bucket name (required)
+
+      QSS3KeyPrefix:
+        default: Quick Start S3 key prefix (required)
+
       SitewiseCrossAccountRole:
         default: Role Name (required)
+      
+      UrbanioAccountNumber:
+        default: Urbun Io AWS Account Number (required)
 
       EnvType:
         default: Environment Type (optional)
 
       EmailAddress:
         default: The email address to used for alarm notifications. (optional)
+
+      AllowCrossAccountAccess:
+        default: Allow Cross-Account Access [ Yes/No ] (required)
 
   LICENSE: "Apache License, Version 2.0"
   AUTHOR: "GoToAdmins"
@@ -109,6 +131,29 @@ Parameters:
     ConstraintDescription: must specify production
     Default: production
 
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
+    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
+      Keep the default name unless you are customizing the template. 
+      Changing the name updates code references to point to a new Quick 
+      Start location. This name can include numbers, lowercase letters, 
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+      See https://aws-quickstart.github.io/option1.html.
+    Type: String
+
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: The Quick Start key prefix can include numbers, lowercase
+      letters, uppercase letters, hyphens (-), and forward slash (/).
+    Description: S3 key prefix that is used to simulate a directory for your copy
+      of the Quick Start assets. Keep the default prefix unless you are customizing
+      the template. Changing this prefix updates code references to point to a new
+      Quick Start location. This prefix can include numbers, lowercase letters, uppercase
+      letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
+      and https://aws-quickstart.github.io/option1.html.
+    Type: String
+    Default: quickstart-aws-urbanio-sitewise-integrations/
 
   S3Bucket:
     Type: String
@@ -129,6 +174,21 @@ Parameters:
     # AllowedPattern: '^[\x20-\x45]?[\w-\+]+(\.[\w]+)*@[\w-]+(\.[\w]+)*(\.[a-z]{2,})$'
     ConstraintDescription: You should enter a valid email
 
+
+  AllowCrossAccountAccess:
+    Type: String
+    Description: Allow Cross Account Access to Urban.io SaaS AWS Account from the customer AWS account.
+    ConstraintDescription: You should enter a valid email
+    AllowedValues: [Yes, No]
+    Default: No
+  UrbanioAccountNumber:
+    Type: String
+    AllowedPattern: ^[0-9]*$
+    Description: Urban.io AWS Account.
+    ConstraintDescription: You should enter a valid Acount Id
+
+
+
 Resources:
 
   ## S3 bucket
@@ -144,7 +204,7 @@ Resources:
     Type: AWS::S3::Bucket
     Condition: ValidRegion
     Properties:
-      Tags: []
+      BucketName: !Ref QSS3BucketName
 
   # CrossAccountBucket:
   #   Type: AWS::S3::Bucket
@@ -224,6 +284,7 @@ Resources:
           - !Ref AWS::Region
           - production
       Prefix: aws-quickstart-urbanio/
+      DestPrefix: !Ref QSS3KeyPrefix
       Objects:
         - functions/packages/asset-model-converter/lambda.zip
         - functions/packages/association-updater/lambda.zip
@@ -246,10 +307,11 @@ Resources:
         import threading
         import boto3
         import cfnresponse
-        def copy_objects(source_bucket, dest_bucket, prefix, objects):
+        def copy_objects(source_bucket, dest_bucket, prefix, dest_prefix, objects):
             s3 = boto3.client('s3')
             for o in objects:
                 key = prefix + o
+                dest_key = dest_prefix + o
                 copy_source = {
                     'Bucket': source_bucket,
                     'Key': key
@@ -257,8 +319,9 @@ Resources:
                 print('copy_source: %s' % copy_source)
                 print('dest_bucket = %s'%dest_bucket)
                 print('key = %s' %key)
+                print('key = %s' %dest_key)
                 s3.copy_object(CopySource=copy_source, Bucket=dest_bucket,
-                      Key=key)
+                      Key=dest_key)
         def delete_objects(bucket, prefix, objects):
             s3 = boto3.client('s3')
             objects = {'Objects': [{'Key': prefix + o} for o in objects]}
@@ -278,11 +341,12 @@ Resources:
                 source_bucket = event['ResourceProperties']['SourceBucket']
                 dest_bucket = event['ResourceProperties']['DestBucket']
                 prefix = event['ResourceProperties']['Prefix']
+                dest_prefix = event['ResourceProperties']['DestPrefix']
                 objects = event['ResourceProperties']['Objects']
                 if event['RequestType'] == 'Delete':
-                    delete_objects(dest_bucket, prefix, objects)
+                    delete_objects(dest_bucket, dest_prefix, objects)
                 else:
-                    copy_objects(source_bucket, dest_bucket, prefix, objects)
+                    copy_objects(source_bucket, dest_bucket, prefix, dest_prefix, objects)
             except Exception as e:
                 logging.error('Exception: %s' % e, exc_info=True)
                 status = cfnresponse.FAILED
@@ -297,7 +361,7 @@ Resources:
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
-        Key: aws-quickstart-urbanio/functions/packages/s3-to-lifecycle-events-converter/lambda.zip
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/s3-to-lifecycle-events-converter/lambda.zip
       Role: !GetAtt LifecycleEventsConverterRole.Arn
       Environment:
         Variables:
@@ -322,7 +386,7 @@ Resources:
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
-        Key:  aws-quickstart-urbanio/functions/packages/lifecycle-events-mapping-updater/lambda.zip
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/lifecycle-events-mapping-updater/lambda.zip
       Role: !GetAtt LifecycleEventsMappingUpdaterRole.Arn
       Environment:
         Variables:
@@ -346,7 +410,7 @@ Resources:
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
-        Key: aws-quickstart-urbanio/functions/packages/iot-core-to-sqs/lambda.zip
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/iot-core-to-sqs/lambda.zip
       Role: !GetAtt IoTCoreToSQSRole.Arn
       Environment:
         Variables:
@@ -360,7 +424,7 @@ Resources:
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
-        Key: aws-quickstart-urbanio/functions/packages/asset-model-converter/lambda.zip
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/asset-model-converter/lambda.zip
       Role: !GetAtt AssetModelConverterRole.Arn
       Environment:
         Variables:
@@ -382,7 +446,7 @@ Resources:
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
-        Key: aws-quickstart-urbanio/functions/packages/association-updater/lambda.zip
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/association-updater/lambda.zip
       Role: !GetAtt AssociationUpdaterRole.Arn
       Environment:
         Variables:
@@ -403,7 +467,7 @@ Resources:
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
-        Key:  aws-quickstart-urbanio/functions/packages/attributes-updater/lambda.zip
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/attributes-updater/lambda.zip
       Role: !GetAtt AttributesUpdaterRole.Arn
       Environment:
         Variables:
@@ -419,7 +483,7 @@ Resources:
   ## Lambda Roles
   UrbanioAssumedRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
+    Condition: CreateCrossAccountAccess
     Properties:
       RoleName: !Ref SitewiseCrossAccountRole
       AssumeRolePolicyDocument:
@@ -433,16 +497,7 @@ Resources:
                   - - 'arn:'
                     - !Ref AWS::Partition
                     - ':iam::'
-                    - !If
-                      - HasEnvType
-                      - !FindInMap
-                        - EnvMap
-                        - !Ref EnvType
-                        - UrbanioAccountNumber
-                      - !FindInMap
-                        - EnvMap
-                        - production
-                        - UrbanioAccountNumber
+                    - !Ref UrbanioAccountNumber
                     - ':root'
             Action: sts:AssumeRole
       Path: /
@@ -581,7 +636,7 @@ Resources:
                     -  ''
                     - - !GetAtt LambdaZipsBucket.Arn
                       - '/'
-                      - aws-quickstart-urbanio/
+                      - !Ref QSS3KeyPrefix
                       -  '*'
 
   LifecycleEventsConverterRole:
