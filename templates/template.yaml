@@ -78,7 +78,7 @@ Metadata:
           - QSS3KeyPrefix
 
       - Label:
-          default: AWS Urban.io AWS account Access
+          default: Urban.io AWS account Access
         Parameters:
           - AllowCrossAccountAccess
 
@@ -96,7 +96,7 @@ Metadata:
         default: Role Name (required)
       
       UrbanioAccountNumber:
-        default: Urbun Io AWS Account Number (required)
+        default: Urban Io AWS Account Number (required)
 
       EnvType:
         default: Environment Type (optional)
