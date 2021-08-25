@@ -1,6 +1,6 @@
 [#architecture3]
 .Quick Start Logical architecture for {partner-product-short-name} to Sitewise integration on AWS
-image::../images/urbanio-sitewise-logical-architecture.jpg[Logical architecture]
+image::../images/urbanio-sitewise-logical-architecture.png[Logical architecture]
 
 This Quick Start incorporates the Industrial IoT Network as a Service solution from {partner-product-short-name} pre-integrated with the effortless real time dashboard capabilities of AWS IoT SiteWise. +
 {empty} +
