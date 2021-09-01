@@ -10,5 +10,5 @@
 :deployment_time: 10 minutes
 :default_deployment_region: us-east-1
 :marketplace_subscription: true
-:marketplace_listing_url: https://aws.amazon.com/marketplace/seller-profile?id=c34e2438-5375-442a-a294-555b1765069d
+:marketplace_listing_url: https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?sr=0-1&ref_=beagle&applicationId=AWSMPContessa
 :no_parameters:
