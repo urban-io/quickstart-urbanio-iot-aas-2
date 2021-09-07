@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: AWS UrbanIO SiteWise Integration (qs-urbaniosw)
+Description: AWS UrbanIO SiteWise Integration (qs-1s83daalb)
 Mappings:
   RegionMap:
     ap-southeast-1:
@@ -84,32 +84,28 @@ Metadata:
 
     ParameterLabels:
       S3Bucket:
-        default: S3 bucket (required)
+        default: S3 bucket
 
       QSS3BucketName:
-        default: Quick Start S3 bucket name (required)
+        default: Quick Start S3 bucket name
 
       QSS3KeyPrefix:
-        default: Quick Start S3 key prefix (required)
+        default: Quick Start S3 key prefix
 
       SitewiseCrossAccountRole:
-        default: Role Name (required)
+        default: Role Name
       
       UrbanioAccountNumber:
-        default: Urban Io AWS Account Number (required)
+        default: Urban Io AWS Account Number
 
       EnvType:
-        default: Environment Type (optional)
+        default: Environment Type
 
       EmailAddress:
-        default: The email address to used for alarm notifications. (optional)
+        default: The email address to used for alarm notifications.
 
       AllowCrossAccountAccess:
-        default: Allow Cross-Account Access [ Yes/No ] (required)
-
-  LICENSE: "Apache License, Version 2.0"
-  AUTHOR: "GoToAdmins"
-  EMAIL: "admin@gotoadmins.com"
+        default: Allow Cross-Account Access [ Yes/No ]
 
 Globals:
   Function:
@@ -138,6 +134,7 @@ Parameters:
       uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
       See https://aws-quickstart.github.io/option1.html.
     Type: String
+    Default: aws-urbanio-quickstart
 
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
@@ -150,11 +147,11 @@ Parameters:
       letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
       and https://aws-quickstart.github.io/option1.html.
     Type: String
-    Default: quickstart-aws-urbanio-sitewise-integrations/
+    Default: quickstart-urbanio-iot-aas/
 
   S3Bucket:
     Type: String
-    Description: Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
+    Description: Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 
@@ -168,13 +165,12 @@ Parameters:
   EmailAddress:
     Type: String
     Description: Email address to be use for Cloudwatch alarm notifications.
-    # AllowedPattern: '^[\x20-\x45]?[\w-\+]+(\.[\w]+)*@[\w-]+(\.[\w]+)*(\.[a-z]{2,})$'
     ConstraintDescription: You should enter a valid email
 
 
   AllowCrossAccountAccess:
     Type: String
-    Description: Allow Cross Account Access to Urban.io SaaS AWS Account from the customer AWS account.
+    Description: Allow Cross Account Access for the customers Account to Urban.IO.
     ConstraintDescription: You should enter a valid email
     AllowedValues: [Yes, No]
     Default: No
@@ -183,8 +179,6 @@ Parameters:
     AllowedPattern: ^[0-9]*$
     Description: Urban.io AWS Account.
     ConstraintDescription: You should enter a valid Acount Id
-
-
 
 Resources:
 
@@ -202,11 +196,6 @@ Resources:
     Condition: ValidRegion
     Properties:
       BucketName: !Ref QSS3BucketName
-
-  # CrossAccountBucket:
-  #   Type: AWS::S3::Bucket
-  #   Properties:
-  #     Tags: []
 
   ## DynamoDB Tables
   SitewiseModels:
