@@ -225,7 +225,6 @@ Resources:
   ## Lambda functions
   CopyZips:
     Type: Custom::CopyZips
-    Condition: ValidRegion
     DependsOn:
       - CopyZipsRole
     Properties:
