@@ -59,6 +59,8 @@ Conditions:
 
 
 Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Urban.io integration with AWS SiteWise"
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
