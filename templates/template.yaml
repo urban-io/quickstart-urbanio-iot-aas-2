@@ -68,16 +68,16 @@ Metadata:
           - EmailAddress
           - UrbanioAccountNumber
       - Label:
+          default: Urban.io AWS account Access
+        Parameters:
+          - AllowCrossAccountAccess
+      - Label:
           default: AWS Quick Start Configuration
         Parameters:
           - QSS3BucketName
           - QSS3KeyPrefix
 
-      - Label:
-          default: Urban.io AWS account Access
-        Parameters:
-          - AllowCrossAccountAccess
-
+      
     ParameterLabels:
       S3Bucket:
         default: S3 bucket
@@ -92,7 +92,7 @@ Metadata:
         default: Urban Io AWS Account Number
 
       EmailAddress:
-        default: The email address to used for alarm notifications.
+        default: The email address to be used for alarm notifications.
 
       AllowCrossAccountAccess:
         default: Allow Cross-Account Access [ Yes/No ]
@@ -115,7 +115,7 @@ Parameters:
       uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
       See https://aws-quickstart.github.io/option1.html.
     Type: String
-    Default: aws-urbanio-quickstart
+    Default: aws-quickstart
 
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
@@ -149,11 +149,12 @@ Parameters:
     Type: String
     Description: Grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics.
     AllowedValues: [Yes, No]
-    Default: Yes
+    Default: No
+
   UrbanioAccountNumber:
     Type: String
     AllowedPattern: ^[0-9]*$
-    Description: Urban.io AWS Account.
+    Description: Urban.io AWS Account number
     ConstraintDescription: You should enter a valid Acount Id
 
 Resources:
