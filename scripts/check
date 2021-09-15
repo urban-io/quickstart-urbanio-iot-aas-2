@@ -1,0 +1,30 @@
+#!/bin/bash
+set -euxo pipefail
+
+echo "Running python tests..."
+
+pip install pipenv --quiet
+export PIPENV_PYUP_API_KEY=""
+
+projects=(
+    src/asset-model-converter
+    src/association-updater
+    src/attributes-updater
+    src/s3-to-lifecycle-events-converter
+    src/lifecycle-events-mapping-updater
+    src/iot-core-to-sqs
+
+)
+
+for project in "${projects[@]}"
+do
+    echo "Running tests for $project"
+
+    cd $project
+
+    pipenv install --dev
+    pipenv run pytest -vv --cov=. test_*
+	pipenv check || if [ $(curl -s -o /dev/null -w "%{http_code}" http://www.pyup.io/) != 200 ]; then echo "Site unreachable. Skipping check"; else false; fi
+
+    cd -
+done

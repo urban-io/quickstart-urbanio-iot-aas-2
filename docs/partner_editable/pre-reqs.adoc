@@ -1,13 +1,28 @@
-// If no preperation is required, remove all content from here
-
 ==== Prepare your AWS account
 
-_Describe any setup required in the AWS account prior to template launch_
+===== Increase AWS IoT Sitewise limits
+
+Before configuring the integration you need to request an increase of the Sitewise quotas for the selected region:
+
+* Number of child assets per parent asset  - *new limit of 500*
+* Number of asset models per hierarchy tree - *new limit of 50*
+
+This step is neccessary for syncronization of {partner-product-short-name} domain model with AWS Sitewise. The domain model that we currently have requires the creation of more than 30 models and we have several more in development. Since there are custumers with a lot of devices accociated to a given location in {partner-product-short-name} we consider it safe to assume you can have up to 500 devices at a perticular location.
+
+If you skip updating the limits the the next steps of {partner-product-name} will fail due to Sitewise models and assets limitations.
+
 
 ==== Prepare your {partner-company-name} account
 
-_Describe any setup required in the partner portal/account prior to template launch_
+As part of an Asset Monitoring IoT Device Subscription you will be provided an Account for the {partner-product-short-name} Device Administration application. This application provides various features to enable you to commission and install your wireless IoT sensor network. +
+{empty} +
+As part of signing up for an Asset Monitoring IoT Device Subscription you will be contacted by Urban.io representatives who will then guide you through this process. +
+{empty} +
+You can also review https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this integration guide] which illustrates the simple steps to connect the integration with your Urban.io account. +
+{empty} +
+For assistance establishing an {partner-company-name} account please visit any of the following links.
 
-==== Prepare for the deployment
-
-_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in S3_
+* https://www.urban.io/subscribe-aws/[Urban.io Subscriptions]
+* https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[Urban.io on AWS Marketplace]
+* https://support.urban.io/[Contact Urban.io Support]
+* https://www.urban.io/contact/[Contact Urban.io]

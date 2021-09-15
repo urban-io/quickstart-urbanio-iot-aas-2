@@ -1,0 +1,17 @@
+lambda.zip
+.packages
+
+/bin
+/include
+/lib
+
+*.pyc
+
+/share
+pyvenv.cfg
+
+/share
+/src
+
+.pytest_cache
+__pycache__

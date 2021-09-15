@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "--- prod clean ---"
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-1 --force --profile urban-production-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-ap-southeast-2 --force --profile urban-production-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-us-east-1 --force --profile urban-production-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-us-west-2 --force --profile urban-production-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-eu-west-1 --force --profile urban-production-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-eu-central-1 --force --profile urban-production-profile
+
+echo "--- staging clean ---"
+# aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-stage-$region --force --profile urban-stage-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-stage-ap-southeast-1 --force --profile urban-stage-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-stage-ap-southeast-2 --force --profile urban-stage-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-stage-us-east-1 --force --profile urban-stage-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-stage-us-west-2 --force --profile urban-stage-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-stage-eu-west-1 --force --profile urban-stage-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-stage-eu-central-1 --force --profile urban-stage-profile
+
+echo "--- test clean ---"
+# aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-tast-$region --force --profile urban-dev-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-1 --force --profile urban-dev-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2 --force --profile urban-dev-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-test-us-east-1 --force --profile urban-dev-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-test-us-west-2 --force --profile urban-dev-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-test-eu-west-1 --force --profile urban-dev-profile
+aws s3 rb s3://aws-quickstart-urbanio-ricochet-sitewise-test-eu-central-1 --force --profile urban-dev-profile

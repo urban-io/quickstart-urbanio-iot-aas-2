@@ -1,0 +1,1397 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS UrbanIO SiteWise Integration (qs-1s83daalb)
+Mappings:
+  RegionMap:
+    ap-southeast-1:
+      production: "aws-quickstart-urbanio-ap-southeast-1"
+    ap-southeast-2:
+      production: "aws-quickstart-urbanio-ap-southeast-2"
+    us-east-1:
+      production: "aws-quickstart-urbanio-us-east-1"
+    us-west-2:
+      production: "aws-quickstart-urbanio-us-west-2"
+    eu-west-1:
+      production: "aws-quickstart-urbanio-eu-west-1"
+    eu-central-1:
+      production: "aws-quickstart-urbanio-eu-central-1"
+
+
+Rules:
+  SupportedRegions:
+    Assertions:
+      - Assert:
+          !Or
+            - !Equals
+              - !Ref AWS::Region
+              - us-east-1
+            - !Equals
+              - !Ref AWS::Region
+              - us-west-2
+            - !Equals
+              - !Ref AWS::Region
+              - eu-west-1
+            - !Equals
+              - !Ref AWS::Region
+              - eu-central-1
+            - !Equals
+              - !Ref AWS::Region
+              - ap-southeast-1
+            - !Equals
+              - !Ref AWS::Region
+              - ap-southeast-2
+        AssertDescription: Stack Deployment not to this region not supported
+
+Conditions:
+  HasEmailAddress: !Not
+    - !Equals
+      - !Ref EmailAddress
+      - ''
+  HasS3BucketName: !Not
+     - !Equals
+      - !Ref S3Bucket
+      - ''
+
+  AllowedToCreateCrossAccount: !Not
+    - !Equals 
+      - !Ref AllowCrossAccountAccess
+      - No
+
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Urbanio Sitewise Configuration
+        Parameters:
+          - S3Bucket
+          - EmailAddress
+          - UrbanioAccountNumber
+      - Label:
+          default: AWS Quick Start Configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3KeyPrefix
+
+      - Label:
+          default: Urban.io AWS account Access
+        Parameters:
+          - AllowCrossAccountAccess
+
+    ParameterLabels:
+      S3Bucket:
+        default: S3 bucket
+
+      QSS3BucketName:
+        default: Quick Start S3 bucket name
+
+      QSS3KeyPrefix:
+        default: Quick Start S3 key prefix
+
+      UrbanioAccountNumber:
+        default: Urban Io AWS Account Number
+
+      EmailAddress:
+        default: The email address to used for alarm notifications.
+
+      AllowCrossAccountAccess:
+        default: Allow Cross-Account Access [ Yes/No ]
+
+Globals:
+  Function:
+      Handler: handler.handler
+      MemorySize: 128
+      Runtime: python3.8
+      Timeout: 600
+
+Parameters:
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
+    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
+      Keep the default name unless you are customizing the template. 
+      Changing the name updates code references to point to a new Quick 
+      Start location. This name can include numbers, lowercase letters, 
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+      See https://aws-quickstart.github.io/option1.html.
+    Type: String
+    Default: aws-urbanio-quickstart
+
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: The Quick Start key prefix can include numbers, lowercase
+      letters, uppercase letters, hyphens (-), and forward slash (/).
+    Description: S3 key prefix that is used to simulate a directory for your copy
+      of the Quick Start assets. Keep the default prefix unless you are customizing
+      the template. Changing this prefix updates code references to point to a new
+      Quick Start location. This prefix can include numbers, lowercase letters, uppercase
+      letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
+      and https://aws-quickstart.github.io/option1.html.
+    Type: String
+    Default: quickstart-urbanio-iot-aas/
+
+  S3Bucket:
+    Type: String
+    Description:  The S3 bucket receives the initial integration setup files - definition of the objects 
+      (a JSON file describing operators, customers, locations and devices in lifecycle events format) and a mapping between lifecycle events and asset attributes.
+      Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)
+    AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
+    ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
+
+
+  EmailAddress:
+    Type: String
+    Description: Email address to be use for Cloudwatch alarm notifications.
+    ConstraintDescription: You should enter a valid email
+
+
+  AllowCrossAccountAccess:
+    Type: String
+    Description: Grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics.
+    AllowedValues: [Yes, No]
+    Default: Yes
+  UrbanioAccountNumber:
+    Type: String
+    AllowedPattern: ^[0-9]*$
+    Description: Urban.io AWS Account.
+    ConstraintDescription: You should enter a valid Acount Id
+
+Resources:
+
+  ## S3 bucket
+  SitewiseS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !If
+        - HasS3BucketName
+        - !Ref S3Bucket
+        - !Sub ${AWS::StackName}-${AWS::Region}
+
+  LambdaZipsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref QSS3BucketName
+
+  ## DynamoDB Tables
+  SitewiseModels:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Models
+      AttributeDefinitions:
+      - AttributeName: Name
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Name
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  SitewiseAssets:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Assets
+      AttributeDefinitions:
+      - AttributeName: Id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  SitewiseEventsMapping:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Events-Mapping
+      AttributeDefinitions:
+      - AttributeName: Type
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Type
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  SitewiseIntegrationPoints:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Integration-Points
+      AttributeDefinitions:
+      - AttributeName: Id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: Id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  ## Lambda functions
+  CopyZips:
+    Type: Custom::CopyZips
+    DependsOn:
+      - CopyZipsRole
+    Properties:
+      ServiceToken: !GetAtt CopyZipsFunction.Arn
+      DestBucket: !Ref LambdaZipsBucket
+      SourceBucket: !FindInMap
+        - RegionMap
+        - !Ref AWS::Region
+        - production
+      Prefix: aws-quickstart-urbanio/
+      DestPrefix: !Ref QSS3KeyPrefix
+      Objects:
+        - functions/packages/asset-model-converter/lambda.zip
+        - functions/packages/association-updater/lambda.zip
+        - functions/packages/attributes-updater/lambda.zip
+        - functions/packages/iot-core-to-sqs/lambda.zip
+        - functions/packages/lifecycle-events-mapping-updater/lambda.zip
+        - functions/packages/s3-to-lifecycle-events-converter/lambda.zip
+
+  CopyZipsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Copies objects from a source S3 bucket to a destination.
+      Handler: index.handler
+      Role: !GetAtt CopyZipsRole.Arn
+      Timeout: 240
+      InlineCode: |
+        import json
+        import logging
+        import threading
+        import boto3
+        import cfnresponse
+        def copy_objects(source_bucket, dest_bucket, prefix, dest_prefix, objects):
+            s3 = boto3.client('s3')
+            for o in objects:
+                key = prefix + o
+                dest_key = dest_prefix + o
+                copy_source = {
+                    'Bucket': source_bucket,
+                    'Key': key
+                }
+                print('copy_source: %s' % copy_source)
+                print('dest_bucket = %s'%dest_bucket)
+                print('key = %s' %key)
+                print('key = %s' %dest_key)
+                s3.copy_object(CopySource=copy_source, Bucket=dest_bucket,
+                      Key=dest_key)
+        def delete_objects(bucket, prefix, objects):
+            s3 = boto3.client('s3')
+            objects = {'Objects': [{'Key': prefix + o} for o in objects]}
+            s3.delete_objects(Bucket=bucket, Delete=objects)
+        def timeout(event, context):
+            logging.error('Execution is about to time out, sending failure response to CloudFormation')
+            cfnresponse.send(event, context, cfnresponse.FAILED, {}, None)
+        def handler(event, context):
+            # make sure we send a failure to CloudFormation if the function
+            # is going to timeout
+            timer = threading.Timer((context.get_remaining_time_in_millis()
+                      / 1000.00) - 0.5, timeout, args=[event, context])
+            timer.start()
+            print('Received event: %s' % json.dumps(event))
+            status = cfnresponse.SUCCESS
+            try:
+                source_bucket = event['ResourceProperties']['SourceBucket']
+                dest_bucket = event['ResourceProperties']['DestBucket']
+                prefix = event['ResourceProperties']['Prefix']
+                dest_prefix = event['ResourceProperties']['DestPrefix']
+                objects = event['ResourceProperties']['Objects']
+                if event['RequestType'] == 'Delete':
+                    delete_objects(dest_bucket, dest_prefix, objects)
+                else:
+                    copy_objects(source_bucket, dest_bucket, prefix, dest_prefix, objects)
+            except Exception as e:
+                logging.error('Exception: %s' % e, exc_info=True)
+                status = cfnresponse.FAILED
+            finally:
+                timer.cancel()
+                cfnresponse.send(event, context, status, {}, None)
+
+  LifecycleEventsConverterLambda:
+    DependsOn: CopyZips
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Ref LambdaZipsBucket
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/s3-to-lifecycle-events-converter/lambda.zip
+      Role: !GetAtt LifecycleEventsConverterRole.Arn
+      Environment:
+        Variables:
+          LIFECICLE_EVENTS_QUEUE_URL: !Ref SQSLifecycleEventsQueue
+          DYNAMO_INTEGRATION_POINTS_TABLE_NAME: !Ref SitewiseIntegrationPoints
+      Events:
+        S3EventAssets:
+          Type: S3
+          Properties:
+            Bucket: !Ref SitewiseS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: sitewise/assets/
+
+  LifecycleEventsMappingUpdaterLambda:
+    DependsOn: CopyZips
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/lifecycle-events-mapping-updater/lambda.zip
+      Role: !GetAtt LifecycleEventsMappingUpdaterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_EVENT_MAPPING_TABLE_NAME: !Ref SitewiseEventsMapping
+      Events:
+        S3EventAssets:
+          Type: S3
+          Properties:
+            Bucket: !Ref SitewiseS3Bucket
+            Events: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: prefix
+                    Value: sitewise/events/
+
+  IoTCoreToSQSLambda:
+    DependsOn: CopyZips
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Ref LambdaZipsBucket
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/iot-core-to-sqs/lambda.zip
+      Role: !GetAtt IoTCoreToSQSRole.Arn
+      Environment:
+        Variables:
+          LIFECICLE_EVENTS_QUEUE_URL: !Ref SQSLifecycleEventsQueue
+
+
+  AssetModelConverterLambda:
+    DependsOn: LifecycleEventsConverterLambda
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Ref LambdaZipsBucket
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/asset-model-converter/lambda.zip
+      Role: !GetAtt AssetModelConverterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_ASSETS_TABLE_NAME: !Ref SitewiseAssets
+          DYNAMO_MODELS_TABLE_NAME: !Ref SitewiseModels
+          DYNAMO_INTEGRATION_POINTS_TABLE_NAME: !Ref SitewiseIntegrationPoints
+          ASSETS_TO_ASSOCIATE_QUEUE_URL: !Ref SQSCreatedAssetsQueue
+      Events:
+        SQSLifecycleEventsQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSLifecycleEventsQueue.Arn
+            BatchSize: 10
+
+  AssociationUpdaterLambda:
+    DependsOn: AssetModelConverterLambda
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Ref LambdaZipsBucket
+        Key: !Sub ${QSS3KeyPrefix}functions/packages/association-updater/lambda.zip
+      Role: !GetAtt AssociationUpdaterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_ASSETS_TABLE_NAME: !Ref SitewiseAssets
+          ASSETS_TO_UPDATE_QUEUE_URL: !Ref SQSAssociatedAssetsQueue
+          DYNAMO_INTEGRATION_POINTS_TABLE_NAME: !Ref SitewiseIntegrationPoints
+      Events:
+        SQSCreatedAssetsQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSCreatedAssetsQueue.Arn
+            BatchSize: 10
+
+  AttributesUpdaterLambda:
+    DependsOn: AssetModelConverterLambda
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri:
+        Bucket: !Ref LambdaZipsBucket
+        Key:  !Sub ${QSS3KeyPrefix}functions/packages/attributes-updater/lambda.zip
+      Role: !GetAtt AttributesUpdaterRole.Arn
+      Environment:
+        Variables:
+          DYNAMO_ASSETS_TABLE_NAME: !Ref SitewiseAssets
+          DYNAMO_EVENT_MAPPING_TABLE_NAME: !Ref SitewiseEventsMapping
+      Events:
+        SQSAssociatedAssetsQueue:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSAssociatedAssetsQueue.Arn
+            BatchSize: 10
+
+  ## Lambda Roles
+  UrbanioAssumedRole:
+    Type: AWS::IAM::Role
+    Condition: AllowedToCreateCrossAccount
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !Join
+                  - ''
+                  - - 'arn:'
+                    - !Ref AWS::Partition
+                    - ':iam::'
+                    - !Ref UrbanioAccountNumber
+                    - ':root'
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: CrossAccountS3AllowReadAccessPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:RestoreObject
+            Resource:
+              - !Join
+                - ''
+                - - !GetAtt SitewiseS3Bucket.Arn
+                  - '/*'
+              - !GetAtt SitewiseS3Bucket.Arn
+          - Effect: "Allow"
+            Action:
+             - iot:Publish
+            Resource:
+               - !Join
+                  - ''
+                  - - 'arn:'
+                    - !Ref AWS::Partition
+                    - ':iot:*:*:'
+                    - 'topic/*'
+
+  IoTSiteWiseMeasurementRuleRole:
+    Type: AWS::IAM::Role
+
+    Properties:
+      Description: Role for IoT SiteWise Measurement Update
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: iot.amazonaws.com
+        Version: '2012-10-17'
+      Path: /service-role/
+      Policies:
+      - PolicyName: IoTSiteWiseMeasurement-RolePolicy
+        PolicyDocument:
+          Statement:
+          # SiteWise
+          - Action:
+              - iotsitewise:BatchPutAssetPropertyValue
+            Effect: Allow
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':iotsitewise:'
+                  - !Ref AWS::Region
+                  - ':'
+                  - !Ref AWS::AccountId
+                  - ':*'
+          Version: '2012-10-17'
+
+
+  CopyZipsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Join
+          - ''
+          - - 'arn:'
+            - !Ref AWS::Partition
+            - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Path: /
+      Policies:
+        - PolicyName: lambda-copier
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Join
+                    - ''
+                    - - 'arn:'
+                      - !Ref AWS::Partition
+                      - ':s3:::'
+                      - !FindInMap
+                        - RegionMap
+                        - !Ref AWS::Region
+                        - production
+                      - !Sub  "/aws-quickstart-urbanio/*"
+
+              - Effect: Allow
+                Action:
+                - s3:PutObject
+                - s3:DeleteObject
+                - s3:GetObject
+                - s3:ListBucket
+                - s3:RestoreObject
+                Resource:
+                  - !Join
+                    -  ''
+                    - - !GetAtt LambdaZipsBucket.Arn
+                      - '/'
+                      - !Ref QSS3KeyPrefix
+                      -  '*'
+
+  LifecycleEventsConverterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: '/'
+      Policies:
+      - PolicyName: sqs-lifecycle-events-role
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+            - sqs:CreateQueue
+            - sqs:DeleteMessage
+            - sqs:DeleteMessageBatch
+            - sqs:DeleteQueue
+            - sqs:GetQueueAttributes
+            - sqs:GetQueueUrl
+            - sqs:ListDeadLetterSourceQueues
+            - sqs:ListQueueTags
+            - sqs:ListQueues
+            - sqs:PurgeQueue
+            - sqs:ReceiveMessage
+            - sqs:RemovePermission
+            - sqs:SendMessage
+            - sqs:SendMessageBatch
+            - sqs:SetQueueAttributes
+            - sqs:TagQueue
+            - sqs:UntagQueue
+            Resource:
+              - !GetAtt SQSLifecycleEventsQueue.Arn
+      - PolicyName: IoTCoreToSQSDynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:ConditionCheckItem
+            - dynamodb:CreateGlobalTable
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeLimits
+            - dynamodb:DescribeStream
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+            - dynamodb:ListTables
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+            Resource:
+              - !GetAtt SitewiseEventsMapping.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:RestoreObject
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
+  IoTCoreToSQSRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action:  sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+      Path: '/'
+      Policies:
+      - PolicyName: IoTCoreToSQSDynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:ConditionCheckItem
+            - dynamodb:CreateGlobalTable
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeLimits
+            - dynamodb:DescribeStream
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+            - dynamodb:ListTables
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+            Resource:
+              - !GetAtt SitewiseModels.Arn
+              - !GetAtt SitewiseAssets.Arn
+      - PolicyName: IoTCoreToSQSPolicy
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+            - sqs:CreateQueue
+            - sqs:DeleteMessage
+            - sqs:DeleteMessageBatch
+            - sqs:DeleteQueue
+            - sqs:GetQueueAttributes
+            - sqs:GetQueueUrl
+            - sqs:ListDeadLetterSourceQueues
+            - sqs:ListQueueTags
+            - sqs:ListQueues
+            - sqs:PurgeQueue
+            - sqs:ReceiveMessage
+            - sqs:RemovePermission
+            - sqs:SendMessage
+            - sqs:SendMessageBatch
+            - sqs:SetQueueAttributes
+            - sqs:TagQueue
+            - sqs:UntagQueue
+            Resource:
+              - !GetAtt SQSLifecycleEventsQueue.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:RestoreObject
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
+
+  LifecycleEventsMappingUpdaterRole:
+    Type: AWS::IAM::Role    
+    Properties:
+      ManagedPolicyArns:
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: '/'
+      Policies:
+      - PolicyName: DynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:ConditionCheckItem
+            - dynamodb:CreateGlobalTable
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeLimits
+            - dynamodb:DescribeStream
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+            - dynamodb:ListTables
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+            Resource:
+              - !GetAtt SitewiseEventsMapping.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:RestoreObject
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
+
+  AssetModelConverterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action:  sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+      Path: '/'
+      Policies:
+      - PolicyName: DynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:ConditionCheckItem
+            - dynamodb:CreateGlobalTable
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeLimits
+            - dynamodb:DescribeStream
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+            - dynamodb:ListTables
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+            Resource:
+              - !GetAtt SitewiseModels.Arn
+              - !GetAtt SitewiseAssets.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
+      - PolicyName: s3-allow-read-sitewise
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:RestoreObject
+            Resource:
+              - !Join
+                - ''
+                - - !GetAtt SitewiseS3Bucket.Arn
+                  - '/*'
+              - !GetAtt SitewiseS3Bucket.Arn
+      - PolicyName: SqsAssetModelConverterPolicy
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+            - sqs:CreateQueue
+            - sqs:DeleteMessage
+            - sqs:DeleteMessageBatch
+            - sqs:DeleteQueue
+            - sqs:GetQueueAttributes
+            - sqs:GetQueueUrl
+            - sqs:ListDeadLetterSourceQueues
+            - sqs:ListQueueTags
+            - sqs:ListQueues
+            - sqs:PurgeQueue
+            - sqs:ReceiveMessage
+            - sqs:RemovePermission
+            - sqs:SendMessage
+            - sqs:SendMessageBatch
+            - sqs:SetQueueAttributes
+            - sqs:TagQueue
+            - sqs:UntagQueue
+            Resource:
+              - !GetAtt SQSLifecycleEventsQueue.Arn
+              -  !GetAtt SQSCreatedAssetsQueue.Arn
+
+  AssociationUpdaterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+      Policies:
+      - PolicyName: DynamodbWritePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:ConditionCheckItem
+            - dynamodb:CreateGlobalTable
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeLimits
+            - dynamodb:DescribeStream
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+            - dynamodb:ListTables
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+            Resource:
+              - !GetAtt SitewiseAssets.Arn
+              - !GetAtt SitewiseIntegrationPoints.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:RestoreObject
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
+      - PolicyName: sqs-association-updater-role
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+            - sqs:CreateQueue
+            - sqs:DeleteMessage
+            - sqs:DeleteMessageBatch
+            - sqs:DeleteQueue
+            - sqs:GetQueueAttributes
+            - sqs:GetQueueUrl
+            - sqs:ListDeadLetterSourceQueues
+            - sqs:ListQueueTags
+            - sqs:ListQueues
+            - sqs:PurgeQueue
+            - sqs:ReceiveMessage
+            - sqs:RemovePermission
+            - sqs:SendMessage
+            - sqs:SendMessageBatch
+            - sqs:SetQueueAttributes
+            - sqs:TagQueue
+            - sqs:UntagQueue
+            Resource:
+              -  !GetAtt SQSAssociatedAssetsQueue.Arn
+              - !GetAtt SQSCreatedAssetsQueue.Arn
+
+  AttributesUpdaterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/CloudWatchReadOnlyAccess'
+      - !Join
+        - ''
+        - - 'arn:'
+          - !Ref AWS::Partition
+          - ':iam::aws:policy/AWSIoTSiteWiseFullAccess'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+      Policies:
+      - PolicyName: dynamodb-write-sitewise
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - dynamodb:BatchGetItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:ConditionCheckItem
+            - dynamodb:CreateGlobalTable
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeLimits
+            - dynamodb:DescribeStream
+            - dynamodb:DescribeTable
+            - dynamodb:GetItem
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+            - dynamodb:ListTables
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+            Resource:
+              - !GetAtt SitewiseAssets.Arn
+              - !GetAtt SitewiseEventsMapping.Arn
+      - PolicyName: s3AllowReadPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - s3:PutObject
+            - s3:DeleteObject
+            - s3:GetObject
+            - s3:ListBucket
+            - s3:RestoreObject
+            Resource:
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+              - !Join
+                - ''
+                - - 'arn:'
+                  - !Ref AWS::Partition
+                  - ':s3:::'
+                  - !If
+                    - HasS3BucketName
+                    - !Ref S3Bucket
+                    - !Sub ${AWS::StackName}-${AWS::Region}
+                  - '/*'
+      - PolicyName: sqs-attibute-updater-role
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+            - sqs:CreateQueue
+            - sqs:DeleteMessage
+            - sqs:DeleteMessageBatch
+            - sqs:DeleteQueue
+            - sqs:GetQueueAttributes
+            - sqs:GetQueueUrl
+            - sqs:ListDeadLetterSourceQueues
+            - sqs:ListQueueTags
+            - sqs:ListQueues
+            - sqs:PurgeQueue
+            - sqs:ReceiveMessage
+            - sqs:RemovePermission
+            - sqs:SendMessage
+            - sqs:SendMessageBatch
+            - sqs:SetQueueAttributes
+            - sqs:TagQueue
+            - sqs:UntagQueue
+            Resource:
+              - !GetAtt SQSAssociatedAssetsQueue.Arn
+
+  IotToSqsTopicRuleLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt IoTCoreToSQSLambda.Arn
+      Principal: iot.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !GetAtt IotToSqsTopicRule.Arn
+
+  ## SQS
+  SQSLifecycleEventsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-lifecycle-events.fifo
+      FifoQueue: true
+      ContentBasedDeduplication: true
+      VisibilityTimeout: 1200
+
+  SQSAssociatedAssetsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-associated-assets.fifo
+      FifoQueue: true
+      ContentBasedDeduplication: true
+      VisibilityTimeout: 1200
+
+  SQSCreatedAssetsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${AWS::Region}-created-assets.fifo
+      FifoQueue: true
+      ContentBasedDeduplication: true
+      VisibilityTimeout: 1200
+
+  ## IOT Tropic
+  IotToSqsTopicRule:
+    Type: AWS::IoT::TopicRule
+    Properties:
+      RuleName: !Join
+        - ''
+        - !Split
+          - '-'
+          - !Sub '${AWS::StackName}_${AWS::Region}_send_lifecycle_event_to_lambda_iot_topic_rule'
+      TopicRulePayload:
+        RuleDisabled: false
+        Sql: SELECT * FROM 'urbanio/lifecycle/#'
+        Actions:
+        - Lambda:
+            FunctionArn: !GetAtt IoTCoreToSQSLambda.Arn
+
+  UpdateSitewiseMeasurementsRule:
+    Type: AWS::IoT::TopicRule
+    Properties:
+      RuleName: !Join
+        - ''
+        - !Split
+          - '-'
+          - !Sub '${AWS::StackName}_${AWS::Region}_update_sitewise_measurements_iot_topic_rule'
+      TopicRulePayload:
+        RuleDisabled: false
+        Sql: SELECT * FROM 'urbanio/reading/#'
+        Actions:
+        - IotSiteWise:
+            PutAssetPropertyValueEntries:
+              - PropertyAlias: '/urbanio/device/${metadata.ref.d}/${reading.ch}/${reading.dt}'
+                PropertyValues:
+                  - Timestamp:
+                      TimeInSeconds: '${reading.ts / 1000}'
+                    Value:
+                      DoubleValue: '${reading.scaled.v}'
+            RoleArn: !GetAtt IoTSiteWiseMeasurementRuleRole.Arn
+
+  ## CloudWatch Alarms
+  LifecycleEventsConverterLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+      - Name: FunctionName
+        Value: !Ref LifecycleEventsConverterLambda
+      Statistic: Sum
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 1
+      EvaluationPeriods: 5
+      Period: 60
+      TreatMissingData: notBreaching
+      Unit: Count
+
+  LifecycleEventsMappingUpdaterLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+      - Name: FunctionName
+        Value: !Ref LifecycleEventsMappingUpdaterLambda
+      Statistic: Sum
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 1
+      EvaluationPeriods: 5
+      Period: 60
+      TreatMissingData: notBreaching
+      Unit: Count
+
+  IoTCoreToSQSLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+      - Name: FunctionName
+        Value: !Ref IoTCoreToSQSLambda
+      Statistic: Sum
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 1
+      EvaluationPeriods: 5
+      Period: 60
+      TreatMissingData: notBreaching
+      Unit: Count
+
+  AssetModelConverterLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+      - Name: FunctionName
+        Value: !Ref AssetModelConverterLambda
+      Statistic: Sum
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 1
+      EvaluationPeriods: 5
+      Period: 60
+      TreatMissingData: notBreaching
+      Unit: Count
+
+  AssociationUpdaterLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+      - Name: FunctionName
+        Value: !Ref AssociationUpdaterLambda
+      Statistic: Sum
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 1
+      EvaluationPeriods: 5
+      Period: 60
+      TreatMissingData: notBreaching
+      Unit: Count
+
+  AttributesUpdaterLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Alarm if lambda errors out too many times
+      AlarmActions:
+      - !If
+        - HasEmailAddress
+        - !Ref AlarmSNSTopic
+        - !Ref AWS::NoValue
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+      - Name: FunctionName
+        Value: !Ref AttributesUpdaterLambda
+      Statistic: Sum
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 1
+      EvaluationPeriods: 5
+      Period: 60
+      TreatMissingData: notBreaching
+      Unit: Count
+
+  AlarmSNSTopic:
+    Type: AWS::SNS::Topic
+    Condition: HasEmailAddress
+    Properties: {}
+
+  AlarmSNSSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasEmailAddress
+    Properties:
+      Endpoint: !Ref EmailAddress
+      Protocol: email
+      TopicArn: !Ref AlarmSNSTopic
+
+  ## Output Parameters
+Outputs:
+  UrbanioSitewiseS3Bucket:
+    Description: The SiteWise S3 Bucket
+    Value:
+      Ref: SitewiseS3Bucket
+
+  CrossAccountRoleId:
+    Condition: AllowedToCreateCrossAccount
+    Description: The logical ID of the IAM role
+    Value: !Ref UrbanioAssumedRole
+
+  CrossAccountRolArn:
+    Condition: AllowedToCreateCrossAccount
+    Description: The ARN of the IAM role
+    Value: !GetAtt UrbanioAssumedRole.Arn

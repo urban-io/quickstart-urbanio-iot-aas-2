@@ -1,14 +1,15 @@
-// Replace the <n> in each row to specify the number of resources used in this deployment. Remove the rows for resources that aren’t used.
+// Replace the <n> in each row to specify the number of resources used in this deployment. Remove the rows for resources that aren't used.
 |===
 |Resource |This deployment uses
 
 // Space needed to maintain table headers
-|VPCs |<n>
-|Elastic IP addresses |<n>
-|Security groups |<n>
-|AWS Identity and Access Management (IAM) roles |<n>
-|Auto Scaling groups |<n>
-|Application Load Balancers |<n>
-|Network Load Balancers |<n>
-|<type> instances |<n>
+|AWS Identity and Access Management (IAM) roles |10
+|DynamoDB tables |4
+|Lambda functions |7
+|AWS IoT topic rules |2
+|SQS |3
+|S3 buckets |2
+|CloudWatch alarms| 6
+|SNS topic| 1
+|SNS sunscription| 1
 |===

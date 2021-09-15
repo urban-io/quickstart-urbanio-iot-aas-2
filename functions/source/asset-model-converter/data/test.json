@@ -1,0 +1,2907 @@
+[
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Gateway",
+          "assetModelName": "UrbanIO (G4) Gateway Device",
+          "assetModelDescription": "UrbanIO (G4) Gateway Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Gateway Status",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Cellular Signal",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Gateway Battery",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Gateway Power Supply",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Cellular Signal Quality",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Temperature",
+          "assetModelName": "UrbanIO (G4) Temperature Device",
+          "assetModelDescription": "UrbanIO (G4) Temperature Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Temperature",
+              "dataType": "DOUBLE",
+              "unit": "˚C",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Humidity",
+          "assetModelName": "UrbanIO (G4) Humidity Device",
+          "assetModelDescription": "UrbanIO (G4) Humidity Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Humidity",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Light",
+          "assetModelName": "UrbanIO (G4) Light Device",
+          "assetModelDescription": "UrbanIO (G4) Light Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Light",
+              "dataType": "DOUBLE",
+              "unit": "lx",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Flood",
+          "assetModelName": "UrbanIO (G4) Flood Device",
+          "assetModelDescription": "UrbanIO (G4) Flood Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Flood",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Moisture",
+          "assetModelName": "UrbanIO (G4) Moisture Device",
+          "assetModelDescription": "UrbanIO (G4) Moisture Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Moisture",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Temperature Probe",
+          "assetModelName": "UrbanIO (G4) Temperature Probe Device",
+          "assetModelDescription": "UrbanIO (G4) Temperature Probe Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Temperature",
+              "dataType": "DOUBLE",
+              "unit": "˚C",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Multi-Temperature Probe",
+          "assetModelName": "UrbanIO (G4) Multi-Temperature Probe Device",
+          "assetModelDescription": "UrbanIO (G4) Multi-Temperature Probe Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Temperature 0",
+              "dataType": "DOUBLE",
+              "unit": "˚C",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Temperature 1",
+              "dataType": "DOUBLE",
+              "unit": "˚C",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Temperature 2",
+              "dataType": "DOUBLE",
+              "unit": "˚C",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) On/Off",
+          "assetModelName": "UrbanIO (G4) On/Off Device",
+          "assetModelDescription": "UrbanIO (G4) On/Off Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "On/Off",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Control Unit",
+          "assetModelName": "UrbanIO (G4) Control Unit Device",
+          "assetModelDescription": "UrbanIO (G4) Control Unit Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "On/Off 1",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "On/Off 2",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Process Loop",
+          "assetModelName": "UrbanIO (G4) Process Loop Device",
+          "assetModelDescription": "UrbanIO (G4) Process Loop Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Process Loop (4-20mA)",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Vibration",
+          "assetModelName": "UrbanIO (G4) Vibration Device",
+          "assetModelDescription": "UrbanIO (G4) Vibration Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "X-Axis",
+              "dataType": "DOUBLE",
+              "unit": "mm/s",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Y-Axis",
+              "dataType": "DOUBLE",
+              "unit": "mm/s",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Z-Axis",
+              "dataType": "DOUBLE",
+              "unit": "mm/s",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Motion",
+          "assetModelName": "UrbanIO (G4) Motion Device",
+          "assetModelDescription": "UrbanIO (G4) Motion Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Motion",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Activity",
+          "assetModelName": "UrbanIO (G4) Activity Device",
+          "assetModelDescription": "UrbanIO (G4) Activity Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Activity",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Meter Count",
+          "assetModelName": "UrbanIO (G4) Meter Count Device",
+          "assetModelDescription": "UrbanIO (G4) Meter Count Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Electricity Usage",
+              "dataType": "DOUBLE",
+              "unit": "kWh",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Water Usage",
+              "dataType": "DOUBLE",
+              "unit": "L",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Gas Usage",
+              "dataType": "DOUBLE",
+              "unit": "m³",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Current",
+          "assetModelName": "UrbanIO (G4) Current Device",
+          "assetModelDescription": "UrbanIO (G4) Current Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Current",
+              "dataType": "DOUBLE",
+              "unit": "A",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Battery Test",
+          "assetModelName": "UrbanIO (G4) Battery Test Device",
+          "assetModelDescription": "UrbanIO (G4) Battery Test Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Battery Test",
+              "dataType": "DOUBLE",
+              "unit": "V",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Delta Pressure",
+          "assetModelName": "UrbanIO (G4) Delta Pressure Device",
+          "assetModelDescription": "UrbanIO (G4) Delta Pressure Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Delta Pressure",
+              "dataType": "DOUBLE",
+              "unit": "Pa",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) External Pressure",
+          "assetModelName": "UrbanIO (G4) External Pressure Device",
+          "assetModelDescription": "UrbanIO (G4) External Pressure Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Pressure",
+              "dataType": "DOUBLE",
+              "unit": "KPa",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Tamper",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "deviceType": "(G4) Locator Puck",
+          "assetModelName": "UrbanIO (G4) Locator Puck Device",
+          "assetModelDescription": "UrbanIO (G4) Locator Puck Device",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Serial Number",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            },
+            {
+              "name": "Available Power To Transmit",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Signal Strength",
+              "dataType": "DOUBLE",
+              "unit": "%",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Clip count connected to puck",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Clip count activations",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Clip count deactivations",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Contact events count",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            },
+            {
+              "name": "Fault",
+              "dataType": "DOUBLE",
+              "type": {
+                "measurement": {
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "Network",
+          "assetModelName": "UrbanIO Network Sensors",
+          "assetModelDescription": "UrbanIO Network Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Network"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Gateway Devices",
+              "childAssetModel": "UrbanIO (G4) Gateway Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "Environment",
+          "assetModelName": "UrbanIO Environment Sensors",
+          "assetModelDescription": "UrbanIO Environment Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Environment"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Temperature Devices",
+              "childAssetModel": "UrbanIO (G4) Temperature Device"
+            },
+            {
+              "name": "(G4) Humidity Devices",
+              "childAssetModel": "UrbanIO (G4) Humidity Device"
+            },
+            {
+              "name": "(G4) Light Devices",
+              "childAssetModel": "UrbanIO (G4) Light Device"
+            },
+            {
+              "name": "(G4) Flood Devices",
+              "childAssetModel": "UrbanIO (G4) Flood Device"
+            },
+            {
+              "name": "(G4) Moisture Devices",
+              "childAssetModel": "UrbanIO (G4) Moisture Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "System",
+          "assetModelName": "UrbanIO System Sensors",
+          "assetModelDescription": "UrbanIO System Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "System"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Temperature Probe Devices",
+              "childAssetModel": "UrbanIO (G4) Temperature Probe Device"
+            },
+            {
+              "name": "(G4) Multi-Temperature Probe Devices",
+              "childAssetModel": "UrbanIO (G4) Multi-Temperature Probe Device"
+            },
+            {
+              "name": "(G4) On/Off Devices",
+              "childAssetModel": "UrbanIO (G4) On/Off Device"
+            },
+            {
+              "name": "(G4) Control Unit Devices",
+              "childAssetModel": "UrbanIO (G4) Control Unit Device"
+            },
+            {
+              "name": "(G4) Process Loop Devices",
+              "childAssetModel": "UrbanIO (G4) Process Loop Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "Machinery",
+          "assetModelName": "UrbanIO Machinery Sensors",
+          "assetModelDescription": "UrbanIO Machinery Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Machinery"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Vibration Devices",
+              "childAssetModel": "UrbanIO (G4) Vibration Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "People",
+          "assetModelName": "UrbanIO People Sensors",
+          "assetModelDescription": "UrbanIO People Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "People"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Motion Devices",
+              "childAssetModel": "UrbanIO (G4) Motion Device"
+            },
+            {
+              "name": "(G4) Activity Devices",
+              "childAssetModel": "UrbanIO (G4) Activity Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "Utility",
+          "assetModelName": "UrbanIO Utility Sensors",
+          "assetModelDescription": "UrbanIO Utility Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Utility"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Meter Count Devices",
+              "childAssetModel": "UrbanIO (G4) Meter Count Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "Electrical",
+          "assetModelName": "UrbanIO Electrical Sensors",
+          "assetModelDescription": "UrbanIO Electrical Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Electrical"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Current Devices",
+              "childAssetModel": "UrbanIO (G4) Current Device"
+            },
+            {
+              "name": "(G4) Battery Test Devices",
+              "childAssetModel": "UrbanIO (G4) Battery Test Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "Pressure",
+          "assetModelName": "UrbanIO Pressure Sensors",
+          "assetModelDescription": "UrbanIO Pressure Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Pressure"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Delta Pressure Devices",
+              "childAssetModel": "UrbanIO (G4) Delta Pressure Device"
+            },
+            {
+              "name": "(G4) External Pressure Devices",
+              "childAssetModel": "UrbanIO (G4) External Pressure Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "category": "Tracing",
+          "assetModelName": "UrbanIO Tracing Sensors",
+          "assetModelDescription": "UrbanIO Tracing Sensors",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Tracing"
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "(G4) Locator Puck Devices",
+              "childAssetModel": "UrbanIO (G4) Locator Puck Device"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "assetModelName": "UrbanIO Location",
+          "assetModelDescription": "UrbanIO Location",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Latitude",
+              "dataType": "DOUBLE",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Longitude",
+              "dataType": "DOUBLE",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "Network Devices",
+              "childAssetModel": "UrbanIO Network Sensors"
+            },
+            {
+              "name": "Environment Devices",
+              "childAssetModel": "UrbanIO Environment Sensors"
+            },
+            {
+              "name": "System Devices",
+              "childAssetModel": "UrbanIO System Sensors"
+            },
+            {
+              "name": "Machinery Devices",
+              "childAssetModel": "UrbanIO Machinery Sensors"
+            },
+            {
+              "name": "People Devices",
+              "childAssetModel": "UrbanIO People Sensors"
+            },
+            {
+              "name": "Utility Devices",
+              "childAssetModel": "UrbanIO Utility Sensors"
+            },
+            {
+              "name": "Electrical Devices",
+              "childAssetModel": "UrbanIO Electrical Sensors"
+            },
+            {
+              "name": "Pressure Devices",
+              "childAssetModel": "UrbanIO Pressure Sensors"
+            },
+            {
+              "name": "Tracing Devices",
+              "childAssetModel": "UrbanIO Tracing Sensors"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "assetModelName": "UrbanIO Customer",
+          "assetModelDescription": "UrbanIO Customer",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "Locations",
+              "childAssetModel": "UrbanIO Location"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "assetModelName": "UrbanIO Operator",
+          "assetModelDescription": "UrbanIO Operator",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "External ID",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                }
+              }
+            },
+            {
+              "name": "Commissioning Status",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Commissioned"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "Customers",
+              "childAssetModel": "UrbanIO Customer"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "model_updated",
+        "asset_model": {
+          "assetModelName": "UrbanIO Root",
+          "assetModelDescription": "UrbanIO Organization",
+          "assetModelProperties": [
+            {
+              "name": "Name",
+              "dataType": "STRING",
+              "type": {
+                "attribute": {
+                  "defaultValue": "Urban.io"
+                }
+              }
+            }
+          ],
+          "assetModelHierarchies": [
+            {
+              "name": "Operators",
+              "childAssetModel": "UrbanIO Operator"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "root_updated",
+        "id": "urban.io",
+        "name": "Urban.io"
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "operator_updated",
+        "id": "TD016x-tBKEpZ_PUmyA29Q",
+        "name": "Urban-io - Internal",
+        "ancestor_names": [
+          "Urban.io",
+          "Urban-io - Internal"
+        ]
+      },
+      "metadata": {
+        "ref": {
+          "o": [
+            "ieNIRulGlPWajnsP6vCd3g",
+            "TD016x-tBKEpZ_PUmyA29Q"
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "customer_updated",
+        "id": "DpCKLTButMkYDgUkuU1jeA",
+        "name": "Sofia Sites",
+        "ancestor_names": [
+          "Urban.io",
+          "Urban-io - Internal"
+        ]
+      },
+      "metadata": {
+        "ref": {
+          "o": [
+            "TD016x-tBKEpZ_PUmyA29Q",
+            "ieNIRulGlPWajnsP6vCd3g"
+          ]
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "location_updated",
+        "id": "HbUqxJ5Q5DkZMqYT19kDTw",
+        "name": "Conveyor Site",
+        "longitude": "23.3751958914017",
+        "latitude": "42.6346456689525"
+      },
+      "metadata": {
+        "ref": {
+          "c": "DpCKLTButMkYDgUkuU1jeA"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "location_updated",
+        "id": "JhoDqAyXpBuarbImDg2iGg",
+        "name": "Migration AUS",
+        "longitude": "23.33333",
+        "latitude": "42.7"
+      },
+      "metadata": {
+        "ref": {
+          "c": "DpCKLTButMkYDgUkuU1jeA"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "location_updated",
+        "id": "EQe7ZkY6pGB7OSYWEP9RxA",
+        "name": "Sofia, Aleko 41",
+        "longitude": "23.33333",
+        "latitude": "42.7"
+      },
+      "metadata": {
+        "ref": {
+          "c": "DpCKLTButMkYDgUkuU1jeA"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "location_updated",
+        "id": "Dgwmfh7T1Bp5AVErH79KYg",
+        "name": "Sofia, d-r Atanas Moskov",
+        "longitude": "23.33333",
+        "latitude": "42.7"
+      },
+      "metadata": {
+        "ref": {
+          "c": "DpCKLTButMkYDgUkuU1jeA"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "location_updated",
+        "id": "vujW2rdqFBoo6C8opXsh_g",
+        "name": "Sofia, William Gladstone",
+        "longitude": "23.33333",
+        "latitude": "42.7"
+      },
+      "metadata": {
+        "ref": {
+          "c": "DpCKLTButMkYDgUkuU1jeA"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "location_updated",
+        "id": "4M2giwrLBCm5R2TCAZY_tA",
+        "name": "Support Site",
+        "longitude": "23.3224755",
+        "latitude": "42.6911907"
+      },
+      "metadata": {
+        "ref": {
+          "c": "DpCKLTButMkYDgUkuU1jeA"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "category_updated",
+        "id": "Network-JhoDqAyXpBuarbImDg2iGg",
+        "name": "Network"
+      },
+      "metadata": {
+        "ref": {
+          "l": "JhoDqAyXpBuarbImDg2iGg"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "category_updated",
+        "id": "Network-vujW2rdqFBoo6C8opXsh_g",
+        "name": "Network"
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "category_updated",
+        "id": "Pressure-vujW2rdqFBoo6C8opXsh_g",
+        "name": "Pressure"
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "category_updated",
+        "id": "Environment-vujW2rdqFBoo6C8opXsh_g",
+        "name": "Environment"
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "category_updated",
+        "id": "System-vujW2rdqFBoo6C8opXsh_g",
+        "name": "System"
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "category_updated",
+        "id": "Environment-4M2giwrLBCm5R2TCAZY_tA",
+        "name": "Environment"
+      },
+      "metadata": {
+        "ref": {
+          "l": "4M2giwrLBCm5R2TCAZY_tA"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "device_updated",
+        "id": "uT2OROq5NLcIjvide2YN3Q",
+        "di": "100000a",
+        "name": "GEN4 100000a ",
+        "device_type": "(G4) Gateway",
+        "device_category": "Network",
+        "datastreams": {
+          "Gateway Status": {
+            "channel": 0,
+            "data_type": "gateway_heartbeat"
+          },
+          "Gateway Battery": {
+            "channel": 0,
+            "data_type": "gateway_battery_level"
+          },
+          "Cellular Signal": {
+            "channel": 0,
+            "data_type": "gateway_cell_signal"
+          },
+          "Cellular Signal Quality": {
+            "channel": 0,
+            "data_type": "gateway_signal_quality"
+          },
+          "Gateway Power Supply": {
+            "channel": 0,
+            "data_type": "gateway_power_supply"
+          }
+        }
+      },
+      "metadata": {
+        "ref": {
+          "l": "JhoDqAyXpBuarbImDg2iGg"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "device_updated",
+        "id": "i_EZFJ9zJCAp0pHGF_rzjw",
+        "di": "100001a",
+        "name": "PROD MONITORING",
+        "device_type": "(G4) Gateway",
+        "device_category": "Network",
+        "datastreams": {
+          "Gateway Status": {
+            "channel": 0,
+            "data_type": "gateway_heartbeat"
+          },
+          "Gateway Battery": {
+            "channel": 0,
+            "data_type": "gateway_battery_level"
+          },
+          "Cellular Signal": {
+            "channel": 0,
+            "data_type": "gateway_cell_signal"
+          },
+          "Cellular Signal Quality": {
+            "channel": 0,
+            "data_type": "gateway_signal_quality"
+          },
+          "Gateway Power Supply": {
+            "channel": 0,
+            "data_type": "gateway_power_supply"
+          }
+        }
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "device_updated",
+        "id": "0L_JF5SOROmq5lmjXC-Xzg",
+        "di": "3567289",
+        "name": "test",
+        "device_type": "(G4) External Pressure",
+        "device_category": "Pressure",
+        "datastreams": {
+          "Pressure": {
+            "channel": 0,
+            "data_type": "external_pressure"
+          },
+          "Available Power To Transmit": {
+            "channel": 0,
+            "data_type": "sensor_battery_level"
+          },
+          "Signal Strength": {
+            "channel": 0,
+            "data_type": "sensor_signal_strength"
+          },
+          "Fault": {
+            "channel": 0,
+            "data_type": "fault"
+          },
+          "Tamper": {
+            "channel": 0,
+            "data_type": "tamper"
+          }
+        }
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "device_updated",
+        "id": "f-2dIsJA1EiIgFfoKOHUBA",
+        "di": "1000194",
+        "name": "Test scan URL",
+        "device_type": "(G4) Humidity",
+        "device_category": "Environment",
+        "datastreams": {
+          "Humidity": {
+            "channel": 0,
+            "data_type": "humidity"
+          },
+          "Available Power To Transmit": {
+            "channel": 0,
+            "data_type": "sensor_battery_level"
+          },
+          "Signal Strength": {
+            "channel": 0,
+            "data_type": "sensor_signal_strength"
+          },
+          "Fault": {
+            "channel": 0,
+            "data_type": "fault"
+          },
+          "Tamper": {
+            "channel": 0,
+            "data_type": "tamper"
+          }
+        }
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "device_updated",
+        "id": "TAdea5o1FK7bLc0O9tCDlw",
+        "di": "1000976",
+        "name": "FAUTY ?",
+        "device_type": "(G4) Gateway",
+        "device_category": "Network",
+        "datastreams": {
+          "Gateway Status": {
+            "channel": 0,
+            "data_type": "gateway_heartbeat"
+          },
+          "Gateway Battery": {
+            "channel": 0,
+            "data_type": "gateway_battery_level"
+          },
+          "Cellular Signal": {
+            "channel": 0,
+            "data_type": "gateway_cell_signal"
+          },
+          "Cellular Signal Quality": {
+            "channel": 0,
+            "data_type": "gateway_signal_quality"
+          },
+          "Gateway Power Supply": {
+            "channel": 0,
+            "data_type": "gateway_power_supply"
+          }
+        }
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "device_updated",
+        "id": "KxzbbhETdA1pfT0a6DsGpg",
+        "di": "23467d",
+        "name": "control unit",
+        "device_type": "(G4) Control Unit",
+        "device_category": "System",
+        "datastreams": {
+          "On/Off 1": {
+            "channel": 1,
+            "data_type": "on_off"
+          },
+          "On/Off 2": {
+            "channel": 2,
+            "data_type": "on_off"
+          },
+          "Signal Strength": {
+            "channel": 0,
+            "data_type": "sensor_signal_strength"
+          },
+          "Fault": {
+            "channel": 0,
+            "data_type": "fault"
+          },
+          "Tamper": {
+            "channel": 0,
+            "data_type": "tamper"
+          }
+        }
+      },
+      "metadata": {
+        "ref": {
+          "l": "vujW2rdqFBoo6C8opXsh_g"
+        }
+      }
+    },
+    {
+      "type": "lifecycle",
+      "reading": {
+        "et": "device_updated",
+        "id": "aYzZ_sr2hNYKLmwuAvpiXg",
+        "di": "T-001",
+        "name": "Temp",
+        "device_type": "(G4) Temperature",
+        "device_category": "Environment",
+        "datastreams": {
+          "Temperature": {
+            "channel": 0,
+            "data_type": "temperature"
+          },
+          "Available Power To Transmit": {
+            "channel": 0,
+            "data_type": "sensor_battery_level"
+          },
+          "Signal Strength": {
+            "channel": 0,
+            "data_type": "sensor_signal_strength"
+          },
+          "Fault": {
+            "channel": 0,
+            "data_type": "fault"
+          },
+          "Tamper": {
+            "channel": 0,
+            "data_type": "tamper"
+          }
+        }
+      },
+      "metadata": {
+        "ref": {
+          "l": "4M2giwrLBCm5R2TCAZY_tA"
+        }
+      }
+    }
+]
