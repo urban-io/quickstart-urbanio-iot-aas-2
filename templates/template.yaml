@@ -17,6 +17,31 @@ Mappings:
       production: "aws-quickstart-urbanio-eu-central-1"
 
 
+Rules:
+  SupportedRegions:
+    Assertions:
+      - Assert:
+          !Or
+            - !Equals
+              - !Ref AWS::Region
+              - us-east-1
+            - !Equals
+              - !Ref AWS::Region
+              - us-west-2
+            - !Equals
+              - !Ref AWS::Region
+              - eu-west-1
+            - !Equals
+              - !Ref AWS::Region
+              - eu-central-1
+            - !Equals
+              - !Ref AWS::Region
+              - ap-southeast-1
+            - !Equals
+              - !Ref AWS::Region
+              - ap-southeast-2
+        AssertDescription: Stack Deployment not to this region not supported
+
 Conditions:
   HasEmailAddress: !Not
     - !Equals
@@ -26,39 +51,12 @@ Conditions:
      - !Equals
       - !Ref S3Bucket
       - ''
-  HasEnvType: !Not
-     - !Equals
-      - !Ref EnvType
-      - ''
-
-  ValidRegion: !Or
-    - !Equals
-      - !Ref AWS::Region
-      - us-east-1
-    - !Equals
-      - !Ref AWS::Region
-      - us-west-2
-    - !Equals
-      - !Ref AWS::Region
-      - eu-west-1
-    - !Equals
-      - !Ref AWS::Region
-      - eu-central-1
-    - !Equals
-      - !Ref AWS::Region
-      - ap-southeast-1
-    - !Equals
-      - !Ref AWS::Region
-      - ap-southeast-2
 
   AllowedToCreateCrossAccount: !Not
     - !Equals 
       - !Ref AllowCrossAccountAccess
       - No
 
-  CreateCrossAccountIAM: !And
-    - !Condition ValidRegion
-    - !Condition AllowedToCreateCrossAccount
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -67,8 +65,6 @@ Metadata:
           default: Urbanio Sitewise Configuration
         Parameters:
           - S3Bucket
-          - SitewiseCrossAccountRole
-          - EnvType
           - EmailAddress
           - UrbanioAccountNumber
       - Label:
@@ -92,14 +88,8 @@ Metadata:
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
 
-      SitewiseCrossAccountRole:
-        default: Role Name
-      
       UrbanioAccountNumber:
         default: Urban Io AWS Account Number
-
-      EnvType:
-        default: Environment Type
 
       EmailAddress:
         default: The email address to used for alarm notifications.
@@ -115,15 +105,6 @@ Globals:
       Timeout: 600
 
 Parameters:
-
-  EnvType:
-    Description: Environment type.
-    Type: String
-    AllowedValues:
-      - production
-    ConstraintDescription: must specify production
-    Default: production
-
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).
@@ -157,13 +138,6 @@ Parameters:
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 
-  SitewiseCrossAccountRole:
-    AllowedPattern: ^[0-9a-zA-Z-/]*$
-    ConstraintDescription: The Cross Account Role
-    Description: The CrossAccount role will grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics. 
-    Please keep the exact name as it will be required in app.urban.io during integration setup
-    Type: String
-    Default: SitewiseCrossAccount
 
   EmailAddress:
     Type: String
@@ -173,10 +147,9 @@ Parameters:
 
   AllowCrossAccountAccess:
     Type: String
-    Description: Allow Cross Account Access for the customers Account to Urban.IO.
-    ConstraintDescription: You should enter a valid email
+    Description: Grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics.
     AllowedValues: [Yes, No]
-    Default: No
+    Default: Yes
   UrbanioAccountNumber:
     Type: String
     AllowedPattern: ^[0-9]*$
@@ -188,6 +161,7 @@ Resources:
   ## S3 bucket
   SitewiseS3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
       BucketName: !If
         - HasS3BucketName
@@ -196,14 +170,12 @@ Resources:
 
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
-    Condition: ValidRegion
     Properties:
       BucketName: !Ref QSS3BucketName
 
   ## DynamoDB Tables
   SitewiseModels:
     Type: AWS::DynamoDB::Table
-    Condition: ValidRegion
     Properties:
       TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Models
       AttributeDefinitions:
@@ -216,7 +188,6 @@ Resources:
 
   SitewiseAssets:
     Type: AWS::DynamoDB::Table
-    Condition: ValidRegion
     Properties:
       TableName: !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Assets
       AttributeDefinitions:
@@ -229,7 +200,6 @@ Resources:
 
   SitewiseEventsMapping:
     Type: AWS::DynamoDB::Table
-    Condition: ValidRegion
     Properties:
       TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Events-Mapping
       AttributeDefinitions:
@@ -242,7 +212,6 @@ Resources:
 
   SitewiseIntegrationPoints:
     Type: AWS::DynamoDB::Table
-    Condition: ValidRegion
     Properties:
       TableName:  !Sub ${AWS::StackName}-${AWS::Region}-SiteWise-Integration-Points
       AttributeDefinitions:
@@ -262,16 +231,10 @@ Resources:
     Properties:
       ServiceToken: !GetAtt CopyZipsFunction.Arn
       DestBucket: !Ref LambdaZipsBucket
-      SourceBucket: !If
-        - HasEnvType
-        - !FindInMap
-          - RegionMap
-          - !Ref AWS::Region
-          - !Ref EnvType
-        - !FindInMap
-          - RegionMap
-          - !Ref AWS::Region
-          - production
+      SourceBucket: !FindInMap
+        - RegionMap
+        - !Ref AWS::Region
+        - production
       Prefix: aws-quickstart-urbanio/
       DestPrefix: !Ref QSS3KeyPrefix
       Objects:
@@ -284,7 +247,6 @@ Resources:
 
   CopyZipsFunction:
     Type: AWS::Serverless::Function
-    Condition: ValidRegion
     Properties:
       Description: Copies objects from a source S3 bucket to a destination.
       Handler: index.handler
@@ -346,7 +308,6 @@ Resources:
   LifecycleEventsConverterLambda:
     DependsOn: CopyZips
     Type: AWS::Serverless::Function
-    Condition: ValidRegion
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
@@ -371,7 +332,6 @@ Resources:
   LifecycleEventsMappingUpdaterLambda:
     DependsOn: CopyZips
     Type: AWS::Serverless::Function
-    Condition: ValidRegion
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
@@ -395,7 +355,6 @@ Resources:
   IoTCoreToSQSLambda:
     DependsOn: CopyZips
     Type: AWS::Serverless::Function
-    Condition: ValidRegion
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
@@ -409,7 +368,6 @@ Resources:
   AssetModelConverterLambda:
     DependsOn: LifecycleEventsConverterLambda
     Type: AWS::Serverless::Function
-    Condition: ValidRegion
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
@@ -431,7 +389,6 @@ Resources:
   AssociationUpdaterLambda:
     DependsOn: AssetModelConverterLambda
     Type: AWS::Serverless::Function
-    Condition: ValidRegion
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
@@ -452,7 +409,6 @@ Resources:
   AttributesUpdaterLambda:
     DependsOn: AssetModelConverterLambda
     Type: AWS::Serverless::Function
-    Condition: ValidRegion
     Properties:
       CodeUri:
         Bucket: !Ref LambdaZipsBucket
@@ -472,9 +428,8 @@ Resources:
   ## Lambda Roles
   UrbanioAssumedRole:
     Type: AWS::IAM::Role
-    Condition: CreateCrossAccountIAM
+    Condition: AllowedToCreateCrossAccount
     Properties:
-      RoleName: !Ref SitewiseCrossAccountRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -521,7 +476,7 @@ Resources:
 
   IoTSiteWiseMeasurementRuleRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
+
     Properties:
       Description: Role for IoT SiteWise Measurement Update
       AssumeRolePolicyDocument:
@@ -550,13 +505,11 @@ Resources:
                   - ':'
                   - !Ref AWS::AccountId
                   - ':*'
-                    
           Version: '2012-10-17'
 
 
   CopyZipsRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -586,16 +539,10 @@ Resources:
                     - - 'arn:'
                       - !Ref AWS::Partition
                       - ':s3:::'
-                      - !If
-                        - HasEnvType
-                        - !FindInMap
-                          - RegionMap
-                          - !Ref AWS::Region
-                          - !Ref EnvType
-                        - !FindInMap
-                          - RegionMap
-                          - !Ref AWS::Region
-                          - production
+                      - !FindInMap
+                        - RegionMap
+                        - !Ref AWS::Region
+                        - production
                       - !Sub  "/aws-quickstart-urbanio/*"
 
               - Effect: Allow
@@ -615,7 +562,6 @@ Resources:
 
   LifecycleEventsConverterRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -710,7 +656,6 @@ Resources:
                   - '/*'
   IoTCoreToSQSRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - !Join
@@ -820,8 +765,7 @@ Resources:
                   - '/*'
 
   LifecycleEventsMappingUpdaterRole:
-    Type: AWS::IAM::Role
-    Condition: ValidRegion
+    Type: AWS::IAM::Role    
     Properties:
       ManagedPolicyArns:
       - !Join
@@ -903,7 +847,6 @@ Resources:
 
   AssetModelConverterRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - !Join
@@ -1002,7 +945,6 @@ Resources:
 
   AssociationUpdaterRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - !Join
@@ -1113,7 +1055,6 @@ Resources:
 
   AttributesUpdaterRole:
     Type: AWS::IAM::Role
-    Condition: ValidRegion
     Properties:
       ManagedPolicyArns:
       - !Join
@@ -1223,7 +1164,6 @@ Resources:
 
   IotToSqsTopicRuleLambdaPermission:
     Type: AWS::Lambda::Permission
-    Condition: ValidRegion
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt IoTCoreToSQSLambda.Arn
@@ -1234,7 +1174,6 @@ Resources:
   ## SQS
   SQSLifecycleEventsQueue:
     Type: AWS::SQS::Queue
-    Condition: ValidRegion
     Properties:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-lifecycle-events.fifo
       FifoQueue: true
@@ -1243,7 +1182,6 @@ Resources:
 
   SQSAssociatedAssetsQueue:
     Type: AWS::SQS::Queue
-    Condition: ValidRegion
     Properties:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-associated-assets.fifo
       FifoQueue: true
@@ -1252,7 +1190,6 @@ Resources:
 
   SQSCreatedAssetsQueue:
     Type: AWS::SQS::Queue
-    Condition: ValidRegion
     Properties:
       QueueName: !Sub ${AWS::StackName}-${AWS::Region}-created-assets.fifo
       FifoQueue: true
@@ -1262,7 +1199,6 @@ Resources:
   ## IOT Tropic
   IotToSqsTopicRule:
     Type: AWS::IoT::TopicRule
-    Condition: ValidRegion
     Properties:
       RuleName: !Join
         - ''
@@ -1278,7 +1214,6 @@ Resources:
 
   UpdateSitewiseMeasurementsRule:
     Type: AWS::IoT::TopicRule
-    Condition: ValidRegion
     Properties:
       RuleName: !Join
         - ''
@@ -1302,7 +1237,6 @@ Resources:
   ## CloudWatch Alarms
   LifecycleEventsConverterLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
-    Condition: ValidRegion
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
       AlarmActions:
@@ -1325,7 +1259,6 @@ Resources:
 
   LifecycleEventsMappingUpdaterLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
-    Condition: ValidRegion
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
       AlarmActions:
@@ -1348,7 +1281,6 @@ Resources:
 
   IoTCoreToSQSLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
-    Condition: ValidRegion
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
       AlarmActions:
@@ -1371,7 +1303,6 @@ Resources:
 
   AssetModelConverterLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
-    Condition: ValidRegion
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
       AlarmActions:
@@ -1394,7 +1325,6 @@ Resources:
 
   AssociationUpdaterLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
-    Condition: ValidRegion
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
       AlarmActions:
@@ -1417,7 +1347,6 @@ Resources:
 
   AttributesUpdaterLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
-    Condition: ValidRegion
     Properties:
       AlarmDescription: Alarm if lambda errors out too many times
       AlarmActions:
@@ -1459,11 +1388,11 @@ Outputs:
       Ref: SitewiseS3Bucket
 
   CrossAccountRoleId:
-    Condition: ValidRegion
+    Condition: AllowedToCreateCrossAccount
     Description: The logical ID of the IAM role
     Value: !Ref UrbanioAssumedRole
 
   CrossAccountRolArn:
-    Condition: ValidRegion
+    Condition: AllowedToCreateCrossAccount
     Description: The ARN of the IAM role
     Value: !GetAtt UrbanioAssumedRole.Arn
