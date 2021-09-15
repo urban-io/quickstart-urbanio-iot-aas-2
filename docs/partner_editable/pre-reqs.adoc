@@ -18,7 +18,7 @@ As part of an Asset Monitoring IoT Device Subscription you will be provided an A
 {empty} +
 As part of signing up for an Asset Monitoring IoT Device Subscription you will be contacted by Urban.io representatives who will then guide you through this process. +
 {empty} +
-You can also review this integration guide (link to support article) which illustrates the simple steps to connect the integration with your Urban.io account. +
+You can also review https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this integration guide] which illustrates the simple steps to connect the integration with your Urban.io account. +
 {empty} +
 For assistance establishing an {partner-company-name} account please visit any of the following links.
 
