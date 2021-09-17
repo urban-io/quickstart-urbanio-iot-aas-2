@@ -3,11 +3,11 @@
 
 == Post-deployment steps
 
-After deploying this QuickStart you should setup an integration in https://app.urban.io following the steps described in https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this tutorial] and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets.
+After deploying the Quick Start you should setup an integration on https://app.urban.io[Urban.io^] following the steps described in https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this tutorial^] and the framework automatically will import the selected data from the {partner-product-short-name} application's asset-hierarchy into AWS IoT SiteWise models and assets.
 
 === Test the deployment
 
-After creating the integration in https://app.urban.io you can verify that the lambdas are executed without errors and that records are being populated in the dynamo tables.
+After creating the integration in https://app.urban.io[Urban.io^] you can verify that the lambdas are executed without errors and that records are being populated in the dynamo tables.
 
 //== Update steps
 // AWS CloudFormation provides two methods for updating stacks: direct update or creating and executing change sets. When you directly update a stack, you submit changes and AWS CloudFormation immediately deploys them. Use direct updates when you want to quickly deploy your updates.

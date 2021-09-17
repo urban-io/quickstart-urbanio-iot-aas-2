@@ -2,13 +2,15 @@
 :partner-product-name: Urban.io Integration to the AWS SiteWise
 :partner-product-short-name: Urban.io
 :partner-company-name: Urban.io Pty Ltd.
-:doc-month: June
+:doc-month: October
 :doc-year: 2021
 :partner-contributors: Desislava Hubanova, Urban.io
 :other-contributors: Vladislav Trayanov and Eric Mutuku, GotoAdmins
-:quickstart-contributors: Vanitha Ramaswami, AWS team
+:aws-contributors: Vanitha Ramaswami, AWS
+:quickstart-contributors: Shivansh Singh, AWS Integration & Automation team
 :deployment_time: 10 minutes
 :default_deployment_region: us-east-1
+:custom_supported_regions:
 :marketplace_subscription: true
 :marketplace_listing_url: https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?sr=0-1&ref_=beagle&applicationId=AWSMPContessa
-:no_parameters:
+:parameters_as_appendix:
