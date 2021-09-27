@@ -1,20 +1,11 @@
 general:
   s3_regional_buckets: true
-  parameters:
-    S3Bucket: urbanio-sitewise
 
 project:
   template: ./templates/main.template.yaml
-  name: aws-quickstart-urbanio
+  name: quickstart-urbanio-iot-aas
   owner: quickstart@amazon.com
   build_submodules: false
-  auth:
-    ## Set profile urban-dev-profile & Uncomment below / Enable for Tests on Dev env & CF Uploads : Test
-    default: Urban.io-NEW-PROD
-    ## Set profile urban-stage-profile & Uncomment below / Enable for Tests on Staging env & CF Uploads : Staging
-    # default: urban-stage-profile
-    ## Set profile urban-production-profile & Uncomment below / Enable for CF Uploads : Test
-    # default: urban-production-profile
   lambda_source_path: functions/source
   lambda_zip_path: functions/packages
   package_lambda: false
@@ -27,40 +18,27 @@ project:
   - us-west-2
   - eu-west-1
   - eu-central-1
-  ## Uncomment below / Enable for Tests only
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-test-ap-southeast-2
-  ## Uncomment below / Enable for CF Uploads : Test
-  s3_bucket: aws-quickstart-urbanio
-  ## Uncomment below / Enable for CF Uploads : Staging
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise-staging
-  ## Uncomment below / Enable for CF Uploads : Production
-  # s3_bucket: aws-quickstart-urbanio-ricochet-sitewise
-  s3_object_acl: public-read-write
-
+  s3_bucket: ''
 
 tests:
-  default:
-    parameters:
-      EnvType: production
-    tags:
-      TEST_PROFILE: DEFAULT
-
   dev:
-    template: ./templates/main.template.dev.yaml
-    regions:
-    - ap-southeast-2
-    parameters:
-      EnvType: production
-      S3Bucket: urbanio-sitewise
-      EmailAddress: eric.m@gotoadmins.com
-    tags:
-      TEST_PROFILE: TEST
-
-  staging:
     template: ./templates/main.template.yaml
     regions:
     - ap-southeast-2
     parameters:
       EnvType: production
-    tags:
-      TEST_PROFILE: STAGING
+      S3Bucket: sshvans-urbanio
+      EmailAddress: test@example.com
+      AllowCrossAccountAccess: 'false'
+      UrbanioAccountNumber: 'OVERRIDE'
+  
+  prod:
+    template: ./templates/main.template.yaml
+    regions:
+    - ap-southeast-2
+    parameters:
+      EnvType: production
+      S3Bucket: sshvans-urbanio1
+      EmailAddress: test@example.com
+      AllowCrossAccountAccess: 'true'
+      UrbanioAccountNumber: OVERRIDE

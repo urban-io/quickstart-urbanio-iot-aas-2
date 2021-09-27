@@ -55,7 +55,7 @@ Conditions:
   AllowedToCreateCrossAccount: !Not
     - !Equals 
       - !Ref AllowCrossAccountAccess
-      - No
+      - 'false'
 
 
 Metadata:
@@ -97,7 +97,7 @@ Metadata:
         default: The email address to be used for alarm notifications.
 
       AllowCrossAccountAccess:
-        default: Allow Cross-Account Access [ Yes/No ]
+        default: Allow Cross-Account Access [ false/true ]
 
 Globals:
   Function:
@@ -150,8 +150,10 @@ Parameters:
   AllowCrossAccountAccess:
     Type: String
     Description: Grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics.
-    AllowedValues: [Yes, No]
-    Default: No
+    AllowedValues:
+      - 'false'
+      - 'true'
+    Default: 'false'
 
   UrbanioAccountNumber:
     Type: String
@@ -173,8 +175,6 @@ Resources:
 
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Ref QSS3BucketName
 
   ## DynamoDB Tables
   SitewiseModels:
@@ -478,7 +478,6 @@ Resources:
 
   IoTSiteWiseMeasurementRuleRole:
     Type: AWS::IAM::Role
-
     Properties:
       Description: Role for IoT SiteWise Measurement Update
       AssumeRolePolicyDocument:
@@ -943,7 +942,7 @@ Resources:
             - sqs:UntagQueue
             Resource:
               - !GetAtt SQSLifecycleEventsQueue.Arn
-              -  !GetAtt SQSCreatedAssetsQueue.Arn
+              - !GetAtt SQSCreatedAssetsQueue.Arn
 
   AssociationUpdaterRole:
     Type: AWS::IAM::Role
@@ -1052,7 +1051,7 @@ Resources:
             - sqs:TagQueue
             - sqs:UntagQueue
             Resource:
-              -  !GetAtt SQSAssociatedAssetsQueue.Arn
+              - !GetAtt SQSAssociatedAssetsQueue.Arn
               - !GetAtt SQSCreatedAssetsQueue.Arn
 
   AttributesUpdaterRole:
