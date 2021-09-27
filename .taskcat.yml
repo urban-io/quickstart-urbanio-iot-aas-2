@@ -30,7 +30,7 @@ tests:
       S3Bucket: $[taskcat_autobucket]
       EmailAddress: test@example.com
       AllowCrossAccountAccess: 'false'
-      UrbanioAccountNumber: 'OVERRIDE'
+      UrbanioAccountNumber: '1234567890'
   
   # prod:
   #   template: ./templates/main.template.yaml
