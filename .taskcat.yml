@@ -27,18 +27,18 @@ tests:
     - ap-southeast-2
     parameters:
       EnvType: production
-      S3Bucket: sshvans-urbanio
+      S3Bucket: $[taskcat_autobucket]
       EmailAddress: test@example.com
       AllowCrossAccountAccess: 'false'
       UrbanioAccountNumber: 'OVERRIDE'
   
-  prod:
-    template: ./templates/main.template.yaml
-    regions:
-    - ap-southeast-2
-    parameters:
-      EnvType: production
-      S3Bucket: sshvans-urbanio1
-      EmailAddress: test@example.com
-      AllowCrossAccountAccess: 'true'
-      UrbanioAccountNumber: OVERRIDE
+  # prod:
+  #   template: ./templates/main.template.yaml
+  #   regions:
+  #   - ap-southeast-2
+  #   parameters:
+  #     EnvType: production
+  #     S3Bucket: sshvans-urbanio1
+  #     EmailAddress: test@example.com
+  #     AllowCrossAccountAccess: 'true'
+  #     UrbanioAccountNumber: OVERRIDE
