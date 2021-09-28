@@ -1,1 +1,22 @@
-// placeholder
+
+:template_aws_cloudwatch_alarm:
+:template_aws_dynamodb_table:
+:template_aws_iam_role:
+:template_aws_iot_topicrule:
+:template_aws_lambda_permission:
+:template_aws_s3_bucket:
+:template_aws_serverless_function:
+:template_aws_sns_subscription:
+:template_aws_sns_topic:
+:template_aws_sqs_queue:
+:template_cloudwatch:
+:template_copyzips:
+:template_custom_copyzips:
+:template_dynamodb:
+:template_iam:
+:template_iot:
+:template_lambda:
+:template_s3:
+:template_serverless:
+:template_sns:
+:template_sqs:
