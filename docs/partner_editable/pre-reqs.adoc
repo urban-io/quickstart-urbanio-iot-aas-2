@@ -7,9 +7,9 @@ Before configuring the integration you need to request an increase of the Sitewi
 * Number of child assets per parent asset  - *new limit of 500*
 * Number of asset models per hierarchy tree - *new limit of 50*
 
-This step is neccessary for syncronization of {partner-product-short-name} domain model with AWS Sitewise. The domain model that we currently have requires the creation of more than 30 models and we have several more in development. Since there are custumers with a lot of devices accociated to a given location in {partner-product-short-name} we consider it safe to assume you can have up to 500 devices at a perticular location.
+This step is neccessary for syncronization of {partner-product-short-name} domain model with AWS Sitewise. The domain model that we currently have requires the creation of more than 30 models and we have several more in development. Since there are customers with a lot of devices accociated to a given location in {partner-product-short-name} we consider it safe to assume you can have up to 500 devices at a particular location.
 
-If you skip updating the limits the the next steps of {partner-product-name} will fail due to Sitewise models and assets limitations.
+If you skip updating the limits, the the next steps of {partner-product-name} will fail due to Sitewise models and assets limitations.
 
 
 ==== Prepare your {partner-company-name} account
