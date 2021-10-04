@@ -10,7 +10,7 @@ mock = "~=4.0.3"
 freezegun = "~=0.1.11"
 
 [packages]
-boto3 = "~=1.17.72"
+boto3 = "~=1.18.49"
 jsonpath-ng = "~=1.5.2"
 
 [requires]
