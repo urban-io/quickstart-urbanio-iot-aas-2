@@ -176,8 +176,7 @@ Resources:
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
-    Properties:
-      BucketName: !Ref QSS3BucketName
+    Properties: []
 
   ## DynamoDB Tables
   SitewiseModels:
@@ -236,11 +235,8 @@ Resources:
     Properties:
       ServiceToken: !GetAtt CopyZipsFunction.Arn
       DestBucket: !Ref LambdaZipsBucket
-      SourceBucket: !FindInMap
-        - RegionMap
-        - !Ref AWS::Region
-        - production
-      Prefix: aws-quickstart-urbanio/
+      SourceBucket: !Ref QSS3BucketName
+      Prefix: !Ref QSS3KeyPrefix
       DestPrefix: !Ref QSS3KeyPrefix
       Objects:
         - functions/packages/asset-model-converter/lambda.zip
