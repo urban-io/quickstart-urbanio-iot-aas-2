@@ -27,7 +27,7 @@ tests:
     - ap-southeast-2
     parameters:
       EnvType: production
-      S3Bucket: $[taskcat_autobucket]-set
+      S3Bucket: $[taskcat_random-string]
       EmailAddress: test@example.com
       AllowCrossAccountAccess: 'false'
       UrbanioAccountNumber: '1234567890'
