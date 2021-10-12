@@ -170,12 +170,11 @@ Resources:
     Properties:
       BucketName: !If
         - HasS3BucketName
-        - !Ref S3Bucket
+        !Ref S3Bucket
         - !Sub ${AWS::StackName}-${AWS::Region}
 
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
 
   ## DynamoDB Tables
   SitewiseModels:
