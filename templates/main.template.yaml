@@ -1,20 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: AWS UrbanIO SiteWise Integration (qs-1s83daalb)
-Mappings:
-  RegionMap:
-    ap-southeast-1:
-      production: "aws-quickstart-urbanio-ap-southeast-1"
-    ap-southeast-2:
-      production: "aws-quickstart-urbanio-ap-southeast-2"
-    us-east-1:
-      production: "aws-quickstart-urbanio-us-east-1"
-    us-west-2:
-      production: "aws-quickstart-urbanio-us-west-2"
-    eu-west-1:
-      production: "aws-quickstart-urbanio-eu-west-1"
-    eu-central-1:
-      production: "aws-quickstart-urbanio-eu-central-1"
 
 
 Rules:
@@ -537,12 +523,9 @@ Resources:
                     - - 'arn:'
                       - !Ref AWS::Partition
                       - ':s3:::'
-                      - !FindInMap
-                        - RegionMap
-                        - !Ref AWS::Region
-                        - production
-                      - !Sub  "/aws-quickstart-urbanio/*"
-
+                      - !Ref QSS3BucketName
+                      - !Ref QSS3KeyPrefix
+                      - "*"
               - Effect: Allow
                 Action:
                 - s3:PutObject
