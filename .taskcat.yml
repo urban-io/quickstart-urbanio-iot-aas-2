@@ -26,7 +26,6 @@ tests:
     regions:
     - ap-southeast-2
     parameters:
-      EnvType: production
       S3Bucket: $[taskcat_random-string]
       EmailAddress: test@example.com
       AllowCrossAccountAccess: 'false'
@@ -37,7 +36,6 @@ tests:
   #   regions:
   #   - ap-southeast-2
   #   parameters:
-  #     EnvType: production
   #     S3Bucket: sshvans-urbanio1
   #     EmailAddress: test@example.com
   #     AllowCrossAccountAccess: 'true'
