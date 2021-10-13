@@ -126,12 +126,10 @@ Parameters:
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 
-
   EmailAddress:
     Type: String
     Description: Email address to be use for Cloudwatch alarm notifications.
     ConstraintDescription: You should enter a valid email
-
 
   AllowCrossAccountAccess:
     Type: String
@@ -148,7 +146,6 @@ Parameters:
     ConstraintDescription: You should enter a valid Acount Id
 
 Resources:
-
   ## S3 bucket
   SitewiseS3Bucket:
     Type: AWS::S3::Bucket
@@ -490,7 +487,6 @@ Resources:
                   - !Ref AWS::AccountId
                   - ':*'
           Version: '2012-10-17'
-
 
   CopyZipsRole:
     Type: AWS::IAM::Role
