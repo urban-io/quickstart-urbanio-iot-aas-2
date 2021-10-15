@@ -1,21 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: AWS UrbanIO SiteWise Integration (qs-1s83daalb)
-Mappings:
-  RegionMap:
-    ap-southeast-1:
-      production: "aws-quickstart-urbanio-ap-southeast-1"
-    ap-southeast-2:
-      production: "aws-quickstart-urbanio-ap-southeast-2"
-    us-east-1:
-      production: "aws-quickstart-urbanio-us-east-1"
-    us-west-2:
-      production: "aws-quickstart-urbanio-us-west-2"
-    eu-west-1:
-      production: "aws-quickstart-urbanio-eu-west-1"
-    eu-central-1:
-      production: "aws-quickstart-urbanio-eu-central-1"
-
 
 Rules:
   SupportedRegions:
@@ -47,6 +32,7 @@ Conditions:
     - !Equals
       - !Ref EmailAddress
       - ''
+
   HasS3BucketName: !Not
      - !Equals
       - !Ref S3Bucket
@@ -56,7 +42,6 @@ Conditions:
     - !Equals 
       - !Ref AllowCrossAccountAccess
       - 'false'
-
 
 Metadata:
   QuickStartDocumentation:
@@ -140,12 +125,10 @@ Parameters:
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 
-
   EmailAddress:
     Type: String
     Description: Email address to be use for Cloudwatch alarm notifications.
     ConstraintDescription: You should enter a valid email
-
 
   AllowCrossAccountAccess:
     Type: String
@@ -162,7 +145,6 @@ Parameters:
     ConstraintDescription: You should enter a valid Acount Id
 
 Resources:
-
   ## S3 bucket
   SitewiseS3Bucket:
     Type: AWS::S3::Bucket
@@ -175,9 +157,6 @@ Resources:
 
   LambdaZipsBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: !Ref QSS3BucketName
 
   ## DynamoDB Tables
   SitewiseModels:
@@ -236,11 +215,8 @@ Resources:
     Properties:
       ServiceToken: !GetAtt CopyZipsFunction.Arn
       DestBucket: !Ref LambdaZipsBucket
-      SourceBucket: !FindInMap
-        - RegionMap
-        - !Ref AWS::Region
-        - production
-      Prefix: aws-quickstart-urbanio/
+      SourceBucket: !Ref QSS3BucketName
+      Prefix: !Ref QSS3KeyPrefix
       DestPrefix: !Ref QSS3KeyPrefix
       Objects:
         - functions/packages/asset-model-converter/lambda.zip
@@ -511,7 +487,6 @@ Resources:
                   - ':*'
           Version: '2012-10-17'
 
-
   CopyZipsRole:
     Type: AWS::IAM::Role
     Properties:
@@ -527,7 +502,7 @@ Resources:
           - ''
           - - 'arn:'
             - !Ref AWS::Partition
-            - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+            - ':iam::aws:policy/AmazonS3FullAccess'
       Path: /
       Policies:
         - PolicyName: lambda-copier
@@ -543,20 +518,24 @@ Resources:
                     - - 'arn:'
                       - !Ref AWS::Partition
                       - ':s3:::'
-                      - !FindInMap
-                        - RegionMap
-                        - !Ref AWS::Region
-                        - production
-                      - !Sub  "/aws-quickstart-urbanio/*"
-
+                      - !Ref QSS3BucketName
+                  - !Join
+                    - ''
+                    - - 'arn:'
+                      - !Ref AWS::Partition
+                      - ':s3:::'
+                      - !Ref QSS3BucketName
+                      - !Ref QSS3KeyPrefix
+                      - "*"
               - Effect: Allow
                 Action:
-                - s3:PutObject
-                - s3:DeleteObject
-                - s3:GetObject
-                - s3:ListBucket
-                - s3:RestoreObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:RestoreObject
                 Resource:
+                  - !GetAtt LambdaZipsBucket.Arn
                   - !Join
                     -  ''
                     - - !GetAtt LambdaZipsBucket.Arn
