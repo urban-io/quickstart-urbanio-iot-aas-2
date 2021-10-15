@@ -2,7 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: AWS UrbanIO SiteWise Integration (qs-1s83daalb)
 
-
 Rules:
   SupportedRegions:
     Assertions:
@@ -33,6 +32,7 @@ Conditions:
     - !Equals
       - !Ref EmailAddress
       - ''
+
   HasS3BucketName: !Not
      - !Equals
       - !Ref S3Bucket
@@ -42,7 +42,6 @@ Conditions:
     - !Equals 
       - !Ref AllowCrossAccountAccess
       - 'false'
-
 
 Metadata:
   QuickStartDocumentation:
@@ -153,7 +152,7 @@ Resources:
     Properties:
       BucketName: !If
         - HasS3BucketName
-        !Ref S3Bucket
+        - !Ref S3Bucket
         - !Sub ${AWS::StackName}-${AWS::Region}
 
   LambdaZipsBucket:
@@ -503,7 +502,7 @@ Resources:
           - ''
           - - 'arn:'
             - !Ref AWS::Partition
-            - ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+            - ':iam::aws:policy/AmazonS3FullAccess'
       Path: /
       Policies:
         - PolicyName: lambda-copier
@@ -520,16 +519,23 @@ Resources:
                       - !Ref AWS::Partition
                       - ':s3:::'
                       - !Ref QSS3BucketName
+                  - !Join
+                    - ''
+                    - - 'arn:'
+                      - !Ref AWS::Partition
+                      - ':s3:::'
+                      - !Ref QSS3BucketName
                       - !Ref QSS3KeyPrefix
                       - "*"
               - Effect: Allow
                 Action:
-                - s3:PutObject
-                - s3:DeleteObject
-                - s3:GetObject
-                - s3:ListBucket
-                - s3:RestoreObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:RestoreObject
                 Resource:
+                  - !GetAtt LambdaZipsBucket.Arn
                   - !Join
                     -  ''
                     - - !GetAtt LambdaZipsBucket.Arn
