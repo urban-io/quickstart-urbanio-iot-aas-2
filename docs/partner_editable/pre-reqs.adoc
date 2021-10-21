@@ -1,25 +1,16 @@
 ==== Prepare your AWS account
 
-===== Increase AWS IoT Sitewise service quotas
-
 To ensure proper synchronization of the {partner-product-short-name} domain model with AWS IoT SiteWise, you must https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html[request increases] to the following AWS IoT SiteWise quotas:
 
 * *Number of child assets per parent asset.* The default is 100. Request 500.
 * *Number of asset models per hierarchy tree.* The default is 20. Request 50.
 
-NOTE: You must request these increases in order to successfully prepare your {partner-company-name} account in the next section.
+NOTE: You must request these increases to successfully prepare your {partner-company-name} account in the next section. For more information, see https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html[Requesting a quota increase].
 
 ==== Prepare your {partner-company-name} account
 
-As part of an Asset Monitoring IoT Device Subscription you will be provided an Account for the {partner-product-short-name} Device Administration application. This application provides various features to enable you to commission and install your wireless IoT sensor network. +
-{empty} +
-As part of signing up for an Asset Monitoring IoT Device Subscription you will be contacted by Urban.io representatives who will then guide you through this process. +
-{empty} +
-You can also review https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this integration guide] which illustrates the simple steps to connect the integration with your Urban.io account. +
-{empty} +
-For assistance establishing an {partner-company-name} account please visit any of the following links.
+This Quick Start requires an Asset Monitoring IIoT Datastream Subscription from Urban.io, available on https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[AWS Marketplace]. For more information about subscriptions, https://support.urban.io/[contact Urban.io].
 
-* https://www.urban.io/subscribe-aws/[Urban.io Subscriptions]
-* https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[Urban.io on AWS Marketplace]
-* https://support.urban.io/[Contact Urban.io Support]
-* https://www.urban.io/contact/[Contact Urban.io]
+You are provided an account for the {partner-product-short-name} Device Administration application with your subscription. With this application, you can install your wireless IoT sensor network. After signing up for an Asset Monitoring IoT Device subscription, Urban.io will contact you and guide you through the installation. 
+
+NOTE: After deploying the Quick Start, you must configure integration between Urban.io and AWS IoT SiteWise. For more information, see link:#_post_deployment_steps[Post-deployment steps] later in this guide.
