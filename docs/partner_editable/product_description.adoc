@@ -2,10 +2,12 @@
 .Quick Start Logical architecture for {partner-product-short-name} to Sitewise integration on AWS
 image::../images/urbanio-sitewise-logical-architecture.png[Logical architecture]
 
-This Quick Start incorporates the Industrial IoT Network as a Service solution from {partner-product-short-name} pre-integrated with the effortless real time dashboard capabilities of AWS IoT SiteWise.
+This Quick Start incorporates the industrial IoT Network as a Service solution from {partner-product-short-name} pre-integrated with the effortless real time dashboard capabilities of AWS IoT SiteWise.
 
-Designed for Reliability Engineers and Operations Managers who need rapid low cost retrofit monitoring of dispersed or difficult to reach assets. A complete Turnkey Edge to Cloud solution where you can subscribe to 1 or 100,000 IoT endpoints and all sensor devices and network connectivity equipment are provided inclusive in the simple single price per endpoint per month or per year. This global solution can connect assets from any location in the world for the exact same price and all data is automatically aggregated into your SiteWise account ready for instant publishing of real time dashboards.
+. A complete Turnkey Edge to Cloud solution where you can subscribe to 1 or 100,000 IoT endpoints and all sensor devices and network connectivity equipment are provided inclusive in the simple single price per endpoint per month or per year. This global solution can connect assets from any location in the world for the exact same price and all data is automatically aggregated into your SiteWise account ready for instant publishing of real time dashboards.
 
 {partner-product-short-name} “IoTaaS” Subscriptions come with unlimited hardware replacement warranties for the life of the subscription and an unlimited network connectivity SLA. This allows you to focus on the data and not have to worry about the complex wireless network requirements in the field. The private wireless IoT network is deployed into your site and runs completely independent to any existing SCADA or IP networks and has been subject to AWS well architected review for IoT Cybersecurity ensuring you will meet IT requirements for IoT security.
 
 This Quick Start enables the true promise of network deployment and data on screen from anywhere in the world within a single day.
+
+This Quick Start creates a serverless framework that uses Amazon S3, AWS IoT Core, SQS, Amazon DynamoDB, and Lambda to map the {partner-product-short-name} application's asset-modeling conventions to AWS IoT SiteWise.

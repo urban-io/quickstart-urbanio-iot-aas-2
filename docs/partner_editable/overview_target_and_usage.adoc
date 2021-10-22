@@ -2,6 +2,4 @@
 // Identify your target audience and explain how/why they would use this Quick Start.
 //Avoid borrowing text from third-party websites (copying text from AWS service documentation is fine). Also, avoid marketing-speak, focusing instead on the technical aspect.
 
-This guide provides instructions for integrating {partner-product-short-name} sensor data to AWS IoT SiteWise.
-
-This Quick Start is for users who have {partner-product-short-name} account and want to use the real time dashboard capabilities of AWS IoT SiteWise.
+This guide provides instructions for deploying the {partner-product-short-name} for AWS IoT SiteWise reference architecture on the AWS Cloud. The Quick Start is for reliability engineers and operations managers to collect, model, and monitor Urban.io sensor data with AWS IoT SiteWise.

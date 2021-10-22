@@ -1,12 +1,12 @@
 :xrefstyle: short
 
-This Quick Start creates a serverless framework that uses Amazon S3, AWS IoT Core, SQS, Amazon DynamoDB, and Lambda to map the {partner-product-short-name} application's asset-modeling conventions to AWS IoT SiteWise. Deploying this Quick Start for a new integration between {partner-product-short-name} and AWS Sitewise builds the following environment in the AWS Cloud.
+Deploying this Quick Start for a new integration between {partner-product-short-name} and AWS Sitewise builds the following environment in the AWS Cloud.
 
 // Replace this example diagram with your own. Follow our wiki guidelines: https://w.amazon.com/bin/view/AWS_Quick_Starts/Process_for_PSAs/#HPrepareyourarchitecturediagram. Upload your source PowerPoint file to the GitHub {deployment name}/docs/images/ directory in this repo. 
 
 [#architecture1]
 .Quick Start physical architecture for {partner-product-short-name} to Sitewise integration on AWS
-image::../images/urbanio-sitewise-integration_1.png[Architecture]
+image::../images/urban-io-aws-iot-sitewise-architecture-diagram.png[Architecture]
 
 === Resources
 As shown in <<architecture1>>, the Quick Start sets up the following AWS resources:
