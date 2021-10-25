@@ -18,7 +18,9 @@ project:
   - us-west-2
   - eu-west-1
   - eu-central-1
-  s3_bucket: ''
+  s3_bucket: 'tcat-0a820f79e7cf5251aa73ff7df7f4c4a0'
+  parameters:
+    QSS3BucketName: $[taskcat_autobucket]
 
 tests:
   dev:
@@ -30,13 +32,3 @@ tests:
       EmailAddress: test@example.com
       AllowCrossAccountAccess: 'false'
       UrbanioAccountNumber: '1234567890'
-  
-  # prod:
-  #   template: ./templates/main.template.yaml
-  #   regions:
-  #   - ap-southeast-2
-  #   parameters:
-  #     S3Bucket: sshvans-urbanio1
-  #     EmailAddress: test@example.com
-  #     AllowCrossAccountAccess: 'true'
-  #     UrbanioAccountNumber: OVERRIDE
