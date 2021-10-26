@@ -5,11 +5,11 @@ Deploying this Quick Start for a new integration between {partner-product-short-
 // Replace this example diagram with your own. Follow our wiki guidelines: https://w.amazon.com/bin/view/AWS_Quick_Starts/Process_for_PSAs/#HPrepareyourarchitecturediagram. Upload your source PowerPoint file to the GitHub {deployment name}/docs/images/ directory in this repo. 
 
 [#architecture1]
-.Quick Start physical architecture for {partner-product-short-name} to Sitewise integration on AWS
+.Quick Start architecture for {partner-product-short-name} for AWS IoT SiteWise
 image::../images/urban-io-aws-iot-sitewise-architecture-diagram.png[Architecture]
 
 === Resources
-As shown in <<architecture1>>, the Quick Start sets up the following AWS resources:
+As shown in <<architecture1>>, the Quick Start sets up the following:
 
 . **Amazon S3.** Used for uploading a JSON file mapping between lifecycle events and asset attributes will be uploaded on S3 bucket with the prefix /urbanio/events. In the same bucket is uploaded the initial integration setup files - definition of the objects, a JSON file describing operators, customers, locations and devices in lifecycle events format will be uploaded to the specified S3 bucket with prefix /urbanio/sitewise/assets.
 . **Lifecycle Events Mapping Updater.** An AWS lambda that is triggered by S3 file upload and caches the mapping between {partner-product-short-name} lifecycle events and IoT SiteWise asset attributes.

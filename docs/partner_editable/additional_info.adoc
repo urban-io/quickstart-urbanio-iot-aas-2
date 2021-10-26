@@ -3,7 +3,7 @@
 
 == Post-deployment steps
 
-After deploying the Quick Start, you must configure integration between Urban.io and AWS IoT SiteWise. For instructions, log onto your Urban.io account and see https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise[Receiving data from Urban.io IoT devices on AWS IoT SiteWise^]. After configuring integration, the deployment automatically imports  selected data from the {partner-product-short-name} application asset hierarchy into AWS IoT SiteWise models and assets.
+After deploying the Quick Start, you must configure integration between Urban.io and AWS IoT SiteWise. For instructions, log onto your Urban.io account and see https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise[Receiving data from Urban.io IoT devices on AWS IoT SiteWise^]. After configuring integration, the deployment automatically imports data from the {partner-product-short-name} application asset hierarchy into AWS IoT SiteWise models and assets.
 
 === Test the deployment
 

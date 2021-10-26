@@ -1,5 +1,5 @@
 // Include details about any licenses and how to sign up. Provide links as appropriate. If no licenses are required, clarify that. The following paragraphs provide examples of details you can provide. Remove italics, and rephrase as appropriate.
 
-All charges associated with the Asset Monitoring IoT Device Subscription are incurred based on the terms of your {marketplace_listing_url}[AWS Marketplace subscription].
+All charges associated with the https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[Asset Monitoring IIoT Datastream Subscription] are incurred based on the terms of your AWS Marketplace subscription.
 
 All AWS service resources consumed during the launch of the Quick Start incur AWS service usage costs.
