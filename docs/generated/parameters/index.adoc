@@ -1,1 +1,3 @@
-// placeholder
+
+=== Urban.io integration with AWS IoT SiteWise
+include::main.template.adoc[]

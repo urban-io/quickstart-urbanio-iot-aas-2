@@ -5,10 +5,10 @@ To ensure proper synchronization of the {partner-product-short-name} domain mode
 * *Number of child assets per parent asset.* The default is 100. Request 500.
 * *Number of asset models per hierarchy tree.* The default is 20. Request 50.
 
-NOTE: You must request these increases to successfully prepare your {partner-company-name} account in the next section. For more information, see https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html[Requesting a quota increase].
+NOTE: You must request these increases to successfully prepare your {partner-product-short-name} account in the next section. For more information, see https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html[Requesting a quota increase].
 
 ==== Prepare your {partner-company-name} account
 
-This Quick Start requires an Asset Monitoring IIoT Datastream subscription from Urban.io, available on https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[AWS Marketplace]. After signing up for an Asset Monitoring IoT Device subscription, Urban.io will contact you and guide you through the installation. For more information about subscriptions, https://support.urban.io/[contact Urban.io].
+This Quick Start requires an Asset Monitoring IIoT Datastream subscription from Urban.io, available on https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[AWS Marketplace]. After subscribing, Urban.io will contact you and guide you through the installation. For more information about subscriptions, https://support.urban.io/[contact Urban.io].
 
 NOTE: After deploying the Quick Start, you must configure integration between your Urban.io account and AWS IoT SiteWise. For more information, see link:#_post_deployment_steps[Post-deployment steps] later in this guide.

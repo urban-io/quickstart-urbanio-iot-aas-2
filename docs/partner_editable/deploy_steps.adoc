@@ -13,7 +13,6 @@ This Quick Start requires a subscription to {partner-product-short-name} Device 
 . In AWS Marketplace, open the page for https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[Asset Monitoring IIoT Datastream Subscription^], and then choose *Continue to Subscribe*.
 . Review the terms and conditions for software usage, and then choose *Accept Terms*. A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the https://aws.amazon.com/marketplace/help/200799470[AWS Marketplace documentation^].
 
-. When the subscription process is complete, exit out of AWS Marketplace without further action.
 endif::marketplace_subscription[]
 // \Not to be edited
 

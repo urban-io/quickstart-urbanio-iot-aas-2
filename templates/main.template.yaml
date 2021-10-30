@@ -60,17 +60,17 @@ Conditions:
 
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: Urban.io integration with AWS IoT SiteWise
+    EntrypointName: Urban.io for AWS IoT SiteWise
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: Urban.io AWS IoT SiteWise configuration
+          default: Urban.io configuration
         Parameters:
           - S3Bucket
           - EmailAddress
           - UrbanioAccountNumber
       - Label:
-          default: Urban.io AWS account access
+          default: AWS account access
         Parameters:
           - AllowCrossAccountAccess
       - Label:
