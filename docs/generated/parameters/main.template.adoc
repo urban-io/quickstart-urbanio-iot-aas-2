@@ -1,0 +1,22 @@
+
+.Urban.io AWS IoT SiteWise configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|S3 bucket
+(`S3Bucket`)|`**__Requires input__**`|The S3 bucket for the initial integration setup files and object definitions. Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)|The email address to be used for alarm notifications
+(`EmailAddress`)|`**__Requires input__**`|Email address to be use for Amazon CloudWatch alarm notifications.|Urban.io AWS account number
+(`UrbanioAccountNumber`)|`**__Requires input__**`|Urban.io AWS account number.
+|===
+.Urban.io AWS account access
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Allow cross-account access
+(`AllowCrossAccountAccess`)|`false`|Grant Urban.io permissions to upload data to Amazon S3 and send messages to AWS IoT Core topics.
+|===
+.AWS Quick Start configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Quick Start S3 bucket name
+(`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.|Quick Start S3 key prefix
+(`QSS3KeyPrefix`)|`quickstart-urbanio-iot-aas/`|S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html and https://aws-quickstart.github.io/option1.html.
+|===

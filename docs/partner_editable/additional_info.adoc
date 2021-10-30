@@ -3,11 +3,11 @@
 
 == Post-deployment steps
 
-After deploying the Quick Start, you must configure integration between Urban.io and AWS IoT SiteWise. For instructions, log onto your Urban.io account and see https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise[Receiving data from Urban.io IoT devices on AWS IoT SiteWise^]. After configuring integration, the deployment automatically imports  selected data from the {partner-product-short-name} application asset hierarchy into AWS IoT SiteWise models and assets.
+After deploying the Quick Start, you must configure integration between your Urban.io account and AWS IoT SiteWise. For instructions, log onto your Urban.io account and see https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise[Receiving data from Urban.io IoT devices on AWS IoT SiteWise^].
 
 === Test the deployment
 
-After configuring integration, verify that the deployed AWS Lambda functions run without errors. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html[Accessing Amazon CloudWatch logs for AWS Lambda^]. Also, check the deployed DynamoDB tables for records.
+After configuring integration, confirm that the deployed AWS Lambda functions run without errors. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html[Accessing Amazon CloudWatch logs for AWS Lambda^]. Also, check the deployed DynamoDB tables for records.
 
 //== Update steps
 // AWS CloudFormation provides two methods for updating stacks: direct update or creating and executing change sets. When you directly update a stack, you submit changes and AWS CloudFormation immediately deploys them. Use direct updates when you want to quickly deploy your updates.

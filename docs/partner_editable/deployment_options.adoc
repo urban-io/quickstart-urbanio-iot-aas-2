@@ -2,6 +2,6 @@
 
 This Quick Start provides one deployment option:
 
-* Deploy {partner-product-name}. * This option creates resources to deploy Urban.io integration with AWS IoT SiteWise.
+* *Deploy {partner-product-name}.* This option creates resources to deploy Urban.io for AWS IoT SiteWise.
 
 The Quick Start provides a template for this integration with parameters that you can configure. For more information, see link:#_deployment_steps[Deployment steps].

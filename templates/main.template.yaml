@@ -60,21 +60,21 @@ Conditions:
 
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: "Urban.io integration with AWS SiteWise"
+    EntrypointName: Urban.io for AWS IoT SiteWise
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: Urbanio Sitewise Configuration
+          default: Urban.io configuration
         Parameters:
           - S3Bucket
           - EmailAddress
           - UrbanioAccountNumber
       - Label:
-          default: Urban.io AWS account Access
+          default: AWS account access
         Parameters:
           - AllowCrossAccountAccess
       - Label:
-          default: AWS Quick Start Configuration
+          default: AWS Quick Start configuration
         Parameters:
           - QSS3BucketName
           - QSS3KeyPrefix
@@ -91,13 +91,13 @@ Metadata:
         default: Quick Start S3 key prefix
 
       UrbanioAccountNumber:
-        default: Urban Io AWS Account Number
+        default: Urban.io AWS account number
 
       EmailAddress:
-        default: The email address to be used for alarm notifications.
+        default: The email address to be used for alarm notifications
 
       AllowCrossAccountAccess:
-        default: Allow Cross-Account Access [ false/true ]
+        default: Allow cross-account access
 
 Globals:
   Function:
@@ -134,22 +134,20 @@ Parameters:
 
   S3Bucket:
     Type: String
-    Description:  The S3 bucket receives the initial integration setup files - definition of the objects 
-      (a JSON file describing operators, customers, locations and devices in lifecycle events format) and a mapping between lifecycle events and asset attributes.
-      Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)
+    Description:  The S3 bucket for the initial integration setup files and object definitions. Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)
     AllowedPattern: '^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$'
-    ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
+    ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers.
 
 
   EmailAddress:
     Type: String
-    Description: Email address to be use for Cloudwatch alarm notifications.
-    ConstraintDescription: You should enter a valid email
+    Description: Email address to be use for Amazon CloudWatch alarm notifications.
+    ConstraintDescription: Enter a valid email.
 
 
   AllowCrossAccountAccess:
     Type: String
-    Description: Grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics.
+    Description: Grant Urban.io permissions to upload data to Amazon S3 and send messages to AWS IoT Core topics.
     AllowedValues:
       - 'false'
       - 'true'
@@ -158,8 +156,8 @@ Parameters:
   UrbanioAccountNumber:
     Type: String
     AllowedPattern: ^[0-9]*$
-    Description: Urban.io AWS Account number
-    ConstraintDescription: You should enter a valid Acount Id
+    Description: Urban.io AWS account number.
+    ConstraintDescription: Enter a valid Account ID.
 
 Resources:
 
@@ -1384,7 +1382,7 @@ Resources:
   ## Output Parameters
 Outputs:
   UrbanioSitewiseS3Bucket:
-    Description: The SiteWise S3 Bucket
+    Description: The AWS IoT SiteWise S3 bucket
     Value:
       Ref: SitewiseS3Bucket
 
@@ -1397,3 +1395,7 @@ Outputs:
     Condition: AllowedToCreateCrossAccount
     Description: The ARN of the IAM role
     Value: !GetAtt UrbanioAssumedRole.Arn
+
+  Postdeployment:
+    Description: See the deployment guide for post-deployment steps.
+    Value: https://aws.amazon.com/quickstart/?quickstart-all.sort-by=item.additionalFields.sortDate&quickstart-all.sort-order=desc&awsm.page-quickstart-all=5

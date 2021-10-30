@@ -7,9 +7,9 @@
 |DynamoDB tables |4
 |AWS Lambda functions |7
 |AWS IoT topic rules |2
-|SQS |3
+|Amazon SQS queues|3
 |S3 buckets |2
-|CloudWatch alarms | 6
-|SNS topics | 1
-|SNS subscriptions | 1
+|Amazon CloudWatch alarms | 6
+|Amazon Simple Notification Service (Amazon SNS) topics | 1
+|Amazon SNS subscriptions | 1
 |===

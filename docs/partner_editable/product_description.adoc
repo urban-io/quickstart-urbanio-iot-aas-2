@@ -1,13 +1,5 @@
-[#architecture3]
-.Quick Start Logical architecture for {partner-product-short-name} to Sitewise integration on AWS
-image::../images/urbanio-sitewise-logical-architecture.png[Logical architecture]
+This Quick Start deploys a serverless framework that integrates Urban.io sensors with AWS IoT SiteWise on the Amazon Web Services (AWS) Cloud.
 
-This Quick Start incorporates the industrial IoT Network as a Service solution from {partner-product-short-name} pre-integrated with the effortless real time dashboard capabilities of AWS IoT SiteWise.
+The deployment uses a map file, uploaded to https://aws.amazon.com/s3/[Amazon Simple Storage Service (Amazon S3)], to create the initial set of assets displayed in AWS IoT SiteWise. Assets are the virtualized representations of your Urban.io sensors in AWS IoT SiteWise. As you update and add new sensors in Urban.io, https://aws.amazon.com/iot-core/[AWS IoT Core] passes lifecycle events to https://aws.amazon.com/lambda/[AWS Lambda] functions, which update your assets in AWS IoT SiteWise accordingly. AWS IoT Core also processes Urban.io sensor readings and sends them to AWS IoT SiteWise. 
 
-. A complete Turnkey Edge to Cloud solution where you can subscribe to 1 or 100,000 IoT endpoints and all sensor devices and network connectivity equipment are provided inclusive in the simple single price per endpoint per month or per year. This global solution can connect assets from any location in the world for the exact same price and all data is automatically aggregated into your SiteWise account ready for instant publishing of real time dashboards.
-
-{partner-product-short-name} “IoTaaS” Subscriptions come with unlimited hardware replacement warranties for the life of the subscription and an unlimited network connectivity SLA. This allows you to focus on the data and not have to worry about the complex wireless network requirements in the field. The private wireless IoT network is deployed into your site and runs completely independent to any existing SCADA or IP networks and has been subject to AWS well architected review for IoT Cybersecurity ensuring you will meet IT requirements for IoT security.
-
-This Quick Start enables the true promise of network deployment and data on screen from anywhere in the world within a single day.
-
-This Quick Start creates a serverless framework that uses Amazon S3, AWS IoT Core, SQS, Amazon DynamoDB, and Lambda to map the {partner-product-short-name} application's asset-modeling conventions to AWS IoT SiteWise.
+You can use https://docs.aws.amazon.com/iot-sitewise/latest/appguide/what-is-monitor-app.html[AWS IoT SiteWise Monitor] to build managed web applications with dashboards to visualize and share Urban.io data.
