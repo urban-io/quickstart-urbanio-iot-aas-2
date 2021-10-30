@@ -1,4 +1,4 @@
-This Quick Start deploys a serverless framework that integrates Urban.io sensors with https://aws.amazon.com/iot-sitewise/[AWS IoT SiteWise] on the Amazon Web Services (AWS) Cloud. It is for reliability engineers and operations managers to collect, model, and monitor Urban.io sensor data with AWS IoT SiteWise.
+This Quick Start deploys a serverless framework that integrates Urban.io sensors with AWS IoT SiteWise on the Amazon Web Services (AWS) Cloud.
 
 The deployment uses a map file, uploaded to https://aws.amazon.com/s3/[Amazon Simple Storage Service (Amazon S3)], to create the initial set of assets displayed in AWS IoT SiteWise. Assets are the virtualized representations of your Urban.io sensors in AWS IoT SiteWise. As you update and add new sensors in Urban.io, https://aws.amazon.com/iot-core/[AWS IoT Core] passes lifecycle events to https://aws.amazon.com/lambda/[AWS Lambda] functions, which update your assets in AWS IoT SiteWise accordingly. AWS IoT Core also processes Urban.io sensor readings and sends them to AWS IoT SiteWise. 
 

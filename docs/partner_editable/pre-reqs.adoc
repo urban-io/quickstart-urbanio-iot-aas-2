@@ -9,8 +9,6 @@ NOTE: You must request these increases to successfully prepare your {partner-com
 
 ==== Prepare your {partner-company-name} account
 
-This Quick Start requires an Asset Monitoring IIoT Datastream Subscription from Urban.io, available on https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[AWS Marketplace]. For more information about subscriptions, https://support.urban.io/[contact Urban.io].
+This Quick Start requires an Asset Monitoring IIoT Datastream subscription from Urban.io, available on https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[AWS Marketplace]. After signing up for an Asset Monitoring IoT Device subscription, Urban.io will contact you and guide you through the installation. For more information about subscriptions, https://support.urban.io/[contact Urban.io].
 
-You are provided an account for the {partner-product-short-name} Device Administration application with your subscription. With this application, you can install your wireless IoT sensor network. After signing up for an Asset Monitoring IoT Device subscription, Urban.io will contact you and guide you through the installation. 
-
-NOTE: After deploying the Quick Start, you must configure integration between Urban.io and AWS IoT SiteWise. For more information, see link:#_post_deployment_steps[Post-deployment steps] later in this guide.
+NOTE: After deploying the Quick Start, you must configure integration between your Urban.io account and AWS IoT SiteWise. For more information, see link:#_post_deployment_steps[Post-deployment steps] later in this guide.
