@@ -2,7 +2,6 @@ general:
   s3_regional_buckets: true
 
 project:
-  template: ./templates/main.template.yaml
   name: quickstart-urbanio-iot-aas
   owner: quickstart@amazon.com
   build_submodules: false
