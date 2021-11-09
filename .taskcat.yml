@@ -24,7 +24,7 @@ tests:
   dev:
     template: ./templates/main.template.yaml
     regions:
-    - ap-southeast-2
+    - ap-southeast-1
     parameters:
       S3Bucket: $[taskcat_random-string]
       EmailAddress: test@example.com
