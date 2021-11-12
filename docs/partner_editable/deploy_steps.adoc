@@ -5,9 +5,9 @@
 
 // Optional based on Marketplace listing. Not to be edited
 ifdef::marketplace_subscription[]
-=== Subscribe to the {partner-product-short-name} Device Administration application
+=== Subscribe to Asset Monitoring IIoT Datastream on AWS Marketplace
 
-This Quick Start requires a subscription to {partner-product-short-name} Device Administration application in AWS Marketplace.
+This Quick Start requires a subscription to Asset Monitoring IIoT Datastream on AWS Marketplace.
 
 . Sign in to your AWS account.
 . In AWS Marketplace, open the page for https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[Asset Monitoring IIoT Datastream Subscription^], and then choose *Continue to Subscribe*.
