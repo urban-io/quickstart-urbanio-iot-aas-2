@@ -1,28 +1,14 @@
 ==== Prepare your AWS account
 
-===== Increase AWS IoT Sitewise limits
+To ensure proper synchronization of the {partner-product-short-name} domain model with AWS IoT SiteWise, you must https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html[request increases] to the following AWS IoT SiteWise quotas:
 
-Before configuring the integration you need to request an increase of the Sitewise quotas for the selected region:
+* *Number of child assets per parent asset.* The default is 100. Request 500.
+* *Number of asset models per hierarchy tree.* The default is 20. Request 50.
 
-* Number of child assets per parent asset  - *new limit of 500*
-* Number of asset models per hierarchy tree - *new limit of 50*
-
-This step is neccessary for syncronization of {partner-product-short-name} domain model with AWS Sitewise. The domain model that we currently have requires the creation of more than 30 models and we have several more in development. Since there are customers with a lot of devices accociated to a given location in {partner-product-short-name} we consider it safe to assume you can have up to 500 devices at a particular location.
-
-If you skip updating the limits, the the next steps of {partner-product-name} will fail due to Sitewise models and assets limitations.
-
+NOTE: You must request these increases to successfully prepare your {partner-product-short-name} account in the next section. For more information, see https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html[Requesting a quota increase].
 
 ==== Prepare your {partner-company-name} account
 
-As part of an Asset Monitoring IoT Device Subscription you will be provided an Account for the {partner-product-short-name} Device Administration application. This application provides various features to enable you to commission and install your wireless IoT sensor network. +
-{empty} +
-As part of signing up for an Asset Monitoring IoT Device Subscription you will be contacted by Urban.io representatives who will then guide you through this process. +
-{empty} +
-You can also review https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview[this integration guide] which illustrates the simple steps to connect the integration with your Urban.io account. +
-{empty} +
-For assistance establishing an {partner-company-name} account please visit any of the following links.
+This Quick Start requires an Asset Monitoring IIoT Datastream subscription from Urban.io, available on https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[AWS Marketplace]. After subscribing, Urban.io will contact you and guide you through the installation. For more information about subscriptions, https://support.urban.io/[contact Urban.io].
 
-* https://www.urban.io/subscribe-aws/[Urban.io Subscriptions]
-* https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title[Urban.io on AWS Marketplace]
-* https://support.urban.io/[Contact Urban.io Support]
-* https://www.urban.io/contact/[Contact Urban.io]
+NOTE: After deploying the Quick Start, you must configure integration between your Urban.io account and AWS IoT SiteWise. For more information, see link:#_post_deployment_steps[Post-deployment steps] later in this guide.

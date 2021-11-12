@@ -1,19 +1,19 @@
 
-.Urbanio Sitewise Configuration
+.Urban.io configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|S3 bucket
-(`S3Bucket`)|`**__Requires input__**`|The S3 bucket receives the initial integration setup files - definition of the objects (a JSON file describing operators, customers, locations and devices in lifecycle events format) and a mapping between lifecycle events and asset attributes. Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)|The email address to be used for alarm notifications.
-(`EmailAddress`)|`**__Requires input__**`|Email address to be use for Cloudwatch alarm notifications.|Urban Io AWS Account Number
-(`UrbanioAccountNumber`)|`**__Requires input__**`|Urban.io AWS Account number
+(`S3Bucket`)|`**__Requires input__**`|The S3 bucket for the initial integration setup files and object definitions. Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)|The email address to be used for alarm notifications
+(`EmailAddress`)|`**__Requires input__**`|Email address to be use for Amazon CloudWatch alarm notifications.|Urban.io AWS account number
+(`UrbanioAccountNumber`)|`**__Requires input__**`|Urban.io AWS account number.
 |===
-.Urban.io AWS account Access
+.AWS account access
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Allow Cross-Account Access [ false/true ]
-(`AllowCrossAccountAccess`)|`false`|Grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics.
+|Parameter label (name) |Default value|Description|Allow cross-account access
+(`AllowCrossAccountAccess`)|`false`|Grant Urban.io permissions to upload data to Amazon S3 and send messages to AWS IoT Core topics.
 |===
-.AWS Quick Start Configuration
+.AWS Quick Start configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Quick Start S3 bucket name

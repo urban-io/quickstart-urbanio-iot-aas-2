@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.15">
-<title>Urban.io Integration to the AWS SiteWise on the AWS Cloud</title>
+<meta name="generator" content="Asciidoctor 2.0.16">
+<title>Urban.io for AWS IoT SiteWise on the AWS Cloud</title>
 <style>
 
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -825,13 +825,12 @@ p.footer-text a{color:#d7d8d8}
 <div id="toctitle"></div>
 <ul class="sectlevel1">
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_urban_io_integration_to_the_aws_sitewise_on_aws">Urban.io Integration to the AWS SiteWise on AWS</a></li>
+<li><a href="#_urban_io_for_aws_iot_sitewise_on_aws">Urban.io for AWS IoT SiteWise on AWS</a></li>
 <li><a href="#_aws_costs">AWS costs</a></li>
 <li><a href="#_software_licenses">Software licenses</a></li>
 <li><a href="#_architecture">Architecture</a>
 <ul class="sectlevel2">
 <li><a href="#_resources">Resources</a></li>
-<li><a href="#_workflow">Workflow</a></li>
 </ul>
 </li>
 <li><a href="#_planning_the_deployment">Planning the deployment</a>
@@ -857,7 +856,7 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_customer_responsibility">Customer responsibility</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
 <ul class="sectlevel2">
-<li><a href="#_urban_io_integration_with_aws_sitewise">Urban.io integration with AWS SiteWise</a></li>
+<li><a href="#_urban_io_for_aws_iot_sitewise">Urban.io for AWS IoT SiteWise</a></li>
 </ul>
 </li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -870,7 +869,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<h2 id="_urban_io_integration_to_the_aws_sitewise_on_the_aws_cloud" class="discrete text-center">Urban.io Integration to the AWS SiteWise on the AWS Cloud</h2>
+<h2 id="_urban_io_for_aws_iot_sitewise_on_the_aws_cloud" class="discrete text-center">Urban.io for AWS IoT SiteWise on the AWS Cloud</h2>
 <h2 id="_quick_start_reference_deployment" class="discrete text-left text-center">Quick Start Reference Deployment</h2>
 <div class="imageblock text-center">
 <div class="content">
@@ -881,7 +880,7 @@ p.footer-text a{color:#d7d8d8}
 <p><strong>October 2021</strong><br>
 <em>Desislava Hubanova, Urban.io</em><br>
 <em>Vladislav Trayanov and Eric Mutuku, GotoAdmins</em><br>
-<em>Vanitha Ramaswami, AWS</em><br>
+<em>Vanitha Ramaswami, AWS WWCO Partner Core</em><br>
 <em>Shivansh Singh, AWS Integration &amp; Automation team</em></p>
 </div>
 <div class="admonitionblock tip text-left">
@@ -906,10 +905,7 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide provides instructions for integrating Urban.io sensor data to AWS IoT SiteWise.</p>
-</div>
-<div class="paragraph">
-<p>This Quick Start is for users who have Urban.io account and want to use the real time dashboard capabilities of AWS IoT SiteWise.</p>
+<p>This guide provides instructions for deploying the Urban.io for <a href="https://aws.amazon.com/iot-sitewise/">AWS IoT SiteWise</a> reference architecture on the AWS Cloud. This Quick Start is for reliability engineers and operations managers to collect, model, and monitor Urban.io sensor data with AWS IoT SiteWise.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -926,25 +922,16 @@ Amazon may share user-deployment information with the AWS Partner that collabora
 </div>
 </div>
 <div class="sect1">
-<h2 id="_urban_io_integration_to_the_aws_sitewise_on_aws">Urban.io Integration to the AWS SiteWise on AWS</h2>
+<h2 id="_urban_io_for_aws_iot_sitewise_on_aws">Urban.io for AWS IoT SiteWise on AWS</h2>
 <div class="sectionbody">
-<div id="architecture3" class="imageblock">
-<div class="content">
-<img src="images/urbanio-sitewise-logical-architecture.png" alt="Logical architecture">
-</div>
-<div class="title">Figure 1. Quick Start Logical architecture for Urban.io to Sitewise integration on AWS</div>
+<div class="paragraph">
+<p>This Quick Start deploys a serverless framework that integrates Urban.io sensors with AWS IoT SiteWise on the Amazon Web Services (AWS) Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start incorporates the Industrial IoT Network as a Service solution from Urban.io pre-integrated with the effortless real time dashboard capabilities of AWS IoT SiteWise.</p>
+<p>The deployment uses a map file, uploaded to <a href="https://aws.amazon.com/s3/">Amazon Simple Storage Service (Amazon S3)</a>, to create the initial set of assets displayed in AWS IoT SiteWise. Assets are the virtualized representations of your Urban.io sensors in AWS IoT SiteWise. As you update and add new sensors in Urban.io, <a href="https://aws.amazon.com/iot-core/">AWS IoT Core</a> passes lifecycle events to <a href="https://aws.amazon.com/lambda/">AWS Lambda</a> functions, which update your assets in AWS IoT SiteWise accordingly. AWS IoT Core also processes Urban.io sensor readings and sends them to AWS IoT SiteWise.</p>
 </div>
 <div class="paragraph">
-<p>Designed for Reliability Engineers and Operations Managers who need rapid low cost retrofit monitoring of dispersed or difficult to reach assets. A complete Turnkey Edge to Cloud solution where you can subscribe to 1 or 100,000 IoT endpoints and all sensor devices and network connectivity equipment are provided inclusive in the simple single price per endpoint per month or per year. This global solution can connect assets from any location in the world for the exact same price and all data is automatically aggregated into your SiteWise account ready for instant publishing of real time dashboards.</p>
-</div>
-<div class="paragraph">
-<p>Urban.io “IoTaaS” Subscriptions come with unlimited hardware replacement warranties for the life of the subscription and an unlimited network connectivity SLA. This allows you to focus on the data and not have to worry about the complex wireless network requirements in the field. The private wireless IoT network is deployed into your site and runs completely independent to any existing SCADA or IP networks and has been subject to AWS well architected review for IoT Cybersecurity ensuring you will meet IT requirements for IoT security.</p>
-</div>
-<div class="paragraph">
-<p>This Quick Start enables the true promise of network deployment and data on screen from anywhere in the world within a single day.</p>
+<p>You can use <a href="https://docs.aws.amazon.com/iot-sitewise/latest/appguide/what-is-monitor-app.html">AWS IoT SiteWise Monitor</a> to build managed web applications with dashboards to visualize and share Urban.io data.</p>
 </div>
 </div>
 </div>
@@ -979,7 +966,7 @@ After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/aw
 <h2 id="_software_licenses">Software licenses</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>All charges with Urban.io Pty Ltd. Asset Monitoring IoT Device Subscriptions are incurred based on the terms of your <a href="https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?sr=0-1&amp;ref_=beagle&amp;applicationId=AWSMPContessa">AWS Marketplace subscription</a>.</p>
+<p>All charges associated with the <a href="https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title">Asset Monitoring IIoT Datastream Subscription</a> are incurred based on the terms of your AWS Marketplace subscription.</p>
 </div>
 <div class="paragraph">
 <p>All AWS service resources consumed during the launch of the Quick Start incur AWS service usage costs.</p>
@@ -990,138 +977,60 @@ After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/aw
 <h2 id="_architecture">Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This Quick Start creates a serverless framework that uses Amazon S3, AWS IoT Core, SQS, Amazon DynamoDB, and Lambda to map the Urban.io application&#8217;s asset-modeling conventions to AWS IoT SiteWise. Deploying this Quick Start for a new integration between Urban.io and AWS Sitewise builds the following environment in the AWS Cloud.</p>
+<p>Deploying this Quick Start for a new integration between Urban.io and AWS IoT SiteWise builds the following environment in the AWS Cloud.</p>
 </div>
 <div id="architecture1" class="imageblock">
 <div class="content">
-<img src="images/urbanio-sitewise-integration_1.png" alt="Architecture">
+<img src="images/urban-io-aws-iot-sitewise-architecture-diagram.png" alt="Architecture">
 </div>
-<div class="title">Figure 2. Quick Start physical architecture for Urban.io to Sitewise integration on AWS</div>
+<div class="title">Figure 1. Quick Start architecture for Urban.io for AWS IoT SiteWise</div>
 </div>
 <div class="sect2">
 <h3 id="_resources">Resources</h3>
 <div class="paragraph">
-<p>As shown in <a href="#architecture1">Figure 2</a>, the Quick Start sets up the following AWS resources:</p>
+<p>As shown in <a href="#architecture1">Figure 1</a>, the Quick Start sets up the following:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p><strong>Amazon S3.</strong> Used for uploading a JSON file mapping between lifecycle events and asset attributes will be uploaded on S3 bucket with the prefix /urbanio/events. In the same bucket is uploaded the initial integration setup files - definition of the objects, a JSON file describing operators, customers, locations and devices in lifecycle events format will be uploaded to the specified S3 bucket with prefix /urbanio/sitewise/assets.</p>
+<p>Amazon S3 to store initial map and configuration files from an integrated Urban.io account.</p>
 </li>
 <li>
-<p><strong>Lifecycle Events Mapping Updater.</strong> An AWS lambda that is triggered by S3 file upload and caches the mapping between Urban.io lifecycle events and IoT SiteWise asset attributes.</p>
+<p>AWS IoT Core to do the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Send lifecycle events from Urban.io (when a user creates or updates a device) to AWS Lambda to update AWS IoT SiteWise assets.</p>
 </li>
 <li>
-<p><strong>S3 to Lifecycle Events Converter.</strong> An AWS lambda that reads initial object definitions from S3 and sends them to Lifecycle events FIFO.</p>
+<p>Send device readings from Urban.io to AWS IoT SiteWise to display.</p>
 </li>
-<li>
-<p><strong>Integration Points Dynamo Table.</strong> Dynamo table which saves the integration point from Urban.io platform.</p>
-</li>
-<li>
-<p><strong>Assets Cache Dynamo Table.</strong> Dynamo table which caches created Sitewise assets and their properties.</p>
-</li>
-<li>
-<p><strong>Asset Models Cache Dynamo Table.</strong> Dynamo table which caches created Sitewise models and their properties.</p>
-</li>
-<li>
-<p><strong>Events to Model Mapping Dynamo Table.</strong> A Dynamo table that saves the mapping between Urban.IO event attributes and asste model attributes.</p>
-</li>
-<li>
-<p><strong>Lifecycle Events FIFO.</strong> AWS SQS on which are sent Urban.io lifecycle events.</p>
-</li>
-<li>
-<p><strong>Asset Model Converter.</strong> The AMC is an AWS lambda that converts Urban.io lifecycle events into AWS Iot Sitewise assets. It is triggered by Lifecycle events FIFO and resends the already processed events on Created Assets FIFO.</p>
-</li>
-<li>
-<p><strong>Assets FIFO.</strong> SQS on which are send events for the created Sitewise assets.</p>
-</li>
-<li>
-<p><strong>Association Updater.</strong> The Association Updater is an AWS lambda that (re)associate the AWS IioT SiteWise assets based on the Urban.io lifecycle events. It is triggered by Created Assets FIFO and resends the already processed events on Associated Assets FIFO.</p>
-</li>
-<li>
-<p><strong>Lifecycle events AWS IoT Core Rule.</strong> This rule receives Urban.io lifecicle events which will be converted into AWS IoT SiteWise assets.</p>
-</li>
-<li>
-<p><strong>Lifecycle events.</strong> Invokes Lambda action for the recieved lifecycle events.</p>
-</li>
-<li>
-<p><strong>IoT Core to FIFO Sender.</strong> An AWS Lambda triggered by AWS IoT Core rule, that sensds the recieved lifecycle MQTT event to the Lifecycle events FIFO.</p>
-</li>
-<li>
-<p><strong>Property Values FIFO.</strong> SQS on which are send the asset property values to be updated.</p>
-</li>
-<li>
-<p><strong>Device Measurement AWS IoT Core Rule.</strong> This rule receives telemetry data that is immediately ingested into AWS IoT SiteWise.</p>
-</li>
-<li>
-<p><strong>AWS IoT SiteWise.</strong> With this managed service, you can collect, model, analyze, and visualize data from industrial equipment at scale. The service, which maintains the asset hierarchy&#8217;s metadata, contains a managed database for all the time-series data generated by the customer assets. It includes a SaaS dashboard-building feature called AWS IoT SiteWise Monitor. You use SiteWise Monitor to build custom dashboards, or portals, to view and share near-real-time data from your connected devices and equipment.</p>
-</li>
-<li>
-<p><strong>Attributes Updater.</strong> The Attributes updater is an AWS lambda that updates the attributes of AWS Iot Sitewise assets based on Urban.io lifecycle events. It is triggered bu the Associated Assets FIFO.</p>
-</li>
-</ol>
+</ul>
 </div>
+</li>
+<li>
+<p>AWS Lambda to do the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Cache mappings and configurations from Amazon S3 to Amazon DynamoDB tables.</p>
+</li>
+<li>
+<p>Convert Urban.io lifecycle events from AWS IoT Core to AWS IoT SiteWise assets and send updated assets to AWS IoT SiteWise.</p>
+</li>
+</ul>
 </div>
-<div class="sect2">
-<h3 id="_workflow">Workflow</h3>
-<div class="paragraph">
-<p>The first step of integrating Urban.io portal and AWS IoT Sitewise is to deploy the CloudFormation template in your account.<br>
-<br>
-As a second step after launching the Quick Start you should setup an integration in app.urban.io following <a href="https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview">these steps</a> and the framework automatically will import the selected data from the Urban.io application&#8217;s asset-hierarchy into AWS IoT SiteWise models and assets.<br>
-<br></p>
-</div>
-<div id="architecture2" class="imageblock">
-<div class="content">
-<img src="images/urbanio-sitewise-integration_2.png" alt="Workflow">
-</div>
-<div class="title">Figure 3. Quick Start workflow for Urban.io Integration to the AWS SiteWise</div>
-</div>
-<div class="paragraph">
-<p>The syncronization between the content of your Urban.io account and AWS IoT Sitewise will be made automatically.
-The workflow can be traced on <a href="#architecture2">Figure 3</a>, but keep in mind user input will be needed only for Step 1.:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Setting up Sitewise Integration.</strong> The user sets up the integration in Urban.io portal following <a href="https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview">this guide</a>.</p>
 </li>
 <li>
-<p><strong>Create MQTT Subscriptions.</strong> As a next step Urban.io portal automatically will create MQTT subscriptions for the selected entity.</p>
+<p>Amazon DynamoDB to store mappings and configurations for AWS Lambda.</p>
 </li>
 <li>
-<p><strong>Upload information to clients S3.</strong> Then Urban.io portal will first upload a file describing the mapping between Urban.io events and AWS IoT Sitewise asset properties to the specified S3 bucket. After that Urban.io portal will upload asset hierarchy definition in the specified S3 bucket.</p>
+<p>Amazon Simple Queue Service (Amazon SQS) to queue lifecycle events for processing by AWS Lambda.</p>
 </li>
 <li>
-<p><strong>Cache Events to Assets Mapping.</strong> The uploaded Events to Assets Mappings are cached in a dynamo table for easier access.</p>
+<p>AWS IoT SiteWise to collect, manage, and visualize assets.</p>
 </li>
-<li>
-<p><strong>Save Integration Point.</strong> As a first step of processing the initial asset definitions file from the S3, the integaration point is stored.</p>
-</li>
-<li>
-<p><strong>Send S3 Lifecycle Events to FIFO.</strong> The next step of processing the initial assets definitions from S3 is to send them to Lifecycle events FIFO.</p>
-</li>
-<li>
-<p><strong>Asset Model Converter.</strong> Assets models and assets are being created/updated based on the events in the <strong>Lifecycle events FIFO</strong>.</p>
-</li>
-<li>
-<p><strong>Association Updater.</strong> Associates assets based on the events in <strong>Created assets FIFO</strong>.</p>
-</li>
-<li>
-<p><strong>Attributes Updater.</strong> Update assets properties values based on the events in <strong>Associated assets FIFO</strong>.</p>
-</li>
-<li>
-<p><strong>Publish Urban.io Lifecycle Events.</strong> When a user creates/updates an enitity in Urban.io portal, a lifecycle event is triggered to notify for the change. The MQTT bridge publishes the event to the client&#8217;s IoT Core.</p>
-</li>
-<li>
-<p><strong>Send MQTT Lifecycle Events to FIFO.</strong> The recieved MQTT lifecycle event is send to the <strong>Lifecycle events FIFO</strong>.</p>
-</li>
-<li>
-<p><strong>Publish Measurements.</strong> When the devices send measurement data the MQTT bridge is publishing it to the client&#8217;s IoT Core.</p>
-</li>
-<li>
-<p><strong>Update Measurements.</strong> An IoT core rule is automatically sending the measuremts data to IoT Sitewise.</p>
-</li>
-</ol>
+</ul>
 </div>
 </div>
 </div>
@@ -1138,7 +1047,7 @@ and <a href="https://aws.amazon.com/training/" target="_blank" rel="noopener">AW
 deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start also assumes familiarity with creating portals and building dashboards in AWS IoT SiteWise.</p>
+<p>This Quick Start also assumes familiarity with creating portals and dashboards in AWS IoT SiteWise. For more information, see <a href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-data.html">Monitoring data with AWS IoT SiteWise Monitor</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1181,7 +1090,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Lambda functions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Lambda functions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
 </tr>
 <tr>
@@ -1189,7 +1098,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SQS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon SQS queues</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 </tr>
 <tr>
@@ -1197,15 +1106,15 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CloudWatch alarms</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon CloudWatch alarms</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SNS topic</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon Simple Notification Service (Amazon SNS) topics</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SNS sunscription</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon SNS subscriptions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
 </tbody>
@@ -1253,65 +1162,58 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Deploy Urban.io Integration to the AWS SiteWise. * This option creates resources to deploy Urban.io integration to the AWS SiteWise.</p>
+<p><strong>Deploy Urban.io for AWS IoT SiteWise.</strong> This option creates resources to deploy Urban.io for AWS IoT SiteWise.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The Quick Start provides a template for this integration. It also lets you configure environment details as discussed later in this guide.</p>
+<p>The Quick Start provides a template for this integration with parameters that you can configure. For more information, see <a href="#_deployment_steps">Deployment steps</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_prepare_your_aws_account">Prepare your AWS account</h4>
-<div class="sect4">
-<h5 id="_increase_aws_iot_sitewise_limits">Increase AWS IoT Sitewise limits</h5>
 <div class="paragraph">
-<p>Before configuring the integration you need to request an increase of the Sitewise quotas for the selected region:</p>
+<p>To ensure proper synchronization of the Urban.io domain model with AWS IoT SiteWise, you must <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">request increases</a> to the following AWS IoT SiteWise quotas:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Number of child assets per parent asset  - <strong>new limit of 500</strong></p>
+<p><strong>Number of child assets per parent asset.</strong> The default is 100. Request 500.</p>
 </li>
 <li>
-<p>Number of asset models per hierarchy tree - <strong>new limit of 50</strong></p>
+<p><strong>Number of asset models per hierarchy tree.</strong> The default is 20. Request 50.</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>This step is neccessary for syncronization of Urban.io domain model with AWS Sitewise. The domain model that we currently have requires the creation of more than 30 models and we have several more in development. Since there are customers with a lot of devices accociated to a given location in Urban.io we consider it safe to assume you can have up to 500 devices at a particular location.</p>
-</div>
-<div class="paragraph">
-<p>If you skip updating the limits, the the next steps of Urban.io Integration to the AWS SiteWise will fail due to Sitewise models and assets limitations.</p>
-</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You must request these increases to successfully prepare your Urban.io account in the next section. For more information, see <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html">Requesting a quota increase</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_prepare_your_urban_io_pty_ltd_account">Prepare your Urban.io Pty Ltd. account</h4>
 <div class="paragraph">
-<p>As part of an Asset Monitoring IoT Device Subscription you will be provided an Account for the Urban.io Device Administration application. This application provides various features to enable you to commission and install your wireless IoT sensor network.<br>
-<br>
-As part of signing up for an Asset Monitoring IoT Device Subscription you will be contacted by Urban.io representatives who will then guide you through this process.<br>
-<br>
-You can also review <a href="https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview">this integration guide</a> which illustrates the simple steps to connect the integration with your Urban.io account.<br>
-<br>
-For assistance establishing an Urban.io Pty Ltd. account please visit any of the following links.</p>
+<p>This Quick Start requires an Asset Monitoring IIoT Datastream subscription from Urban.io, available on <a href="https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title">AWS Marketplace</a>. After subscribing, Urban.io will contact you and guide you through the installation. For more information about subscriptions, <a href="https://support.urban.io/">contact Urban.io</a>.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://www.urban.io/subscribe-aws/">Urban.io Subscriptions</a></p>
-</li>
-<li>
-<p><a href="https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title">Urban.io on AWS Marketplace</a></p>
-</li>
-<li>
-<p><a href="https://support.urban.io/">Contact Urban.io Support</a></p>
-</li>
-<li>
-<p><a href="https://www.urban.io/contact/">Contact Urban.io</a></p>
-</li>
-</ul>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+After deploying the Quick Start, you must configure integration between your Urban.io account and AWS IoT SiteWise. For more information, see <a href="#_post_deployment_steps">Post-deployment steps</a> later in this guide.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1344,13 +1246,10 @@ For assistance establishing an Urban.io Pty Ltd. account please visit any of the
 <p>Sign in to your AWS account.</p>
 </li>
 <li>
-<p>Open the page for the <a href="https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?sr=0-1&amp;ref_=beagle&amp;applicationId=AWSMPContessa" target="_blank" rel="noopener">Urban.io Device Administration application in AWS Marketplace</a>, and then choose <strong>Continue to Subscribe</strong>.</p>
+<p>In AWS Marketplace, open the page for <a href="https://aws.amazon.com/marketplace/pp/prodview-mw4hwqut2buww?ref_=srh_res_product_title" target="_blank" rel="noopener">Asset Monitoring IIoT Datastream Subscription</a>, and then choose <strong>Continue to Subscribe</strong>.</p>
 </li>
 <li>
 <p>Review the terms and conditions for software usage, and then choose <strong>Accept Terms</strong>. A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the <a href="https://aws.amazon.com/marketplace/help/200799470" target="_blank" rel="noopener">AWS Marketplace documentation</a>.</p>
-</li>
-<li>
-<p>When the subscription process is complete, exit out of AWS Marketplace without further action.</p>
 </li>
 </ol>
 </div>
@@ -1363,7 +1262,7 @@ For assistance establishing an Urban.io Pty Ltd. account please visit any of the
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Sign in to your AWS account, and click the link below to launch the AWS CloudFormation template.</p>
+<p>Sign in to your AWS account, and choose the link below to launch the AWS CloudFormation template.</p>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 75%;">
@@ -1371,8 +1270,8 @@ For assistance establishing an Urban.io Pty Ltd. account please visit any of the
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy Urban.io Integration to the AWS SiteWise</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/ma5dN?" target="_blank" rel="noopener">Deploy Urban.io for AWS IoT SiteWise</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/p8dqg?" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1384,7 +1283,7 @@ For assistance establishing an Urban.io Pty Ltd. account please visit any of the
 <p>On the <strong>Create stack</strong> page, keep the default setting for the template URL, and then choose <strong>Next</strong>.</p>
 </li>
 <li>
-<p>On the <strong>Specify stack details</strong> page, change the stack name if needed. Review the parameters for the template. Provide values for the parameters that require input. For all other parameters, review the default settings and customize them as necessary. For details on each parameter, see the <a href="#_parameter_reference">Parameter reference</a> section of this guide. When you finish reviewing and customizing the parameters, choose <strong>Next</strong>.</p>
+<p>On the <strong>Specify stack details</strong> page, change the stack name if needed. Review the parameters for the template. Provide values for the parameters that require input. For all other parameters, review the default settings and customize them as necessary. For details on each parameter, see the <a href="#_parameter_reference">Parameter reference</a> section of this guide. When you finish reviewing and customizing the parameters, choose <strong>Next</strong>.</p>
 </li>
 <li>
 <p>On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you finish, choose <strong>Next</strong>.</p>
@@ -1410,12 +1309,12 @@ For assistance establishing an Urban.io Pty Ltd. account please visit any of the
 <h2 id="_post_deployment_steps">Post-deployment steps</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After deploying the Quick Start you should setup an integration on <a href="https://app.urban.io" target="_blank" rel="noopener">Urban.io</a> following the steps described in <a href="https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise/preview" target="_blank" rel="noopener">this tutorial</a> and the framework automatically will import the selected data from the Urban.io application&#8217;s asset-hierarchy into AWS IoT SiteWise models and assets.</p>
+<p>After deploying the Quick Start, you must configure integration between your Urban.io account and AWS IoT SiteWise. For instructions, log onto your Urban.io account and see <a href="https://support.urban.io/support/solutions/articles/43000627793-integration-with-aws-iot-sitewise" target="_blank" rel="noopener">Receiving data from Urban.io IoT devices on AWS IoT SiteWise</a>.</p>
 </div>
 <div class="sect2">
 <h3 id="_test_the_deployment">Test the deployment</h3>
 <div class="paragraph">
-<p>After creating the integration in <a href="https://app.urban.io" target="_blank" rel="noopener">Urban.io</a> you can verify that the lambdas are executed without errors and that records are being populated in the dynamo tables.</p>
+<p>After configuring integration, confirm that the deployed AWS Lambda functions run without errors. For more information, see <a href="https://docs.aws.amazon.com/lambda/latest/dg/monitoring-cloudwatchlogs.html" target="_blank" rel="noopener">Accessing Amazon CloudWatch logs for AWS Lambda</a>. Also, check the deployed DynamoDB tables for records.</p>
 </div>
 </div>
 </div>
@@ -1476,9 +1375,9 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 </table>
 </div>
 <div class="sect2">
-<h3 id="_urban_io_integration_with_aws_sitewise">Urban.io integration with AWS SiteWise</h3>
+<h3 id="_urban_io_for_aws_iot_sitewise">Urban.io for AWS IoT SiteWise</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Urbanio Sitewise Configuration</caption>
+<caption class="title">Table 1. Urban.io configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1496,24 +1395,24 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket
 (<code>S3Bucket</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The S3 bucket receives the initial integration setup files - definition of the objects (a JSON file describing operators, customers, locations and devices in lifecycle events format) and a mapping between lifecycle events and asset attributes. Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The S3 bucket for the initial integration setup files and object definitions. Please keep the exact name as it will be required in app.urban.io during the integration. The name for the S3 bucket - must be globally unique (3-63 lowercase letters or numbers)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The email address to be used for alarm notifications.
+<td class="tableblock halign-left valign-top"><p class="tableblock">The email address to be used for alarm notifications
 (<code>EmailAddress</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Email address to be use for Cloudwatch alarm notifications.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email address to be use for Amazon CloudWatch alarm notifications.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Urban Io AWS Account Number
+<td class="tableblock halign-left valign-top"><p class="tableblock">Urban.io AWS account number
 (<code>UrbanioAccountNumber</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Urban.io AWS Account number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Urban.io AWS account number.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Urban.io AWS account Access</caption>
+<caption class="title">Table 2. AWS account access</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1528,15 +1427,15 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow Cross-Account Access [ false/true ]
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow cross-account access
 (<code>AllowCrossAccountAccess</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Grant Urban.io permissions to upload data to S3 and send messages to AWS IoT Core topics.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Grant Urban.io permissions to upload data to Amazon S3 and send messages to AWS IoT Core topics.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. AWS Quick Start Configuration</caption>
+<caption class="title">Table 3. AWS Quick Start configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1608,14 +1507,14 @@ and to share your customizations with others.</p>
 </div>
 <p class="footer-text">
 <!-- We can use document attributes: -->
-<!-- Generated with Asciidoctor v2.0.15. -->
+<!-- Generated with Asciidoctor v2.0.16. -->
 <a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2021, Amazon Web Services, Inc. or its affiliates and Urban.io Pty Ltd.. All rights reserved.
 </p>
 </body>
 </html>
 <!--
 repo commit:
-fcf5e42304edc7b91d2aac8bdbc9c59244f859ec
+88529d48245862f8c5a9d99bb8d74e9eeadf805e
 
 submodule config:
  eea042d0b9c005d2549a71349e5f28b02c81af75 docs/boilerplate (heads/main)

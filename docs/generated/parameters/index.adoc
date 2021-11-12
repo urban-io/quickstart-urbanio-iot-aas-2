@@ -1,3 +1,3 @@
 
-=== Urban.io integration with AWS SiteWise
+=== Urban.io for AWS IoT SiteWise
 include::main.template.adoc[]
